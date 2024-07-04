@@ -1,0 +1,5 @@
+2024-07-04:
+  TheCaramelion:
+  - bugfix: fixed random slosh sounds happening with 0 liquids
+  tacoguy7765093:
+  - bugfix: Fixed the Venom Injection trait to work for CHOMP/.
