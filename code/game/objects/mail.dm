@@ -95,7 +95,7 @@
 			set_content = FALSE
 		user.drop_item()
 		W.forceMove(src)
-		to_chat(user, "Placed the [W] into the [src]")
+		balloon_alert(user, "placed \the [W] into \the [src]")
 		set_content = TRUE
 		description_info = "Click with an empty hand to seal it, or Alt-Click to retrieve the object out."
 		return
@@ -104,7 +104,7 @@
 /obj/item/mail/proc/setRecipient(mob/user)
 	var/list/recipients = list()
 	var/mob/living/recipient_mob
-	for(var/mob/living/player in player_list)
+	for(var/mob/living/player in GLOB.player_list)
 		if(!player_is_antag(player.mind) && player.mind.show_in_directory)
 			recipients += player
 
@@ -177,14 +177,14 @@
 		var/obj/item/destTagger/O = W
 		if(O.currTag)
 			if(src.sortTag != O.currTag)
-				to_chat(user, span_notice("You have labeled the destination as [O.currTag]."))
+				balloon_alert(user, "labeled for [O.currTag].")
 				src.sortTag = O.currTag
 				playsound(src, 'sound/machines/twobeep.ogg', 50, 1)
 				W.description_info = " It is labeled for [O.currTag]"
 			else
-				to_chat(user, span_notice("The mail is already labeled for [O.currTag]."))
+				balloon_alert(user, "already labeled for [O.currTag].")
 		else
-			to_chat(user, span_danger("You need to set a destination first!"))
+			balloon_alert(user, "destination not set!")
 		return
 
 /obj/item/mail/attack_self(mob/user)
@@ -196,11 +196,11 @@
 	if(recipient_ref)
 		var/datum/mind/recipient = recipient_ref.resolve()
 		if(recipient && recipient.current?.dna.unique_enzymes != user.dna.unique_enzymes)
-			to_chat(user, span_danger("You can't open somebody's mail! That's <em>illegal</em>"))
+			balloon_alert(user, "you can't open somebody's mail! That's <em>illegal</em>")
 			return FALSE
 
 	if(opening)
-		to_chat(user, span_danger("You are already opening that!"))
+		balloon_alert(user, "already opening that!")
 		return FALSE
 
 	opening = TRUE
@@ -278,7 +278,7 @@
 		if(!chosen)
 			return
 
-	for(var/mob/living/player in player_list)
+	for(var/mob/living/player in GLOB.player_list)
 		recipients += player
 
 	var/mob/living/chosen_player = tgui_input_list(usr, "Choose recipient", "Recipients", recipients, recipients)
@@ -315,7 +315,7 @@
 /obj/structure/closet/crate/mail/full/Initialize(mapload)
 	. = ..()
 	var/list/mail_recipients = list()
-	for(var/mob/living/carbon/human/alive in player_list)
+	for(var/mob/living/carbon/human/alive in GLOB.player_list)
 		if(alive.stat != DEAD && alive.client && alive.client.inactivity <= 10 MINUTES)
 			mail_recipients += alive
 	for(var/iterator in 1 to storage_capacity)
@@ -378,16 +378,16 @@
 	if(istype(A, /obj/item/mail))
 		var/obj/item/mail/saved_mail = A
 		if(saved_mail.scanned)
-			to_chat(user, span_danger("This letter has already been scanned!"))
+			balloon_alert(user, "already scanned!")
 			playsound(loc, 'sound/items/mail/maildenied.ogg', 50, TRUE)
 			return
-		to_chat(user, span_notice("Mail added to database"))
+		balloon_alert(user, "added to database")
 		playsound(loc, 'sound/items/mail/mailscanned.ogg', 50, TRUE)
 		saved = A
 		return
 	if(isliving(A))
 		if(!saved)
-			to_chat(user, span_danger("No logged mail!"))
+			balloon_alert(user, "no logged mail!")
 			playsound(loc, 'sound/items/mail/maildenied.ogg', 50, TRUE)
 			return
 

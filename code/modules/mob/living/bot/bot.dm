@@ -98,7 +98,7 @@
 			. += span_info("You can use a <b>crowbar</b> to remove it.")
 */
 /mob/living/bot/updatehealth()
-	if(status_flags & GODMODE)
+	if(SEND_SIGNAL(src, COMSIG_UPDATE_HEALTH) & COMSIG_UPDATE_HEALTH_GOD_MODE)
 		health = getMaxHealth()
 		set_stat(CONSCIOUS)
 	else
@@ -107,6 +107,9 @@
 	toxloss = 0
 	cloneloss = 0
 	halloss = 0
+	if(health <= -getMaxHealth()) //die only once
+		death()
+		return
 
 /mob/living/bot/death()
 	explode()
@@ -581,7 +584,6 @@
 
 /mob/living/bot/Login()
 	no_vore = FALSE // ROBOT VORE
-	init_vore() // ROBOT VORE
 	add_verb(src, /mob/proc/insidePanel)
 
 	return ..()

@@ -76,11 +76,7 @@
 	verbs |= /mob/living/proc/glamour_invisibility
 	movement_cooldown = -1
 
-/mob/living/simple_mob/vore/ddraig/init_vore()
-	if(!voremob_loaded)
-		return
-	if(LAZYLEN(vore_organs))
-		return
+/mob/living/simple_mob/vore/ddraig/load_default_bellies()
 	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "stomach"
@@ -319,7 +315,7 @@
 		set_stance(STANCE_FLEE)
 		return
 
-	if((holder.health < (holder.maxHealth / 4)) && !used_invis)
+	if((holder.health < (holder.getMaxHealth() / 4)) && !used_invis)
 		holder.cloak()
 		used_invis = 1
 		step_away(holder, target, 8)

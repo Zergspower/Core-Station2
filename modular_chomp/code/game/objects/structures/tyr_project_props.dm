@@ -333,6 +333,12 @@
 	catalogue_data = list(/datum/category_item/catalogue/technology/base_neon_anomalous)
 	icon_state = "engi_disc"
 
+/obj/item/prop/tyrlore/neonsci
+	name = "data disc"
+	desc = "A disc for storing data."
+	catalogue_data = list(/datum/category_item/catalogue/technology/base_neon_planetary_report)
+	icon_state = "sci_disc"
+
 /datum/category_item/catalogue/anomalous/tyr_red
 	name = "Precursor Object - Tyr Data Disc Red"
 	desc = "The following data has been corrupted. \
@@ -418,5 +424,102 @@
 	The weather is also strange, weather fireworks being wrong for here. \
 	Proabaly something to do with this valley being a pockect of cool in the heat."
 	value = CATALOGUER_REWARD_HARD
+
+/datum/category_item/catalogue/technology/base_neon_planetary_report
+	name = "Anomalous Conditions"
+	desc = "Planteray Objects Of Importance\
+	<br><br>\
+	Desgination: ALRE - Tyranical\
+	Resources: Precursor Tech, Potential Biofuels and Weapons\
+	<br><br>\
+	Desgination:CHRL - Sivian\
+	Resources: Precursor tech, rifts within space, the void acess\
+	<br><br>\
+	Desgination:AMRL - Wasteland\
+	Resources: Abnormal amounts of radiations, crystaline fuel, crystaline beasts\
+	<br><br>\
+	Desgination: CMRE - Citadel. \
+	Resources: Recruitment"
+	value = CATALOGUER_REWARD_HARD
+
+/obj/item/prop/tyrlore/neonjanus
+	name = "data disc"
+	desc = "A disc for storing data."
+	catalogue_data = list(/datum/category_item/catalogue/technology/base_neon_janus)
+	icon_state = "disc_janus"
+
+/datum/category_item/catalogue/technology/base_neon_janus
+	name = "Shielding Tech"
+	desc = "Our patent, and very stable shielding technongly was one of\
+	our first pieces of precursor equipment reversed engineered. We are able\
+	to manifacture barriers for ballastic, and energy based weaponry. Doing both\
+	however is rather expirmental. Many of our expirments have turned out failures\
+	although they may be turned into success as we deploy them to other sectors. The\
+	two most stable versions are the shields upon our mining and janus mecha. The first\
+	having a limited time, whilst the janus swaps between polarities. Some of our\
+	people have reported side effects from prolonged exposure. Investigation back to\
+	AMRL is highly recomended."
+	value = CATALOGUER_REWARD_HARD
+
+
+/obj/item/prop/tyrlore/truegoal
+	name = "data disc"
+	desc = "A disc for storing data."
+	catalogue_data = list(/datum/category_item/catalogue/technology/truegoal)
+	icon_state = "disc_eclipse"
+
+/datum/category_item/catalogue/technology/truegoal
+	name = "Success For All"
+	desc = "The branches for achieving our goal, we shall strive to succeed\
+	at any and all costs\
+	<br><br>\
+	The Freezing Branch\
+	We shall strive to break the natural order, a state of true nothingness, in\
+	order to gain full control of our fates. Nature shall bend to our will\
+	<br><br>\
+	The Precursor Branch\
+	The precursor beings scattered across the galaxies were eons ahead of us. Yet\
+	they fell. We can learn from them, pick up their scraps, and avoid their pitfalls.\
+	This shall further our other two branches further then we could do alone\
+	<br><br>\
+	The Anomalous Branch\
+	Within this world, there are things that do not make sense with our current brand\
+	of science. This beings are able to bend the fabric of the world in ways that our\
+	current metheod of thinking deems impossible. If we are to learn from them, and\
+	update our science to match their's, then the world will further be lead down the\
+	best path."
+	value = CATALOGUER_REWARD_HARD
+
+
+/obj/item/prop/tyrlore/stolenbreacher
+	name = "data disc"
+	desc = "A disc for storing data."
+	catalogue_data = list(/datum/category_item/catalogue/technology/stolen_breacher)
+	icon_state = "disc_eclipse"
+
+/datum/category_item/catalogue/technology/stolen_breacher
+	name = "Reverse Breacher Suit"
+	desc = "One of our expeditions has been quite fruitful, a crashed\
+	unathi vessel. The source of the crash we have not yet discovered, nor the\
+	cause of mass casualities. However they did have a few of their fabled breacher\
+	suits. Attempts to reverse enginer the alloy the suits are made of have been to\
+	little success. Our prototype copies swiftly falling apart under pressure. Further\
+	scavanging is to be done at that site."
+	value = CATALOGUER_REWARD_HARD
+
+
+/obj/item/material/barbedwire/plastic/active
+	anchored = 1
+	icon_state = "barbedwire-out"
+
+
+/obj/item/material/barbedwire/vopal
+	name = "crystal shards"
+	default_material = MAT_VOPAL
+
+/obj/item/material/barbedwire/vopal/active
+	anchored = 1
+	icon_state = "barbedwire-out"
+
 
 

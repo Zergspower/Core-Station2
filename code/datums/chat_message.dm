@@ -13,7 +13,6 @@
 
 #define CHAT_MESSAGE_MOB			1
 #define CHAT_MESSAGE_OBJ			2
-#define WXH_TO_HEIGHT(x)			text2num(copytext((x), findtextEx((x), "x") + 1)) // thanks lummox
 
 #define CHAT_RUNE_EMOTE				0x1
 #define CHAT_RUNE_RADIO				0x2
@@ -182,7 +181,8 @@ var/list/runechat_image_cache = list()
 	var/complete_text = "<span class='center maptext [extra_classes != null ? extra_classes.Join(" ") : ""]' style='color: [tgt_color];'>[text]</span>"
 
 	var/msgwidth = extra_length ? CHAT_MESSAGE_EXT_WIDTH : CHAT_MESSAGE_WIDTH
-	var/mheight = WXH_TO_HEIGHT(owned_by.MeasureText(complete_text, null, msgwidth))
+	var/mheight
+	WXH_TO_HEIGHT(owned_by.MeasureText(complete_text, null, msgwidth), mheight)
 
 	if(!VERB_SHOULD_YIELD)
 		return finish_image_generation(msgwidth, mheight, target, owner, complete_text, lifespan)
@@ -199,8 +199,11 @@ var/list/runechat_image_cache = list()
 
 	// Translate any existing messages upwards, apply exponential decay factors to timers
 	message_loc = target.runechat_holder(src)
+	if(!owned_by)
+		qdel(src)
+		return
 	RegisterSignal(message_loc, COMSIG_PARENT_QDELETING, PROC_REF(qdel_self))
-	if(owned_by && owned_by.seen_messages)
+	if(owned_by.seen_messages)
 		var/idx = 1
 		var/combined_height = approx_lines
 		for(var/datum/chatmessage/m as anything in owned_by.seen_messages[message_loc])
@@ -486,7 +489,6 @@ var/list/runechat_image_cache = list()
 
 #undef CHAT_MESSAGE_MOB
 #undef CHAT_MESSAGE_OBJ
-#undef WXH_TO_HEIGHT
 
 #undef CHAT_RUNE_EMOTE
 #undef CHAT_RUNE_RADIO
