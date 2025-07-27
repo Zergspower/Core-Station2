@@ -4,11 +4,11 @@
 /datum/trait/positive/speed_fast
 	name = "Haste"
 	desc = "Allows you to move faster on average than baseline."
-	cost = 0 //CHOMPEdit
+	cost = 0
 	var_changes = list("slowdown" = -0.5)
 	excludes = list(/datum/trait/positive/hardy,/datum/trait/positive/hardy_extreme,/datum/trait/positive/hardy_plus)
 //	banned_species = list(SPECIES_ALRAUNE, SPECIES_SHADEKIN_CREW, SPECIES_TESHARI, SPECIES_TAJARAN, SPECIES_DIONA, SPECIES_UNATHI) //Either not applicable or buffs ruin species flavour/balance
-	custom_only = FALSE //Keeping these in comments in case we decide to open them up in future, so the species are already organised.
+//	custom_only = FALSE //Keeping these in comments in case we decide to open them up in future, so the species are already organised.
 
 	// Traitgenes Replaces /datum/trait/positive/superpower_increaserun, made into a genetrait
 	is_genetrait = TRUE
@@ -21,12 +21,59 @@
 /datum/trait/positive/unusual_running
 	name = "Unusual Gait"
 	desc = "Your method of running is unorthodox, you move faster when not holding things in your hands."
-	cost = 2
+	cost = 0
 	var_changes = list("unusual_running" = 1)
 
 	custom_only = FALSE //I think this is probably fine since it's half RP trait and half mechanical trait. also you can't have speed and use your hands so this is kinda niche outside of travel time reduction.
-	banned_species = list(SPECIES_ALRAUNE, SPECIES_SHADEKIN_CREW, SPECIES_TESHARI, SPECIES_TAJARAN, SPECIES_DIONA, SPECIES_UNATHI, SPECIES_VASILISSAN, SPECIES_XENOCHIMERA, SPECIES_VOX) //i assume if a dev made your base slowdown different then you shouldn't have this.
+	banned_species = list(SPECIES_ALRAUNE, SPECIES_SHADEKIN_CREW, SPECIES_TESHARI, SPECIES_TAJARAN, SPECIES_DIONA, SPECIES_UNATHI, SPECIES_VASILISSAN, SPECIES_XENOCHIMERA, SPECIES_VOX) //I assume if a dev made your base slowdown different then you shouldn't have this.
 	excludes = list(/datum/trait/positive/speed_fast) // olympic sprinters don't naruto run
+
+/datum/trait/positive/punchdamage
+	name = "Strong Attacks"
+	desc = "Your unarmed attacks deal more damage. (+5 per attack)"
+	cost = 0
+	custom_only = FALSE
+	hidden = FALSE //Disabled on Virgo. //CHOMPEdit
+	var_changes = list("unarmed_bonus" = 5)
+	excludes = list(/datum/trait/positive/punchdamageplus)
+	banned_species = list(SPECIES_TESHARI)
+
+/datum/trait/positive/punchdamageplus
+	name = "Crushing Attacks"
+	desc = "Your unarmed attacks deal high damage. (+10 per attack)"
+	cost = 0
+	custom_only = FALSE
+	hidden = FALSE //Disabled on Virgo. //CHOMPEdit
+	var_changes = list("unarmed_bonus" = 10)
+	excludes = list(/datum/trait/positive/punchdamage)
+	banned_species = list(SPECIES_TESHARI, SPECIES_VOX)
+
+/datum/trait/positive/shredding_attacks //Variant of plus
+	name = "Shredding Attacks"
+	desc = "Your unarmed attacks can break windows, APCs, deal massive damage to synthetics, and you can break out of restraints 24 times faster."
+	cost = 6
+	custom_only = FALSE
+	hidden = TRUE
+	var_changes = list("shredding" = TRUE)
+	banned_species = list(SPECIES_TESHARI, SPECIES_VOX)
+
+/datum/trait/positive/strength //combine effects of hardy + strong punches, for if someone wants a generally "strong" character. Exists for the purposes of the trait limit
+	name = "High Strength"
+	desc = "Your unarmed attacks deal more damage (+5), and you can carry heavy equipment with 50% less slowdown."
+	cost = 0
+	custom_only = FALSE
+	hidden = FALSE //Disabled on Virgo. //CHOMPEdit
+	var_changes = list("unarmed_bonus" = 5, "item_slowdown_mod" = 0.5)
+	excludes = list(/datum/trait/positive/punchdamage, /datum/trait/positive/hardy, /datum/trait/positive/hardy_plus, /datum/trait/positive/speed_fast) //CHOMPEdit
+
+/datum/trait/positive/strengthplus //see above comment
+	name = "Inhuman Strength"
+	desc = "You are unreasonably strong. Your unarmed attacks do high damage (+10), you experience much less slowdown from heavy equipment (75% less)."
+	cost = 0
+	custom_only = FALSE
+	hidden = FALSE //Disabled on Virgo. //CHOMPEdit
+	var_changes = list("unarmed_bonus" = 10, "item_slowdown_mod" = 0.25)
+	excludes = list(/datum/trait/positive/punchdamage, /datum/trait/positive/hardy, /datum/trait/positive/punchdamageplus, /datum/trait/positive/hardy_plus, /datum/trait/positive/speed_fast) 
 
 /datum/trait/positive/hardy
 	name = "Hardy"
@@ -35,7 +82,6 @@
 	var_changes = list("item_slowdown_mod" = 0.5)
 	excludes = list(/datum/trait/positive/hardy_extreme,/datum/trait/positive/hardy_plus,/datum/trait/positive/speed_fast)
 	custom_only = FALSE
-	banned_species = list(SPECIES_ALRAUNE, SPECIES_TESHARI, SPECIES_UNATHI, SPECIES_DIONA, SPECIES_PROMETHEAN, SPECIES_PROTEAN) //Either not applicable or buffs are too strong
 
 /datum/trait/positive/hardy_plus
 	name = "Hardy, Major"
@@ -43,7 +89,6 @@
 	cost = 0
 	var_changes = list("item_slowdown_mod" = 0.25)
 	excludes = list(/datum/trait/positive/speed_fast,/datum/trait/positive/hardy_extreme,/datum/trait/positive/hardy) // CHOMPEdit: Prevents Haste + Hardy being taken together.
-	banned_species = list(SPECIES_ALRAUNE, SPECIES_TESHARI, SPECIES_UNATHI, SPECIES_DIONA, SPECIES_PROMETHEAN, SPECIES_PROTEAN) //Either not applicable or buffs are too strong
 	custom_only = FALSE
 
 /datum/trait/positive/endurance_high
@@ -52,7 +97,7 @@
 	cost = 0
 	var_changes = list("total_health" = 125)
 	custom_only = FALSE
-	banned_species = list(SPECIES_TESHARI, SPECIES_UNATHI, SPECIES_SHADEKIN_CREW) //Either not applicable or buffs are too strong
+
 
 /datum/trait/positive/endurance_high/apply(var/datum/species/S,var/mob/living/carbon/human/H)
 	..()
@@ -62,8 +107,8 @@
 	name = "Non-Conductive"
 	desc = "Decreases your susceptibility to electric shocks by 25%."
 	cost = 0
-	custom_only = FALSE
 	var_changes = list("siemens_coefficient" = 0.75)
+	custom_only = FALSE
 
 /datum/trait/positive/nonconductive_plus
 	name = "Non-Conductive, Major"
@@ -98,7 +143,6 @@
 	name = "Special Attack: Sharp Melee" // Trait Organization for easier browsing. TODO: Proper categorization of 'health/ability/resist/etc'
 	desc = "Provides sharp melee attacks that do slightly more damage."
 	cost = 0
-	custom_only = FALSE
 	var_changes = list("unarmed_types" = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/kick, /datum/unarmed_attack/claws, /datum/unarmed_attack/bite/sharp))
 
 /datum/trait/positive/melee_attack_fangs
@@ -111,13 +155,12 @@
 	name = "Special Attack: Numbing Fangs" // Trait Organization for easier browsing. TODO: Proper categorization of 'health/ability/resist/etc'
 	desc = "Provides fangs that makes the person bit unable to feel their body or pain."
 	cost = 0
-	custom_only = FALSE
 	var_changes = list("unarmed_types" = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/kick, /datum/unarmed_attack/punch, /datum/unarmed_attack/bite/sharp/numbing))
 
 /datum/trait/positive/minor_brute_resist
 	name = "Brute Resist, Minor"
 	desc = "Adds 10% resistance to brute damage sources." //CHOMP Edit
-	cost = 0 //CHOMP Edit
+	cost = 0
 	var_changes = list("brute_mod" = 0.9) //CHOMP Edit
 	custom_only = FALSE
 	banned_species = list(SPECIES_TESHARI, SPECIES_UNATHI, SPECIES_XENOCHIMERA, SPECIES_VASILISSAN, SPECIES_WEREBEAST) //Most of these are already this resistant or stronger, or it'd be way too much of a boost for tesh.
@@ -125,23 +168,20 @@
 /datum/trait/positive/brute_resist
 	name = "Brute Resist"
 	desc = "Adds 20% resistance to brute damage sources." //CHOMP Edit
-	cost = 0 //CHOMP Edit
-	custom_only = FALSE
+	cost = 0
 	var_changes = list("brute_mod" = 0.8) //CHOMP Edit
 	//excludes = list(/datum/trait/positive/minor_burn_resist,/datum/trait/positive/burn_resist) //CHOMP disable, this is already handled in positive_ch.dm
 
 /datum/trait/positive/minor_burn_resist
 	name = "Burn Resist, Minor"
 	desc = "Adds 10% resistance to burn damage sources." //CHOMP Edit
-	cost = 0 //CHOMP Edit
-	custom_only = FALSE
+	cost = 0
 	var_changes = list("burn_mod" = 0.9) //CHOMP Edit
 
 /datum/trait/positive/burn_resist
 	name = "Burn Resist"
 	desc = "Adds 20% resistance to burn damage sources." //CHOMP Edit
 	cost = 0 //CHOMP Edit
-	custom_only = FALSE
 	var_changes = list("burn_mod" = 0.8) //CHOMP Edit
 	//excludes = list(/datum/trait/positive/minor_brute_resist,/datum/trait/positive/brute_resist) //CHOMP disable, this is already handled in positive_ch.dm
 
@@ -151,7 +191,6 @@
 	name = "Photoresistant"
 	desc = "Decreases stun duration from flashes and other light-based stuns and disabilities by 25%" //CHOMP Edit
 	cost = 0
-	custom_only = FALSE
 	var_changes = list("flash_mod" = 0.75) //CHOMP Edit
 
 /datum/trait/positive/winged_flight
@@ -178,7 +217,7 @@
 /datum/trait/positive/hardfeet
 	name = "Hard Feet"
 	desc = "Makes your nice clawed, scaled, hooved, armored, or otherwise just awfully calloused feet immune to glass shards."
-	cost = 0 //CHOMP Edit
+	cost = 0
 	allowed_species = list(SPECIES_HANNER, SPECIES_CUSTOM) //So it only shows up for custom species and hanner
 	custom_only = FALSE
 	var_changes = list("flags" = NO_MINOR_CUT) //Checked the flag is only used by shard stepping.
@@ -189,7 +228,6 @@
 	name = "Antiseptic Saliva"
 	desc = "Your saliva has especially strong antiseptic properties that can be used to heal small wounds."
 	cost = 0
-	custom_only = FALSE
 
 /datum/trait/positive/antiseptic_saliva/apply(var/datum/species/S,var/mob/living/carbon/human/H)
 	..()
@@ -198,9 +236,9 @@
 /datum/trait/positive/traceur
 	name = "Traceur"
 	desc = "You're capable of parkour and can *flip over low objects (most of the time)."
-	cost = 0 //CHOMPEdit this is not worth 2 points
-	var_changes = list("agility" = 90)
+	cost = 0
 	custom_only = FALSE
+	var_changes = list("agility" = 90)
 	varchange_type = TRAIT_VARCHANGE_MORE_BETTER
 
 /datum/trait/positive/snowwalker
@@ -213,21 +251,23 @@
 /datum/trait/positive/weaver
 	name = "Weaver"
 	desc = "You can produce silk and create various articles of clothing and objects."
-	category = 0 //CHOMPEdit making weaver a neutral trait instead
-	cost = 0 //Also not worth 2 points, wtf, this is literally just fluff
-	var_changes = list("is_weaver" = 1)
-//	allowed_species = list(SPECIES_HANNER, SPECIES_CUSTOM) //So it only shows up for custom species and hanner CHOMPedit: We allowed further access of this.
+	category = 0
+	cost = 0
 	custom_only = FALSE
-	has_preferences = list("silk_production" = list(TRAIT_PREF_TYPE_BOOLEAN, "Silk production on spawn", TRAIT_VAREDIT_TARGET_SPECIES), \
-							"silk_color" = list(TRAIT_PREF_TYPE_COLOR, "Silk color", TRAIT_VAREDIT_TARGET_SPECIES))
 
-/datum/trait/positive/weaver/apply(var/datum/species/S,var/mob/living/carbon/human/H)
+	has_preferences = list("silk_production" = list(TRAIT_PREF_TYPE_BOOLEAN, "Silk production on spawn", TRAIT_NO_VAREDIT_TARGET), \
+							"silk_color" = list(TRAIT_PREF_TYPE_COLOR, "Silk color", TRAIT_NO_VAREDIT_TARGET))
+	added_component_path = /datum/component/weaver
+
+/datum/trait/positive/weaver/apply(var/datum/species/S,var/mob/living/carbon/human/H, var/list/trait_prefs)
 	..()
-	add_verb(H, /mob/living/carbon/human/proc/check_silk_amount)
-	add_verb(H, /mob/living/carbon/human/proc/toggle_silk_production)
-	add_verb(H, /mob/living/carbon/human/proc/weave_structure)
-	add_verb(H, /mob/living/carbon/human/proc/weave_item)
-	add_verb(H, /mob/living/carbon/human/proc/set_silk_color)
+	var/datum/component/weaver/W = H.GetComponent(added_component_path)
+	if(S.get_bodytype() == SPECIES_VASILISSAN)
+		W.silk_reserve = 500
+		W.silk_max_reserve = 1000
+	if(trait_prefs)
+		W.silk_production = trait_prefs["silk_production"]
+		W.silk_color = lowertext(trait_prefs["silk_color"])
 
 /datum/trait/positive/aquatic
 	name = "Aquatic"
@@ -258,9 +298,9 @@
 	name = "Linguist"
 	desc = "Allows you to have more languages."
 	cost = 0
+	custom_only = FALSE
 	var_changes = list("num_alternate_languages" = 6)
 	var_changes_pref = list("extra_languages" = 3)
-	custom_only = FALSE
 	varchange_type = TRAIT_VARCHANGE_MORE_BETTER
 */
 
@@ -269,8 +309,8 @@
 	name = "Eagle Eye"
 	desc = "You are better at aiming than most."
 	cost = 0
-	var_changes = list("gun_accuracy_mod" = 25)
 	custom_only = FALSE
+	var_changes = list("gun_accuracy_mod" = 25)
 	varchange_type = TRAIT_VARCHANGE_MORE_BETTER
 */
 
@@ -278,10 +318,10 @@
 	name = "Grit"
 	desc = "You can keep going a little longer, a little harder when you get hurt, Injuries only inflict 85% as much pain, and slowdown from pain is 85% as effective."
 	cost = 0
+	custom_only = FALSE
 	var_changes = list("trauma_mod" = 0.85)
 	excludes = list(/datum/trait/negative/neural_hypersensitivity)
 	can_take = ORGANICS
-	custom_only = FALSE
 
 /datum/trait/positive/throw_resistance
 	name = "Firm Body"
@@ -354,7 +394,6 @@
 	name = "Table Passer"
 	desc = "You move over or under tables with ease of a Teshari."
 	cost = 0
-	custom_only = FALSE
 
 	// Traitgenes Replacement for /datum/trait/positive/superpower_midget, made into a genetrait
 	is_genetrait = TRUE
@@ -365,7 +404,7 @@
 
 /datum/trait/positive/table_passer/apply(var/datum/species/S,var/mob/living/carbon/human/H, var/list/trait_prefs)
 	..()
-	if (trait_prefs?["pass_table"] || !trait_prefs)
+	if(trait_prefs?["pass_table"] || !trait_prefs)
 		H.pass_flags |= PASSTABLE
 	add_verb(H,/mob/living/proc/toggle_pass_table)
 
@@ -381,9 +420,8 @@
 	name = "Photosynthesis"
 	desc = "Your body is able to produce nutrition from being in light."
 	cost = 0
-	custom_only = FALSE
-	var_changes = list("photosynthesizing" = TRUE)
 	can_take = ORGANICS|SYNTHETICS //Synths actually use nutrition, just with a fancy covering.
+	added_component_path = /datum/component/photosynth
 
 /datum/trait/positive/rad_resistance
 	name = "Radiation Resistance"
@@ -403,7 +441,6 @@
 	name = "Radiation Immunity"
 	desc = "For whatever reason, be it a more dense build or some quirk of your genetic code, your body is completely immune to radiation."
 	cost = 0
-	custom_only = FALSE
 	var_changes = list("radiation_mod" = 0.0, "rad_removal_mod" = 10, "rad_levels" = IMMUNITY_RADIATION_RESISTANCE)
 
 	// Traitgenes
@@ -415,7 +452,6 @@
 	name = "Vibration Sense"
 	desc = "Allows you to sense subtle vibrations nearby, even if the source cannot be seen."
 	cost = 0
-	custom_only = FALSE
 	var_changes = list("has_vibration_sense" = TRUE)
 
 	// Traitgenes edit begin - Made into a gene trait
@@ -504,3 +540,10 @@
 	desc = "Allows you to build a cocoon around yourself, using it to transform your body if you desire."
 	cost = 0
 	category = 0
+
+/datum/trait/positive/virus_immune
+	name = "Virus Immune"
+	desc = "You are immune to viruses."
+	cost = 0
+	can_take = ORGANICS
+	var_changes = list("virus_immune" = TRUE)

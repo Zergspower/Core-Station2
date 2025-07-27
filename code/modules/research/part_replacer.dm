@@ -4,7 +4,7 @@
 	icon = 'icons/obj/storage_vr.dmi'
 	icon_state = "RPED"
 	item_state = "RPED"
-	w_class = ITEMSIZE_HUGE
+	w_class = ITEMSIZE_NORMAL
 	can_hold = list(/obj/item/stock_parts)
 	storage_slots = 50
 	use_to_pickup = TRUE
@@ -13,7 +13,7 @@
 	collection_mode = 1
 	display_contents_with_number = 1
 	max_w_class = ITEMSIZE_NORMAL
-	max_storage_space = 100
+	max_storage_space = 200
 	drop_sound = 'sound/items/drop/device.ogg'
 	pickup_sound = 'sound/items/pickup/device.ogg'
 	var/panel_req = TRUE
