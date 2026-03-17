@@ -2,10 +2,10 @@
 /////
 
 /datum/gear/suit/dept/cloak/research
-	allowed_roles = list("Research Director","Scientist", "Roboticist", "Xenobiologist", "Xenobotanist")
+	allowed_roles = list(JOB_RESEARCH_DIRECTOR,JOB_SCIENTIST, JOB_ROBOTICIST, JOB_XENOBIOLOGIST, JOB_XENOBOTANIST)
 
 /datum/gear/uniform/dept/undercoat/research
-	allowed_roles = list("Research Director","Scientist", "Roboticist", "Xenobiologist", "Xenobotanist")
+	allowed_roles = list(JOB_RESEARCH_DIRECTOR,JOB_SCIENTIST, JOB_ROBOTICIST, JOB_XENOBIOLOGIST, JOB_XENOBOTANIST)
 
 /////
 
@@ -59,31 +59,31 @@
 /datum/gear/eyes/tajblind
 	display_name = "embroidered veil"
 	path = /obj/item/clothing/glasses/tajblind
-	//whitelisted = SPECIES_TAJ
+	//whitelisted = SPECIES_TAJARAN
 	sort_category = "Xenowear"
 
 /datum/gear/eyes/medical/tajblind
 	display_name = "medical veil (Tajara) (Medical)"
 	path = /obj/item/clothing/glasses/hud/health/tajblind
-	//whitelisted = SPECIES_TAJ
+	//whitelisted = SPECIES_TAJARAN
 	sort_category = "Xenowear"
 
 /datum/gear/eyes/meson/tajblind
 	display_name = "industrial veil (Tajara) (Engineering, Science)"
 	path = /obj/item/clothing/glasses/meson/prescription/tajblind
-	//whitelisted = SPECIES_TAJ
+	//whitelisted = SPECIES_TAJARAN
 	sort_category = "Xenowear"
 
 /datum/gear/eyes/material/tajblind
 	display_name = "mining veil (Tajara) (Mining)"
 	path = /obj/item/clothing/glasses/material/prescription/tajblind
-	//whitelisted = SPECIES_TAJ
+	//whitelisted = SPECIES_TAJARAN
 	sort_category = "Xenowear"
 
 /datum/gear/eyes/security/tajblind
 	display_name = "sleek veil (Tajara) (Security)"
 	path = /obj/item/clothing/glasses/sunglasses/sechud/tajblind
-	//whitelisted = SPECIES_TAJ
+	//whitelisted = SPECIES_TAJARAN
 	sort_category = "Xenowear"
 
 /datum/gear/mask/altevian_breath
@@ -126,7 +126,7 @@
 	description = "A comfortable official suit for altevian command officers."
 	display_name = "altevian officer's suit selection, site manager"
 	whitelisted = SPECIES_ALTEVIAN
-	allowed_roles = list("Site Manager")
+	allowed_roles = list(JOB_SITE_MANAGER)
 	sort_category = "Xenowear"
 
 /datum/gear/suit/altevian_officer_suit/New()

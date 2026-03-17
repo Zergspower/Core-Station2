@@ -8,7 +8,7 @@
 	icon_living = "sonadile"
 	icon_state = "sonadile"
 	icon_rest = "sonadile"
-	faction = "sonadile"
+	faction = FACTION_SONADILE
 	old_x = -16
 	old_y = 0
 	default_pixel_x = -16
@@ -30,7 +30,7 @@
 	say_list_type = /datum/say_list/sonadile
 
 	vore_bump_chance = 25
-	vore_digest_chance = 25
+	vore_digest_chance = 50
 	vore_escape_chance = 5
 	vore_pounce_chance = 1000
 	vore_active = 1
@@ -55,7 +55,7 @@
 	B.digest_brute = 2
 	B.digest_burn = 2
 	B.digest_oxy = 1
-	B.digestchance = 25
+	B.digestchance = 100
 	B.absorbchance = 0
 	B.escapechance = 5
 	B.selective_preference = DM_DIGEST

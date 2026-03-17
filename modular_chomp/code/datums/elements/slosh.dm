@@ -10,7 +10,7 @@
 	if(!isliving(target))
 		return ELEMENT_INCOMPATIBLE
 
-	RegisterSignal(target, COMSIG_MOVABLE_MOVED, PROC_REF(handle_footstep))
+	RegisterSignal(target, COMSIG_MOVABLE_MOVED, PROC_REF(handle_sloshstep), override = TRUE)
 	step_count = 0
 	vore_organs_reagents = list()
 	vore_footstep_volume = 0
@@ -21,14 +21,14 @@
 	UnregisterSignal(source, COMSIG_MOVABLE_MOVED)
 	return ..()
 
-/datum/element/slosh/proc/handle_footstep(mob/living/source)
+/datum/element/slosh/proc/handle_sloshstep(mob/living/source)
 	SIGNAL_HANDLER
 
 	if(ishuman(source))
 		var/mob/living/carbon/human/source_human = source
-		if(source_human.m_intent == "walk" && step_count++ % 20 == 0)
+		if(source_human.m_intent == I_WALK && step_count++ % 20 == 0)
 			return
-		if(source_human.m_intent == "run" && step_count++ % 2 != 0)
+		if(source_human.m_intent == I_RUN && step_count++ % 2 != 0)
 			return
 		choose_vorefootstep(source)
 	if(issilicon(source))
@@ -75,7 +75,7 @@
 	if(ishuman(source))
 		var/mob/living/carbon/human/human_source = source
 
-		if(!human_source.shoes || human_source.m_intent == "walk")
+		if(!human_source.shoes || human_source.m_intent == I_WALK)
 			volume = CONFIG_GET(number/vorefootstep_volume) * (vore_footstep_volume/100) * 0.75
 		else if(human_source.shoes)
 			var/obj/item/clothing/shoes/feet = human_source.shoes
@@ -84,10 +84,10 @@
 		if(!human_source.has_organ(BP_L_FOOT) && !human_source.has_organ(BP_R_FOOT))
 			return
 
-	if(source.buckled || source.lying || source.throwing)
+	if(source.buckled || source.lying || source.throwing || source.is_incorporeal())
 		return
-	if(!has_gravity(source) && prob(75))
+	if(!get_gravity(source) && prob(75))
 		return
 
-	playsound(source.loc, S, volume, FALSE, preference = /datum/client_preference/digestion_noises)
+	playsound(source.loc, S, volume, FALSE, preference = /datum/preference/toggle/digestion_noises)
 	return

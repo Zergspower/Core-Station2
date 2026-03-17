@@ -1,7 +1,7 @@
 /*
  * Laser Rifle
  */
-/obj/item/weapon/gun/energy/laser
+/obj/item/gun/energy/laser
 	name = "laser rifle"
 	desc = "A Hephaestus Industries G40E rifle, designed to kill with concentrated energy blasts.  This variant has the ability to \
 	switch between standard fire and a more efficent but weaker 'suppressive' fire."
@@ -11,27 +11,27 @@
 	wielded_item_state = "laser-wielded"
 	fire_delay = 8
 	slot_flags = SLOT_BELT|SLOT_BACK
-	w_class = ITEMSIZE_NORMAL //CHOMP Edit - huge was dumb for this.
+	w_class = ITEMSIZE_LARGE //CHOMP Edit - huge was dumb for this.
 	force = 10
 	origin_tech = list(TECH_COMBAT = 3, TECH_MAGNET = 2)
 	matter = list(MAT_STEEL = 2000)
 	projectile_type = /obj/item/projectile/beam/midlaser
-	one_handed_penalty = 30
+	one_handed_penalty = 5
 
 	firemodes = list(
 		list(mode_name="normal", fire_delay=8, projectile_type=/obj/item/projectile/beam/midlaser, charge_cost = 240),
 		list(mode_name="suppressive", fire_delay=5, projectile_type=/obj/item/projectile/beam/weaklaser, charge_cost = 60),
 		)
 
-/obj/item/weapon/gun/energy/laser/empty
+/obj/item/gun/energy/laser/empty
 	cell_type = null
 
-/obj/item/weapon/gun/energy/laser/mounted
+/obj/item/gun/energy/laser/mounted
 	self_recharge = 1
 	use_external_power = 1
 	one_handed_penalty = 0 // Not sure if two-handing gets checked for mounted weapons, but better safe than sorry.
 
-/obj/item/weapon/gun/energy/laser/mounted/augment
+/obj/item/gun/energy/laser/mounted/augment
 	name = "arm-laser"
 	desc = "A cruel malformation of a Hephaestus Industries G40E rifle, designed to kill with concentrated energy blasts, all while being stowable in the arm. This variant has the ability to \
 	switch between standard fire and a more efficent but weaker 'suppressive' fire."
@@ -43,13 +43,13 @@
 	one_handed_penalty = 5
 	battery_lock = 1
 
-/obj/item/weapon/gun/energy/laser/practice
+/obj/item/gun/energy/laser/practice
 	name = "practice laser carbine"
 	desc = "A modified version of the HI G40E, this one fires less concentrated energy bolts designed for target practice."
 	projectile_type = /obj/item/projectile/beam/practice
 	charge_cost = 48
 
-	cell_type = /obj/item/weapon/cell/device
+	cell_type = /obj/item/cell/device
 
 	firemodes = list(
 		list(mode_name="normal", projectile_type=/obj/item/projectile/beam/practice, charge_cost = 48),
@@ -59,7 +59,7 @@
 /*
  * Sleek Laser Rifle
  */
-/obj/item/weapon/gun/energy/laser/sleek
+/obj/item/gun/energy/laser/sleek
 	name = "\improper LR1 \"Shishi\""
 	desc = "A Bishamonten Company LR1 \"Shishi\" rifle, a rare early 23rd century futurist design with a nonetheless timeless ability to kill."
 	description_fluff = "Bisamonten was arms company that operated from roughly 2150-2280 - the height of the first extrasolar colonisation boom - before filing for \
@@ -73,7 +73,7 @@
 /*
  * Retro Laser Rifle
  */
-/obj/item/weapon/gun/energy/retro
+/obj/item/gun/energy/retro
 	name = "retro laser"
 	icon_state = "retro"
 	item_state = "retro"
@@ -81,13 +81,13 @@
 	slot_flags = SLOT_BELT
 	w_class = ITEMSIZE_NORMAL
 	projectile_type = /obj/item/projectile/beam
-	fire_delay = 10 //old technology
+	fire_delay = 5 //old technology
 
-/obj/item/weapon/gun/energy/retro/mounted
+/obj/item/gun/energy/retro/mounted
 	self_recharge = 1
 	use_external_power = 1
 
-/obj/item/weapon/gun/energy/retro/empty
+/obj/item/gun/energy/retro/empty
 	icon_state = "retro"
 	cell_type = null
 
@@ -123,18 +123,18 @@
 	may have caused it to degrade, yet still remain functional at a reduced capability." //CHOMPedit changed description to be accurate with new projectile
 	value = CATALOGUER_REWARD_MEDIUM
 
-/obj/item/weapon/gun/energy/alien
+/obj/item/gun/energy/alien
 	name = "alien pistol"
 	desc = "A weapon that works very similarly to a traditional energy weapon. How this came to be will likely be a mystery for the ages."
 	catalogue_data = list(/datum/category_item/catalogue/anomalous/precursor_a/alien_pistol)
 	icon = 'icons/obj/gun.dmi' // CHOMPStation Edit: Override back to base gun.dmi
 	icon_state = "alienpistol"
 	item_state = "alienpistol"
-	fire_delay = 9 //CHOMPedit changed cooldown from 10 to 9.
-	charge_cost = 240 // CHOMPedit changed from 480 to 380. Ten shots.
+	fire_delay = 3 //CHOMPedit changed cooldown from 10 to 9.
+	charge_cost = 120 //CHOMPedit changed from 480 to 380. Aka five shots to six shots.
 
 	projectile_type = /obj/item/projectile/beam/precursor //CHOMPedit changed beam type
-	cell_type = /obj/item/weapon/cell/device/weapon/recharge/alien // Self charges.
+	cell_type = /obj/item/cell/device/weapon/recharge/alien // Self charges.
 	origin_tech = list(TECH_COMBAT = 8, TECH_MAGNET = 7)
 	modifystate = "alienpistol"
 	battery_lock = 0 //CHOMPedit adds battery lock.
@@ -144,7 +144,7 @@
 /*
  * Antique Laser Gun
  */
-/obj/item/weapon/gun/energy/captain
+/obj/item/gun/energy/captain
 	name = "antique laser gun"
 	icon_state = "caplaser"
 	item_state = "caplaser"
@@ -159,13 +159,13 @@
 	projectile_type = /obj/item/projectile/beam
 	origin_tech = null
 	fire_delay = 10		//Old pistol
-	charge_cost = 240	//to compensate a bit for self-recharging
-	cell_type = /obj/item/weapon/cell/device/weapon/recharge/captain
+	charge_cost = 480	//to compensate a bit for self-recharging
+	cell_type = /obj/item/cell/device/weapon/recharge/captain
 	battery_lock = 1
 /* 	var/remainingshots = 0 //you may get a limited number of shots regardless of the charge //CHOMPedit: no
 	var/failurechance = 0 //chance per shot of something going awry
 
-/obj/item/weapon/gun/energy/captain/Initialize()
+/obj/item/gun/energy/captain/Initialize()
 	//it's an antique and it's been sitting in a case, unmaintained, for who the hell knows how long - who knows what'll happen when you pull it out?
 	..()
 	//first, we decide, does it have a different type of beam? 75% of just being a 40-damage laser, 15% of being less or 0, 10% of being better
@@ -189,7 +189,7 @@
 	if(remainingshots || failurechance)
 		desc = "A rare weapon, produced by the Lunar Arms Company around 2105 - one of humanity's first wholly extra-terrestrial weapon designs. It's been reasonably well-preserved."
 
-/obj/item/weapon/gun/energy/captain/special_check(var/mob/user)
+/obj/item/gun/energy/captain/special_check(var/mob/user)
 	if(remainingshots)
 		remainingshots -= 1
 		if(!remainingshots) //you've shot your load, sonny
@@ -200,20 +200,20 @@
 		return 0
 	return ..()
 
-/obj/item/weapon/gun/energy/captain/proc/burnout(var/mob/user)
+/obj/item/gun/energy/captain/proc/burnout(var/mob/user)
 	//your gun is now rendered useless
 	projectile_type = /obj/item/projectile/beam/practice //just in case you somehow manage to get it to fire again, its beam type is set to one that sucks
 	power_supply.charge = 0
 	power_supply.maxcharge = 1 //just to avoid div/0 runtimes
 	desc = "A rare weapon, produced by the Lunar Arms Company around 2105 - one of humanity's first wholly extra-terrestrial weapon designs. It looks to have completely burned out."
-	user.visible_message("<span class='warning'>\The [src] erupts in a shower of sparks!</span>", "<span class='danger'>\the [src] bursts into a shower of sparks!</span>")
+	user.visible_message(span_warning("\The [src] erupts in a shower of sparks!"), span_danger("\the [src] bursts into a shower of sparks!"))
 	var/turf/T = get_turf(src)
 	var/datum/effect/effect/system/spark_spread/sparks = new /datum/effect/effect/system/spark_spread()
 	sparks.set_up(2, 1, T)
 	sparks.start()
 	update_icon()
 
-/obj/item/weapon/gun/energy/captain/proc/malfunction(var/mob/user)
+/obj/item/gun/energy/captain/proc/malfunction(var/mob/user)
 	var/screwup = rand(1,10)
 	switch(screwup)
 		if(1 to 5) //50% of just draining the battery and making future malfunctions more likely
@@ -223,7 +223,7 @@
 			sparks.set_up(2, 1, T)
 			sparks.start()
 			update_icon()
-			user.visible_message("<span class='warning'>\The [src] shorts out!</span>", "<span class='danger'>\the [src] shorts out!</span>")
+			user.visible_message(span_warning("\The [src] shorts out!"), span_danger("\the [src] shorts out!"))
 			failurechance += rand(1,5)
 			return
 		if(6 to 7) //20% chance of weakening the beam type, possibly to uselessness
@@ -243,18 +243,18 @@
 					projectile_type = /obj/item/projectile/beam/heavylaser
 				if(81 to 100) //pulse becomes cannon
 					projectile_type = /obj/item/projectile/beam/heavylaser/cannon
-			user.visible_message("<span class='warning'>\The [src] dims slightly!</span>", "<span class='danger'>\the [src] dims slightly!</span>")
+			user.visible_message(span_warning("\The [src] dims slightly!"), span_danger("\the [src] dims slightly!"))
 			return
 		if(8) //10% chance of reducing the number of shots you have left, or giving you a limit if there isn't one
 			if(!remainingshots)
 				remainingshots = rand(1,40)
 			else
 				remainingshots = min(1, round(remainingshots/2))
-			user.visible_message("<span class='warning'>\The [src] lets out a faint pop.</span>", "<span class='danger'>\the [src] lets out a faint pop.</span>")
+			user.visible_message(span_warning("\The [src] lets out a faint pop."), span_danger("\the [src] lets out a faint pop."))
 		if(9) //10% chance of permanently reducing the cell's max charge
 			power_supply.maxcharge = power_supply.maxcharge/2
 			power_supply.charge = min(power_supply.charge, power_supply.maxcharge)
-			user.visible_message("<span class='warning'>\The [src] sparks,letting off a puff of smoke!</span>", "<span class='danger'>\the [src] sparks,letting off a puff of smoke!</span>")
+			user.visible_message(span_warning("\The [src] sparks,letting off a puff of smoke!"), span_danger("\the [src] sparks,letting off a puff of smoke!"))
 			var/turf/T = get_turf(src)
 			var/datum/effect/effect/system/spark_spread/sparks = new /datum/effect/effect/system/spark_spread()
 			sparks.set_up(2, 1, T)
@@ -268,7 +268,7 @@
 /*
  * Laser Cannon
  */
-/obj/item/weapon/gun/energy/lasercannon
+/obj/item/gun/energy/lasercannon
 	name = "laser cannon"
 	desc = "With the laser cannon, the lasing medium is enclosed in a tube lined with uranium-235 and subjected to high neutron \
 	flux in a nuclear reactor core. This incredible technology may help YOU achieve high excitation rates with small laser volumes!"
@@ -276,17 +276,17 @@
 	icon_state = "lasercannon"
 	item_state = null
 	wielded_item_state = "mhdhowitzer-wielded" //Placeholder
-	origin_tech = list(TECH_COMBAT = 7, TECH_MATERIAL = 7, TECH_POWER = 7)  //ChompEdit improved.
+	origin_tech = list(TECH_COMBAT = 6, TECH_MATERIAL = 6, TECH_POWER = 6)  //ChompEdit improved.
 	slot_flags = SLOT_BELT|SLOT_BACK
 	projectile_type = /obj/item/projectile/beam/heavylaser/cannon
 	battery_lock = 0  //ChompEdit  This thing is worthless with this.
 	fire_delay = 20
 	w_class = ITEMSIZE_LARGE //CHOMP Edit. Lol a cannon used to be just large size? Are you kidding me? A CANNON.  Deserves this.
-	one_handed_penalty = 40 // The thing's heavy and huge.
+	one_handed_penalty = 10 // The thing's heavy and huge.
 	accuracy = 45
-	charge_cost = 300 //CHOMP Edit. Let's give this thing some more shots, seeing as it needs to be recharged at a charger - Most everything else is cheaper on charge cost now or smaller, this can stay the same, but with replacable batteries.
+	charge_cost = 100 //CHOMP Edit. Let's give this thing some more shots, seeing as it needs to be recharged at a charger - Most everything else is cheaper on charge cost now or smaller, this can stay the same, but with replacable batteries.
 
-/obj/item/weapon/gun/energy/lasercannon/mounted
+/obj/item/gun/energy/lasercannon/mounted
 	name = "mounted laser cannon"
 	self_recharge = 1
 	use_external_power = 1
@@ -294,13 +294,13 @@
 	accuracy = 0 // Mounted cannons are just fine the way they are.
 	one_handed_penalty = 0 // Not sure if two-handing gets checked for mounted weapons, but better safe than sorry.
 	projectile_type = /obj/item/projectile/beam/heavylaser
-	charge_cost = 50
+	charge_cost = 100
 	fire_delay = 10
 
 /*
  * X-ray
  */
-/obj/item/weapon/gun/energy/xray
+/obj/item/gun/energy/xray
 	name = "xray laser gun"
 	desc = "A high-power laser gun capable of expelling concentrated xray blasts, which are able to penetrate matter easier than \
 	standard photonic beams, resulting in an effective 'anti-armor' energy weapon."
@@ -309,13 +309,13 @@
 	item_state = "xray"
 	origin_tech = list(TECH_COMBAT = 5, TECH_MATERIAL = 3, TECH_MAGNET = 2)
 	projectile_type = /obj/item/projectile/beam/xray
-	charge_cost = 200
-	w_class = ITEMSIZE_NORMAL //CHOMP Edit. - huge is too big, this thing hits for 25
+	charge_cost = 100
+	w_class = ITEMSIZE_LARGE //CHOMP Edit. - huge is too big, this thing hits for 25
 
 /*
  * Marksman Rifle
  */
-/obj/item/weapon/gun/energy/sniperrifle
+/obj/item/gun/energy/sniperrifle
 	name = "marksman energy rifle"
 	desc = "The HI DMR 9E is an older design of Hephaestus Industries. A designated marksman rifle capable of shooting powerful \
 	ionized beams, this is a weapon to kill from a distance."
@@ -326,25 +326,25 @@
 	item_state = "sniper"
 	item_state_slots = list(slot_r_hand_str = "lsniper", slot_l_hand_str = "lsniper")
 	wielded_item_state = "lsniper-wielded"
-	origin_tech = list(TECH_COMBAT = 8, TECH_MATERIAL = 7, TECH_POWER = 6)
+	origin_tech = list(TECH_COMBAT = 6, TECH_MATERIAL = 5, TECH_POWER = 4)
 	projectile_type = /obj/item/projectile/beam/sniper
 	slot_flags = SLOT_BACK
-	action_button_name = "Use Scope"
+	actions_types = list(/datum/action/item_action/use_scope)
 	//Begin CHOMPstation Edit for making this thing not trash
 	//battery_lock = 0
-	charge_cost = 200 
+	charge_cost = 120
 	fire_delay = 10
 	force = 10
 	w_class = ITEMSIZE_LARGE // So it can't fit in a backpack.
-	accuracy = 50
+	accuracy = 50 //shooting at the hip
 	scoped_accuracy = 100
 	one_handed_penalty = 20 // The weapon itself is heavy, and the long barrel makes it hard to hold steady with just one hand.
 	//End CHOMP Edit.
 
-/obj/item/weapon/gun/energy/sniperrifle/ui_action_click()
+/obj/item/gun/energy/sniperrifle/ui_action_click(mob/user, actiontype)
 	scope()
 
-/obj/item/weapon/gun/energy/sniperrifle/verb/scope()
+/obj/item/gun/energy/sniperrifle/verb/scope()
 	set category = "Object"
 	set name = "Use Scope"
 	set popup_menu = 1
@@ -354,7 +354,7 @@
 /*
  * Laser Scattergun (proof of concept)
  */
-/obj/item/weapon/gun/energy/lasershotgun
+/obj/item/gun/energy/lasershotgun
 	name = "laser scattergun"
 	icon = 'icons/obj/energygun.dmi'
 	item_state = "laser"
@@ -363,14 +363,14 @@
 	origin_tech = list(TECH_COMBAT = 3, TECH_MAGNET = 1, TECH_MATERIAL = 4)
 
 	projectile_type = /obj/item/projectile/scatter/laser
-	w_class = ITEMSIZE_LARGE //CHOMP Edit.
+	w_class = ITEMSIZE_HUGE //CHOMP Edit.
 	slot_flags = SLOT_BELT|SLOT_BACK //CHOMP Edit because you can still holster it despite it not fitting in a backpack.
 
 
 /*
  * Imperial Pistol
  */
-/obj/item/weapon/gun/energy/imperial
+/obj/item/gun/energy/imperial
 	name = "imperial energy pistol"
 	desc = "An elegant weapon developed by the Imperium Auream. Their weaponsmiths have cleverly found a way to make a gun that \
 	is only about the size of an average energy pistol, yet with the fire power of a laser carbine."
@@ -389,7 +389,7 @@
 /*
  * Mining-Laser Rifle
  */
-/obj/item/weapon/gun/energy/mininglaser
+/obj/item/gun/energy/mininglaser
 	name = "mining-laser rifle"
 	desc = "An industrial grade mining laser. Comes with a built-in 'stun' mode for encounters with local wildlife."
 	icon = 'icons/obj/gun.dmi'
@@ -397,21 +397,21 @@
 	item_state = "mininglaser"
 	fire_delay = 8
 	slot_flags = SLOT_BELT|SLOT_BACK
-	w_class = ITEMSIZE_NORMAL
+	w_class = ITEMSIZE_LARGE
 	force = 15
 	origin_tech = list(TECH_COMBAT = 3, TECH_MAGNET = 2)
 	matter = list(MAT_STEEL = 2000)
 	projectile_type = /obj/item/projectile/beam/mininglaser
 
 	firemodes = list(
-		list(mode_name="mining", fire_delay=8, projectile_type=/obj/item/projectile/beam/mininglaser, charge_cost = 100),
-		list(mode_name="deter", fire_delay=5, projectile_type=/obj/item/projectile/beam/weaklaser, charge_cost = 40),
+		list(mode_name="mining", fire_delay=8, projectile_type=/obj/item/projectile/beam/mininglaser, charge_cost = 50),
+		list(mode_name="deter", fire_delay=5, projectile_type=/obj/item/projectile/beam/weaklaser, charge_cost = 80),
 		)
 
 /*
  * Old Laser Rifle
  */
-/obj/item/weapon/gun/energy/laser/old
+/obj/item/gun/energy/laser/old
 	name = "vintage laser rifle"
 	desc = "A Hephaestus Industries G32E rifle, designed to kill with concentrated energy blasts. This older model laser rifle only has one firemode."
 	description_fluff = "The leading arms producer in the SCG, Hephaestus typically only uses its 'top level' branding for its military-grade \
@@ -429,7 +429,7 @@
 /*
  * Mono-Rifle
  */
-/obj/item/weapon/gun/energy/monorifle
+/obj/item/gun/energy/monorifle
 	name = "antique mono-rifle"
 	desc = "An old model laser rifle with a nice wood finish. This weapon was only designed to fire once before requiring a recharge."
 	description_fluff = "Modeled after ancient hunting rifles designs, this rifle was dubbed the 'Rainy Day Special' by some, due to its use as the \
@@ -439,27 +439,27 @@
 	origin_tech = list(TECH_COMBAT = 6, TECH_MATERIAL = 4, TECH_POWER = 3)
 	projectile_type = /obj/item/projectile/beam/sniper
 	slot_flags = SLOT_BACK
-	action_button_name = "Aim Down Sights"
-	charge_cost = 400
+	actions_types = list(/datum/action/item_action/aim_down_sights)
+	charge_cost = 600
 	fire_delay = 5
 	force = 8
-	w_class = ITEMSIZE_NORMAL //CHOMP Edit.
+	w_class = ITEMSIZE_HUGE //CHOMP Edit.
 	accuracy = 50
 	scoped_accuracy = 100
 	charge_meter = FALSE
 	var/scope_multiplier = 1.5
 
-/obj/item/weapon/gun/energy/monorifle/ui_action_click()
+/obj/item/gun/energy/monorifle/ui_action_click(mob/user, actiontype)
 	sights()
 
-/obj/item/weapon/gun/energy/monorifle/verb/sights()
+/obj/item/gun/energy/monorifle/verb/sights()
 	set category = "Object"
 	set name = "Aim Down Sights"
 	set popup_menu = 1
 
 	toggle_scope(scope_multiplier)
 
-/obj/item/weapon/gun/energy/monorifle/combat
+/obj/item/gun/energy/monorifle/combat
 	name = "combat mono-rifle"
 	desc = "A modernized version of the classic mono-rifle. This one has an optimized capacitor bank that allows the rifle to fire twice before requiring a recharge."
 	description_fluff = "A modern design of a classic rifle produced by a small arms company operating out of Saint Columbia. It was based on the \
@@ -468,5 +468,5 @@
 	item_state = "cshotgun"
 	charge_cost = 200
 	force = 12
-	accuracy = 75
+	accuracy = 0
 	scoped_accuracy = 100

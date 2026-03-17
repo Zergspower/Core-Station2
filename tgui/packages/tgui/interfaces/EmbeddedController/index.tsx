@@ -74,11 +74,6 @@ export const EmbeddedController = (props) => {
   const { data } = useBackend<Data>();
   const { internalTemplateName } = data;
 
-  function handleUploadImage(ev) {
-    alert(ev);
-  }
-
-  handleUploadImage(internalTemplateName);
   /** ***************************************************************************\
   *                                 ROUTES                                       *
   \******************************************************************************/
@@ -103,7 +98,7 @@ export const EmbeddedController = (props) => {
   }
 
   return (
-    <Window width={450} height={340}>
+    <Window width={500} height={400}>
       <Window.Content>{Component}</Window.Content>
     </Window>
   );

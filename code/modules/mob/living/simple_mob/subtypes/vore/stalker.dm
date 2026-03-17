@@ -8,7 +8,7 @@
 	icon_living = "stalker"
 	icon_state = "stalker"
 	icon_rest = "stalker-rest"
-	faction = "stalker"
+	faction = FACTION_STALKER
 	old_x = -16
 	old_y = 0
 	default_pixel_x = -16
@@ -33,7 +33,6 @@
 	vore_digest_chance = 50
 	vore_escape_chance = 5
 	vore_pounce_chance = 1000
-	vore_standing_too = TRUE
 	vore_active = 1
 	vore_icons = 1
 	vore_icons = SA_ICON_LIVING | SA_ICON_REST
@@ -56,7 +55,7 @@
 	B.digest_brute = 2
 	B.digest_burn = 2
 	B.digest_oxy = 1
-	B.digestchance = 50
+	B.digestchance = 100
 	B.absorbchance = 0
 	B.escapechance = 5
 	B.selective_preference = DM_DIGEST
@@ -79,9 +78,9 @@
 	vore_pounce_cooldown = world.time + 1 SECONDS // don't attempt another pounce for a while
 	if(prob(successrate)) // pounce success!
 		M.Weaken(5)
-		M.visible_message("<span class='danger'>\The [src] pounces on \the [M]!</span>!")
+		M.visible_message(span_danger("\The [src] pounces on \the [M]!"))
 	else // pounce misses!
-		M.visible_message("<span class='danger'>\The [src] attempts to pounce \the [M] but misses!</span>!")
+		M.visible_message(span_danger("\The [src] attempts to pounce \the [M] but misses!"))
 		playsound(src, 'sound/weapons/punchmiss.ogg', 25, 1, -1)
 
 	if(will_eat(M) && (!M.canmove || vore_standing_too)) //if they're edible then eat them too
@@ -277,4 +276,3 @@
 	else if(!stand_ground)
 		ai_log("engage_target() : Target ([target]) too far away. Exiting.", AI_LOG_DEBUG)
 		set_stance(STANCE_APPROACH)
-

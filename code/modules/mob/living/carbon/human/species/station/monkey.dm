@@ -28,7 +28,7 @@
 	unarmed_types = list(/datum/unarmed_attack/bite, /datum/unarmed_attack/claws)
 	inherent_verbs = list(/mob/living/proc/ventcrawl)
 	hud_type = /datum/hud_data/monkey
-	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat/monkey
+	meat_type = /obj/item/reagent_containers/food/snacks/meat/monkey
 
 	rarity_value = 0.1
 	total_health = 75
@@ -84,7 +84,7 @@
 	icobase = 'icons/mob/human_races/monkeys/r_farwa.dmi'
 	deform = 'icons/mob/human_races/monkeys/r_farwa.dmi'
 
-	greater_form = SPECIES_TAJ
+	greater_form = SPECIES_TAJARAN
 	default_language = LANGUAGE_ANIMAL
 	flesh_color = "#AFA59E"
 	base_color = "#333333"

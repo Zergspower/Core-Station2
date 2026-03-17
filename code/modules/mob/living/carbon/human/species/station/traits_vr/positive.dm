@@ -136,9 +136,9 @@
 
 /datum/trait/positive/winged_flight/apply(var/datum/species/S,var/mob/living/carbon/human/H)
 	..()
-	add_verb(H,/mob/living/proc/flying_toggle) //CHOMPEdit TGPanel
-	add_verb(H,/mob/living/proc/flying_vore_toggle) //CHOMPEdit TGPanel
-	add_verb(H,/mob/living/proc/start_wings_hovering) //CHOMPEdit TGPanel
+	add_verb(H, /mob/living/proc/flying_toggle)
+	add_verb(H, /mob/living/proc/flying_vore_toggle)
+	add_verb(H, /mob/living/proc/start_wings_hovering)
 
 /datum/trait/positive/soft_landing
 	name = "Soft Landing"
@@ -166,7 +166,7 @@
 
 /datum/trait/positive/antiseptic_saliva/apply(var/datum/species/S,var/mob/living/carbon/human/H)
 	..()
-	add_verb(H,/mob/living/carbon/human/proc/lick_wounds) //CHOMPEdit TGPanel
+	add_verb(H, /mob/living/carbon/human/proc/lick_wounds)
 
 /datum/trait/positive/traceur
 	name = "Traceur"
@@ -196,11 +196,11 @@
 
 /datum/trait/positive/weaver/apply(var/datum/species/S,var/mob/living/carbon/human/H)
 	..()
-	add_verb(H,/mob/living/carbon/human/proc/check_silk_amount) //CHOMPEdit TGPanel
-	add_verb(H,/mob/living/carbon/human/proc/toggle_silk_production) //CHOMPEdit TGPanel
-	add_verb(H,/mob/living/carbon/human/proc/weave_structure) //CHOMPEdit TGPanel
-	add_verb(H,/mob/living/carbon/human/proc/weave_item) //CHOMPEdit TGPanel
-	add_verb(H,/mob/living/carbon/human/proc/set_silk_color) //CHOMPEdit TGPanel
+	add_verb(H, /mob/living/carbon/human/proc/check_silk_amount)
+	add_verb(H, /mob/living/carbon/human/proc/toggle_silk_production)
+	add_verb(H, /mob/living/carbon/human/proc/weave_structure)
+	add_verb(H, /mob/living/carbon/human/proc/weave_item)
+	add_verb(H, /mob/living/carbon/human/proc/set_silk_color)
 
 /datum/trait/positive/aquatic
 	name = "Aquatic"
@@ -211,8 +211,8 @@
 
 /datum/trait/positive/aquatic/apply(var/datum/species/S,var/mob/living/carbon/human/H)
 	..()
-	add_verb(H,/mob/living/carbon/human/proc/water_stealth) //CHOMPEdit TGPanel
-	add_verb(H,/mob/living/carbon/human/proc/underwater_devour) //CHOMPEdit TGPanel
+	add_verb(H, /mob/living/carbon/human/proc/water_stealth)
+	add_verb(H, /mob/living/carbon/human/proc/underwater_devour)
 
 /datum/trait/positive/cocoon_tf
 	name = "Cocoon Spinner"
@@ -221,7 +221,7 @@
 
 /datum/trait/positive/cocoon_tf/apply(var/datum/species/S,var/mob/living/carbon/human/H)
 	..()
-	add_verb(H,/mob/living/carbon/human/proc/enter_cocoon) //CHOMPEdit TGPanel
+	add_verb(H, /mob/living/carbon/human/proc/enter_cocoon)
 
 /* //CHOMPedit: We already have our own version of this trait.
 /datum/trait/positive/linguist
@@ -262,7 +262,7 @@
 
 /datum/trait/positive/wall_climber
 	name = "Climber, Amateur"
-	desc = "You can climb certain walls without tools! This is likely a personal skill you developed."
+	desc = "You can climb certain walls without tools! This is likely a personal skill you developed. You can also climb lattices and ladders a little bit faster than everyone else."
 	tutorial = "You must approach a wall and right click it and select the \
 	'climb wall' verb to climb it. You suffer from a movement delay of 1.5 with this trait.\n \
 	Your total climb time is expected to be 17.5 seconds. Tools may reduce this. \n\n \
@@ -270,13 +270,13 @@
 	a climbable wall. To climbe like so, use the verb 'Climb Down Wall' in IC tab!"
 	cost = 0
 	custom_only = FALSE
-	banned_species = list(SPECIES_TAJ, SPECIES_VASILISSAN)	// They got unique climbing delay.
-	var_changes = list("can_climb" = TRUE)
+	banned_species = list(SPECIES_TAJARAN, SPECIES_VASILISSAN)	// They got unique climbing delay.
+	var_changes = list("can_climb" = TRUE, "climb_mult" = 0.75)
 	excludes = list(/datum/trait/positive/wall_climber_pro, /datum/trait/positive/wall_climber_natural)
 
 /datum/trait/positive/wall_climber_natural
 	name = "Climber, Natural"
-	desc = "You can climb certain walls without tools! This is likely due to the unique anatomy of your species. CUSTOM AND XENOCHIM ONLY"
+	desc = "You can climb certain walls without tools! This is likely due to the unique anatomy of your species. You can climb lattices and ladders slightly faster than everyone else. CUSTOM AND XENOCHIM ONLY"
 	tutorial = "You must approach a wall and right click it and select the \
 	'climb wall' verb to climb it. You suffer from a movement delay of 1.5 with this trait.\n \
 	Your total climb time is expected to be 17.5 seconds. Tools may reduce this. \n\n \
@@ -284,27 +284,38 @@
 	a climbable wall. To climbe like so, use the verb 'Climb Down Wall' in IC tab!"
 	cost = 0
 	custom_only = FALSE
-	var_changes = list("can_climb" = TRUE)
+	var_changes = list("can_climb" = TRUE, "climb_mult" = 0.75)
 	allowed_species = list(SPECIES_XENOCHIMERA, SPECIES_CUSTOM)	//So that we avoid needless bloat for xenochim
 	excludes = list(/datum/trait/positive/wall_climber_pro, /datum/trait/positive/wall_climber)
 
 /datum/trait/positive/wall_climber_pro
 	name = "Climber, Professional"
-	desc = "You can climb certain walls without tools! You are a professional rock climber at this, letting you climb almost twice as fast!"
+	desc = "You can climb certain walls without tools! You are a professional rock climber at this, letting you climb almost twice as fast! You can also climb lattices and ladders a fair bit faster than everyone else!"
 	tutorial = "You must approach a wall and right click it and select the \
 	'climb wall' verb to climb it. Your movement delay is just 1.25 with this trait.\n \
 	Your climb time is expected to be 9 seconds. Tools may reduce this. \n\n \
 	This likewise allows descending walls, provided you're facing an empty space and standing on \
 	a climbable wall. To climbe like so, use the verb 'Climb Down Wall' in IC tab!"
-	cost = 1
+	cost = 0
 	custom_only = FALSE
-	var_changes = list("climbing_delay" = 1.25)
+	var_changes = list("climbing_delay" = 1.25, "climb_mult" = 0.5)
 	varchange_type = TRAIT_VARCHANGE_LESS_BETTER
 	excludes = list(/datum/trait/positive/wall_climber,/datum/trait/positive/wall_climber_natural)
 
 // This feels jank, but it's the cleanest way I could do TRAIT_VARCHANGE_LESS_BETTER while having a boolean var change
-// Alternate would've been banned_species = list(SPECIES_TAJ, SPECIES_VASSILISIAN)
+// Alternate would've been banned_species = list(SPECIES_TAJARAN, SPECIES_VASSILISIAN)
 // Opted for this as it's "future proof"
 /datum/trait/positive/wall_climber_pro/apply(var/datum/species/S,var/mob/living/carbon/human/H)
 	..()
 	S.can_climb = TRUE
+
+/datum/trait/positive/good_swimmer
+	name = "Pro Swimmer"
+	desc = "You were top of your group in swimming class! This is of questionable usefulness on most planets, but hey, maybe you'll get to visit a nice beach world someday?"
+	tutorial = "You move faster in water, and can move up and down z-levels faster than other swimmers!"
+	cost = 0
+	custom_only = FALSE
+	var_changes = list("water_movement" = -2, "swim_mult" = 0.5)
+	varchange_type = TRAIT_VARCHANGE_LESS_BETTER
+	excludes = list(/datum/trait/negative/bad_swimmer)
+	banned_species = list(SPECIES_AKULA)	// They already swim better than this

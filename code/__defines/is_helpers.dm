@@ -13,13 +13,13 @@
 
 #define isitem(D)		istype(D, /obj/item)
 
-#define isradio(A)		istype(A, /obj/item/device/radio)
+#define isradio(A)		istype(A, /obj/item/radio)
 
 #define isairlock(A)	istype(A, /obj/machinery/door/airlock)
 
 #define isorgan(A)		istype(A, /obj/item/organ/external)
 
-#define isstorage(A)	istype(A, /obj/item/weapon/storage)
+#define isstorage(A)	istype(A, /obj/item/storage)
 
 #define ismecha(A)      istype(A, /obj/mecha)
 
@@ -63,7 +63,15 @@
 //#define isturf(D)		istype(D, /turf)	//Built in
 #define isopenspace(A)	istype(A, /turf/simulated/open)
 #define isspace(A)		istype(A, /turf/space)
+#define isopenturf(A)	istype(A, /turf/simulated/open) || istype(A, /turf/space)
+#define isnonsolidturf(A)	istype(A, /turf/simulated/open) || istype(A, /turf/space) || istype(A, /turf/simulated/floor/water) || istype(A, /turf/simulated/floor/lava)
 #define ismineralturf(A) istype(A, /turf/simulated/mineral)
 
 #define istaurtail(A)	istype(A, /datum/sprite_accessory/tail/taur)
 #define islongtail(A)	istype(A, /datum/sprite_accessory/tail/longtail)
+
+// Diveable water
+#define isdiveablewater(A)	istype(A, /turf/simulated/floor/water/deep/ocean/diving)
+
+/// NaN isn't a number, damn it. Infinity is a problem too.
+#define isnum_safe(x) ( isnum((x)) && !isnan((x)) && !isinf((x)) )

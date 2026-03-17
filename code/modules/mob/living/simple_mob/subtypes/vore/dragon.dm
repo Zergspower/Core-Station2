@@ -8,7 +8,7 @@
 	icon = 'icons/mob/vore64x64.dmi'
 	vis_height = 64
 
-	faction = "dragon"
+	faction = FACTION_DRAGON
 	maxHealth = 500 // Boss
 	health = 500
 	see_in_dark = 8
@@ -17,7 +17,7 @@
 	melee_damage_upper = 30
 
 	meat_amount = 15
-	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_type = /obj/item/reagent_containers/food/snacks/meat
 
 	//Space dragons aren't affected by atmos.
 	min_oxy = 0
@@ -64,7 +64,7 @@
 /mob/living/simple_mob/vore/aggressive/dragon
 	vore_active = 1
 	vore_capacity = 2
-	vore_pounce_chance = 35
+	vore_pounce_chance = 0 // Beat them into crit before eating.
 	vore_icons = SA_ICON_LIVING
 
 /datum/category_item/catalogue/fauna/phoron_dragon //CHOMP Edit: the lore.
@@ -107,7 +107,7 @@
 	catalogue_data = list(/datum/category_item/catalogue/fauna/phoron_dragon)
 	maxHealth = 300
 	health = 300
-	faction = "neutral"
+	faction = FACTION_VIRGO3B
 	icon_dead = "phoron_dragon_dead"
 	icon_living = "phoron_dragon"
 	icon_state = "phoron_dragon"
@@ -120,8 +120,8 @@
 	. = ..()
 	if(!riding_datum)
 		riding_datum = new /datum/riding/simple_mob(src)
-	add_verb(src,/mob/living/simple_mob/proc/animal_mount) //CHOMPEdit TGPanel
-	add_verb(src,/mob/living/proc/toggle_rider_reins) //CHOMPEdit TGPanel
+	add_verb(src, /mob/living/simple_mob/proc/animal_mount)
+	add_verb(src, /mob/living/proc/toggle_rider_reins)
 	movement_cooldown = 0
 
 /mob/living/simple_mob/vore/aggressive/dragon/MouseDrop_T(mob/living/M, mob/living/user)
@@ -135,7 +135,7 @@
 	tt_desc = "Astra Draconinae"
 	maxHealth = 300
 	health = 300
-	faction = "dragon"
+	faction = FACTION_DRAGON
 	icon_dead = "space_dragon_dead"
 	icon_living = "space_dragon"
 	icon_state = "space_dragon"
@@ -144,33 +144,26 @@
 	has_eye_glow = TRUE
 	vore_eyes = TRUE
 
-/mob/living/simple_mob/vore/aggressive/dragon/virgo3b/init_vore()
-	if(!voremob_loaded)
-		return
-	.=..()
-	var/obj/belly/B = vore_selected
-	B.name = "Belly"
-	B.desc = "The phoron dragon tackles you to the ground with a mighty roar, swiftly gobbling up your head! You feel the gravity shift as it raises it's head up in pride, bobbing you up and down as it busily swallowed around your form. You start to realise that the warm fluid that you mistook for it's saliva has a strong and somewhat familiar scent, but before you can identify it, your ride is over - with a powerful swallow, the dragon pushes the entirety of your body down into it's stomach, with more of that strange liquid pooling up on the bottom. As you push out in protest against the surrounding walls, you realise that the flesh feels squishy and sponge-like under your digits, coating them in dark, pink substance... A pleased rumble from above tells you that the dragon clearly doesn't seem to mind your futile struggles, clenching its stomach around you possessively!"
+// A fluff sprite for an event mob created by grayscaledrake
 
-	B.emote_lists[DM_HOLD] = list(
-		"The sway of the dragon's belly sloshes the purple tinted fluid around you, splashing it all over your body.",
-		"You can feel a small prod from the outside as the dragon accidentally brushes his gut against a wall. The soft flesh cushions it just enough for it to be barely noticeable...",
-		"You briefly get lost in thoughts as you listen to the noises the dragon's body emits... A slightly muffled snort from above that is enough for you to snap back.",
-		"A sizeable paw smacks on the side of the dragon's belly, kneading into you through the thick layer of flesh while a low, ominous chuckle can be heard.",
-		"A low, guttural grumble can be heard all around you as the dragon idly flumps down, bringing its weight down to smoosh you against the bottom of its gut!",
-		"You can feel a faint, rythmic thumping coming off from the sides of the belly - it doesn't take long to realise that the dragon is drumming on its stuffed gut with its wings.",
-		"The dragon sways its hips briefly, making its stomach - and by extension, you - sway along, letting out an ammused rumble!",
-		"You can feel the stomach clench around you, briefly pushing you out towards the dragon's gullet, but before you can gather your wits, it simply swallows you back down with a taunting rumble.",
-		"You sigh and idly drag your hand over the stomach walls, silently pondering your life choices. It surprises you to feel a large paw tracing your movements from outside!")
+/mob/living/simple_mob/vore/aggressive/dragon/gray_scaled
+	name = "gray scaled drake"
+	desc = "This is a big, scaly drake."
 
-	B.emote_lists[DM_DIGEST] = list(
-		"The sway of the dragon's belly sloshes the purple tinted fluid around you, splashing it all over your body.",
-		"You can feel a small prod from the outside as the dragon accidentally brushes his gut against a wall. The soft flesh cushions it just enough for it to be barely noticeable...",
-		"A sizeable paw smacks on the side of the dragon's belly, kneading into you through the thick layer of flesh while a low, ominous chuckle can be heard.",
-		"A low, guttural grumble can be heard all around you as the dragon idly flumps down, bringing its weight down to smoosh you against the bottom of its gut!",
-		"You can feel a faint, rythmic thumping coming off from the sides of the belly - it doesn't take long to realise that the dragon is drumming on its stuffed gut with its wings.",
-		"The dragon sways its hips briefly, making its stomach - and by extension, you - sway along, letting out an ammused rumble!",
-		"You can feel the stomach clench around you, briefly pushing you out towards the dragon's gullet, but before you can gather your wits, it simply swallows you back down with a taunting rumble.")
+	icon_dead = "drake_dead"
+	icon_living = "drake"
+	icon_state = "drake"
+	icon_rest = "drake_rest"
+	icon = 'icons/mob/vore_grayscale_drake.dmi'
+	vis_height = 115
 
- //Didnt put in since it works better as active struggle messages, but not gonna write any at the moment :c
- //You struggle to push out against the surrounding flesh, but as soon as you ease up on the pressure, the dragon's gut simply pushes back to hide the bulge.
+	old_x = -57
+	old_y = 0
+	default_pixel_x = -57
+	pixel_x = -57
+	pixel_y = 0
+
+	vore_active = 1
+	vore_capacity = 1
+	vore_pounce_chance = 0 // Beat them into crit before eating.
+	vore_icons = SA_ICON_LIVING
