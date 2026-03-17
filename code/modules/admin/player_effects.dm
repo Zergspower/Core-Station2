@@ -1,4 +1,4 @@
-/client/proc/player_effects(var/mob/target in mob_list)
+/client/proc/player_effects(var/mob/target in GLOB.mob_list)
 	set name = "Player Effects"
 	set desc = "Modify a player character with various 'special treatments' from a list."
 	set category = "Fun.Event Kit"
@@ -37,7 +37,7 @@
 	return data
 
 /datum/eventkit/player_effects/tgui_state(mob/user)
-	return GLOB.tgui_admin_state
+	return ADMIN_STATE(R_ADMIN|R_EVENT|R_DEBUG)
 
 /datum/eventkit/player_effects/tgui_act(action, list/params, datum/tgui/ui)
 	. = ..()
@@ -46,7 +46,7 @@
 	if(!check_rights_for(ui.user.client, R_SPAWN))
 		return
 
-	log_and_message_admins("[key_name(user)] used player effect: [action] on [target.ckey] playing [target.name]")
+	log_and_message_admins("used player effect: [action] on [target.ckey] playing [target.name]", user)
 
 	switch(action)
 
@@ -94,7 +94,7 @@
 			var/turf/Ts //Turf for shadekin
 
 			//Try to find nondense turf
-			for(var/direction in cardinal)
+			for(var/direction in GLOB.cardinal)
 				var/turf/T = get_step(target,direction)
 				if(T && !T.density)
 					Ts = T //Found shadekin spawn turf
@@ -104,8 +104,7 @@
 			var/mob/living/simple_mob/shadekin/red/shadekin = new(Ts)
 			//Abuse of shadekin
 			shadekin.real_name = shadekin.name
-			shadekin.voremob_loaded = TRUE
-			shadekin.init_vore()
+			shadekin.init_vore(TRUE)
 			shadekin.ability_flags |= 0x1
 			shadekin.phase_shift()
 			shadekin.ai_holder.give_target(target)
@@ -158,13 +157,12 @@
 			target.transforming = TRUE //Cheap hack to stop them from moving
 			var/mob/living/simple_mob/shadekin/shadekin = new kin_type(Tt)
 			shadekin.real_name = shadekin.name
-			shadekin.voremob_loaded = TRUE
-			shadekin.init_vore()
+			shadekin.init_vore(TRUE)
 			shadekin.can_be_drop_pred = TRUE
 			shadekin.dir = SOUTH
 			shadekin.ability_flags |= 0x1
 			shadekin.phase_shift() //Homf
-			shadekin.energy = initial(shadekin.energy)
+			shadekin.comp.dark_energy = initial(shadekin.comp.dark_energy)
 			//For fun
 			sleep(1 SECOND)
 			shadekin.dir = WEST
@@ -298,48 +296,7 @@
 			var/mob/living/new_mob = new chosen_beast(get_turf(M))
 			new_mob.faction = M.faction
 
-			if(new_mob && isliving(new_mob))
-				for(var/obj/belly/B as anything in new_mob.vore_organs)
-					new_mob.vore_organs -= B
-					qdel(B)
-				new_mob.vore_organs = list()
-				new_mob.name = M.name
-				new_mob.real_name = M.real_name
-				for(var/lang in M.languages)
-					new_mob.languages |= lang
-				M.copy_vore_prefs_to_mob(new_mob)
-				new_mob.vore_selected = M.vore_selected
-				if(ishuman(M))
-					var/mob/living/carbon/human/H = M
-					if(ishuman(new_mob))
-						var/mob/living/carbon/human/N = new_mob
-						N.gender = H.gender
-						N.identifying_gender = H.identifying_gender
-					else
-						new_mob.gender = H.gender
-				else
-					new_mob.gender = M.gender
-					if(ishuman(new_mob))
-						var/mob/living/carbon/human/N = new_mob
-						N.identifying_gender = M.gender
-
-				for(var/obj/belly/B as anything in M.vore_organs)
-					B.loc = new_mob
-					B.forceMove(new_mob)
-					B.owner = new_mob
-					M.vore_organs -= B
-					new_mob.vore_organs += B
-
-				new_mob.ckey = M.ckey
-				if(M.ai_holder && new_mob.ai_holder)
-					var/datum/ai_holder/old_AI = M.ai_holder
-					old_AI.set_stance(STANCE_SLEEP)
-					var/datum/ai_holder/new_AI = new_mob.ai_holder
-					new_AI.hostile = old_AI.hostile
-					new_AI.retaliate = old_AI.retaliate
-				M.loc = new_mob
-				M.forceMove(new_mob)
-				new_mob.tf_mob_holder = M
+			new_mob.mob_tf(M)
 
 		if("item_tf")
 			var/mob/living/M = target
@@ -366,8 +323,19 @@
 			spawned_obj.unacidable = !M.digestable
 			M.forceMove(possessed_voice)
 
+		if("elder_smite")
+			if(!target.ckey)
+				return
+			target.overlay_fullscreen("scrolls", /obj/screen/fullscreen/scrolls, 1)
+			addtimer(CALLBACK(target, TYPE_PROC_REF(/mob, clear_fullscreen), "scrolls"), 20 SECONDS)
 
 		////////MEDICAL//////////////
+
+		if("health_scan")
+			var/mob/living/Tar = target
+			if(!istype(Tar))
+				return
+			Tar.scan_mob(user)
 
 		if("appendicitis")
 			var/mob/living/carbon/human/Tar = target
@@ -516,6 +484,18 @@
 			Tar.ingested.clear_reagents()
 			Tar.touching.clear_reagents()
 
+		if("medical_issue")
+			var/mob/living/carbon/human/Tar = target
+			if(!istype(Tar))
+				return
+			Tar.custom_medical_issue(user)
+
+		if("clear_issue")
+			var/mob/living/carbon/human/Tar = target
+			if(!istype(Tar))
+				return
+			Tar.clear_medical_issue(user)
+
 		////////ABILITIES//////////////
 
 		if("vent_crawl")
@@ -616,6 +596,14 @@
 				return
 			add_verb(Tar, /mob/living/proc/toggle_active_cloaking)
 
+		if("colormate")
+			if(istype(target,/mob/living/simple_mob))
+				var/mob/living/simple_mob/Tar = target
+				add_verb(Tar, /mob/living/simple_mob/proc/ColorMate)
+			if(istype(target,/mob/living/silicon/robot))
+				var/mob/living/silicon/robot/Tar = target
+				add_verb(Tar, /mob/living/silicon/robot/proc/ColorMate)
+
 
 		////////INVENTORY//////////////
 
@@ -659,7 +647,7 @@
 			var/mob/living/carbon/human/Tar = target
 			if(!istype(Tar))
 				return
-			if(!user.client.holder)
+			if(!check_rights_for(user.client, R_HOLDER))
 				return
 			var/obj/item/X = user.client.holder.marked_datum
 			if(!istype(X))
@@ -670,7 +658,7 @@
 			var/mob/living/carbon/human/Tar = target
 			if(!istype(Tar))
 				return
-			if(!user.client.holder)
+			if(!check_rights_for(user.client, R_HOLDER))
 				return
 			var/obj/item/X = user.client.holder.marked_datum
 			if(!istype(X))
@@ -693,7 +681,7 @@
 			if(Tar.nif)
 				to_chat(user,span_warning("Target already has a NIF."))
 				return
-			if(Tar.species.flags & NO_SCAN)
+			if(Tar.species.flags & NO_DNA)
 				var/obj/item/nif/S = /obj/item/nif/bioadap
 				input_NIF = initial(S.name)
 				new /obj/item/nif/bioadap(Tar)
@@ -714,10 +702,10 @@
 					new chosen_NIF(Tar)
 				else
 					new /obj/item/nif(Tar)
-			log_and_message_admins("[key_name(user)] Quick NIF'd [Tar.real_name] with a [input_NIF].")
+			log_and_message_admins("Quick NIF'd [Tar.real_name] with a [input_NIF].", user)
 
 		if("resize")
-			user.client.resize(target)
+			SSadmin_verbs.dynamic_invoke_verb(user.client, /datum/admin_verb/resize, target)
 
 		if("teleport")
 			var/where = tgui_alert(user, "Where to teleport?", "Where?", list("To Me", "To Mob", "To Area", "Cancel"))
@@ -726,7 +714,7 @@
 			if(where == "To Me")
 				user.client.Getmob(target)
 			if(where == "To Mob")
-				var/mob/selection = tgui_input_list(ui.user, "Select a mob to jump [target] to:", "Jump to mob", mob_list)
+				var/mob/selection = tgui_input_list(ui.user, "Select a mob to jump [target] to:", "Jump to mob", GLOB.mob_list)
 				target.on_mob_jump()
 				target.forceMove(get_turf(selection))
 				log_admin("[key_name(user)] jumped [target] to [selection]")
@@ -760,7 +748,7 @@
 			user.client.cmd_admin_direct_narrate(target)
 
 		if("player_panel")
-			user.client.holder.show_player_panel(target)
+			SSadmin_verbs.dynamic_invoke_verb(user, /datum/admin_verb/show_player_panel, target)
 
 		if("view_variables")
 			user.client.debug_variables(target)
@@ -772,7 +760,7 @@
 			X.orbit(target)
 
 		if("ai")
-			if(!istype(target, /mob/living))
+			if(!isliving(target))
 				to_chat(ui.user, span_notice("This can only be used on instances of type /mob/living"))
 				return
 			var/mob/living/L = target
@@ -814,13 +802,11 @@
 			var/reply = tgui_input_text(target, "An admin has sent you a message: [message]", "Reply")
 			if(!reply)
 				return
-			log_and_message_admins("[key_name(target)] replied to [user]'s message: [reply].")
+			log_and_message_admins("replied to [user]'s message: [reply].", target)
 
 		if("stop-orbits")
-			//CHOMPEdit Start
 			if(target.orbiters)
 				qdel(target.orbiters)
-			//CHOMPEdit End
 
 		if("revert-mob-tf")
 			var/mob/living/Tar = target

@@ -12,6 +12,7 @@
 /area/submap/AbandonedLab
 	name = "POI - Abandoned Lab"
 	ambience = AMBIENCE_HIGHSEC
+	requires_power = FALSE
 
 /area/submap/Blackshuttledown
 	name = "POI Wilderness - Black-Operative Shuttle"
@@ -233,6 +234,16 @@
 /area/submap/XenoHive
 	name = "POI Wilderness - Xeno Hive"
 	ambience = AMBIENCE_RUINS
+
+/area/submap/XenoWeaveMajor
+	name = "POI Wilderness - Assimilated Engine"
+	ambience = AMBIENCE_HOLY
+	requires_power = FALSE
+
+/area/submap/XenoWeaveMinour
+	name = "POI Wilderness - Assimilated Building"
+	ambience = AMBIENCE_HOLY
+	requires_power = FALSE
 
 /area/submap/VolcanicFissure
 	name = "POI Wilderness - Volcanic Fissure"

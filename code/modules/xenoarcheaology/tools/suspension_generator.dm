@@ -1,6 +1,6 @@
 /obj/machinery/suspension_gen
 	name = "suspension field generator"
-	desc = "It has stubby bolts up against it's treads for stabilising."
+	desc = "It has stubby bolts up against it's treads for stabilising. Used to be required for artifact removal but now merely works as a monster deterrant."
 	icon = 'icons/obj/xenoarchaeology.dmi'
 	icon_state = "suspension"
 	density = 1
@@ -11,7 +11,7 @@
 	var/power_use = 5
 	var/obj/effect/suspension_field/suspension_field
 
-/obj/machinery/suspension_gen/Initialize()
+/obj/machinery/suspension_gen/Initialize(mapload)
 	. = ..()
 	cell = new /obj/item/cell/high(src)
 
@@ -167,7 +167,7 @@
 		add_overlay("shield2")
 		visible_message(span_blue("[icon2html(suspension_field,viewers(src))] [suspension_field] gently absconds [collected > 1 ? "something" : "several things"]."))
 	else
-		if(istype(T,/turf/simulated/mineral) || istype(T,/turf/simulated/wall))
+		if(ismineralturf(T) || istype(T,/turf/simulated/wall))
 			suspension_field.icon_state = "shieldsparkles"
 		else
 			suspension_field.icon_state = "shield2"
@@ -189,7 +189,7 @@
 
 /obj/machinery/suspension_gen/Destroy()
 	deactivate()
-	..()
+	. = ..()
 
 /obj/machinery/suspension_gen/verb/rotate_counterclockwise()
 	set src in view(1)

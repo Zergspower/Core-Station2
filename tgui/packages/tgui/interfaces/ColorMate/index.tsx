@@ -1,4 +1,5 @@
-import { useBackend } from '../../backend';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import {
   Box,
   Button,
@@ -7,11 +8,11 @@ import {
   Section,
   Table,
   Tabs,
-} from '../../components';
-import { Window } from '../../layouts';
+} from 'tgui-core/components';
+
 import { ColorMateHSV, ColorMateTint } from './ColorMateColor';
 import { ColorMateMatrix } from './ColorMateMatrix';
-import { Data } from './types';
+import type { Data } from './types';
 
 export const ColorMate = (props) => {
   const { act, data } = useBackend<Data>();
@@ -36,7 +37,7 @@ export const ColorMate = (props) => {
                   <Section>
                     <center>Item:</center>
                     <Image
-                      src={'data:image/jpeg;base64, ' + item.sprite}
+                      src={`data:image/jpeg;base64,${item.sprite}`}
                       style={{
                         width: '100%',
                         height: '100%',
@@ -48,7 +49,7 @@ export const ColorMate = (props) => {
                   <Section>
                     <center>Preview:</center>
                     <Image
-                      src={'data:image/jpeg;base64, ' + item.preview}
+                      src={`data:image/jpeg;base64,${item.preview}`}
                       style={{
                         width: '100%',
                         height: '100%',

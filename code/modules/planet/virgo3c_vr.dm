@@ -26,7 +26,7 @@ var/datum/planet/virgo3c/planet_virgo3c = null
 	seconds_in_day = 6 HOURS
 
 /datum/planet/virgo3c
-	name = "Virgo-3c"
+	name = "Virgo-3C"
 	desc = "A habitable moon of the gas giant Virgo 3. The volcanic activity of this moon keeps its atmosphere warm enough for life to flourish."
 	current_time = new /datum/time/virgo3c()
 	planetary_wall_type = /turf/unsimulated/wall/planetary/virgo3c
@@ -53,15 +53,15 @@ var/datum/planet/virgo3c/planet_virgo3c = null
 	var/min = 0
 
 	switch(sun_position)
-		if(0 to 0.45) // Night
-			low_brightness = 0.1
+		if(0 to 0.3) // Night
+			low_brightness = 0.3
 			low_color = "#000066"
 
-			high_brightness = 0.2
+			high_brightness = 0.4
 			high_color = "#66004D"
 			min = 0
 
-		if(0.45 to 0.50) // Twilight
+		if(0.3 to 0.35) // Twilight
 			low_brightness = 0.5
 			low_color = "#66004D"
 
@@ -69,19 +69,19 @@ var/datum/planet/virgo3c/planet_virgo3c = null
 			high_color = "#CC3300"
 			min = 0.40
 
-		if(0.50 to 0.55) // Sunrise/set
+		if(0.35 to 0.45) // Sunrise/set
 			low_brightness = 0.9
 			low_color = "#CC3300"
 
-			high_brightness = 3.0
+			high_brightness = 1.0
 			high_color = "#FF9933"
 			min = 0.50
 
-		if(0.55 to 1.00) // Noon
-			low_brightness = 3.0
+		if(0.45 to 1.00) // Noon
+			low_brightness = 1.0
 			low_color = "#DDDDDD"
 
-			high_brightness = 10.0
+			high_brightness = 1.0
 			high_color = "#FFFFFF"
 			min = 0.70
 
@@ -274,28 +274,27 @@ var/datum/planet/virgo3c/planet_virgo3c = null
 		"The sky is dark, and rain falls down upon you."
 	)
 	imminent_transition_message = "Light drips of water are starting to fall from the sky."
+	effect_flags  = HAS_PLANET_EFFECT | EFFECT_ONLY_LIVING
 
-/datum/weather/virgo3c/rain/process_effects()
-	..()
-	for(var/mob/living/L as anything in living_mob_list)
-		if(L.z in holder.our_planet.expected_z_levels)
-			var/turf/T = get_turf(L)
-			if(!T.is_outdoors())
-				continue // They're indoors, so no need to rain on them.
+/datum/weather/virgo3c/rain/planet_effect(mob/living/L)
+	if(L.z in holder.our_planet.expected_z_levels)
+		var/turf/T = get_turf(L)
+		if(!T.is_outdoors())
+			return // They're indoors, so no need to rain on them.
 
-			// If they have an open umbrella, it'll guard from rain
-			var/obj/item/melee/umbrella/U = L.get_active_hand()
-			if(!istype(U) || !U.open)
-				U = L.get_inactive_hand()
+		// If they have an open umbrella, it'll guard from rain
+		var/obj/item/melee/umbrella/U = L.get_active_hand()
+		if(!istype(U) || !U.open)
+			U = L.get_inactive_hand()
 
-			if(istype(U) && U.open)
-				if(show_message)
-					to_chat(L, span_notice("Rain patters softly onto your umbrella."))
-				continue
-
-			L.water_act(1)
+		if(istype(U) && U.open)
 			if(show_message)
-				to_chat(L, effect_message)
+				to_chat(L, span_notice("Rain patters softly onto your umbrella."))
+			return
+
+		L.water_act(1)
+		if(show_message)
+			to_chat(L, effect_message)
 
 /datum/weather/virgo3c/storm
 	name = "storm"
@@ -328,30 +327,31 @@ var/datum/planet/virgo3c/planet_virgo3c = null
 		WEATHER_BLIZZARD = 5,
 		WEATHER_HAIL = 5
 		)
+	effect_flags  = HAS_PLANET_EFFECT | EFFECT_ONLY_LIVING
+
+/datum/weather/virgo3c/storm/planet_effect(mob/living/L)
+	if(L.z in holder.our_planet.expected_z_levels)
+		var/turf/T = get_turf(L)
+		if(!T.is_outdoors())
+			return // They're indoors, so no need to rain on them.
+
+		// If they have an open umbrella, it'll guard from rain
+		var/obj/item/melee/umbrella/U = L.get_active_hand()
+		if(!istype(U) || !U.open)
+			U = L.get_inactive_hand()
+
+		if(istype(U) && U.open)
+			if(show_message)
+				to_chat(L, span_notice("Rain showers loudly onto your umbrella!"))
+			return
+
+
+		L.water_act(2)
+		if(show_message)
+			to_chat(L, effect_message)
 
 /datum/weather/virgo3c/storm/process_effects()
 	..()
-	for(var/mob/living/L as anything in living_mob_list)
-		if(L.z in holder.our_planet.expected_z_levels)
-			var/turf/T = get_turf(L)
-			if(!T.is_outdoors())
-				continue // They're indoors, so no need to rain on them.
-
-			// If they have an open umbrella, it'll guard from rain
-			var/obj/item/melee/umbrella/U = L.get_active_hand()
-			if(!istype(U) || !U.open)
-				U = L.get_inactive_hand()
-
-			if(istype(U) && U.open)
-				if(show_message)
-					to_chat(L, span_notice("Rain showers loudly onto your umbrella!"))
-				continue
-
-
-			L.water_act(2)
-			if(show_message)
-				to_chat(L, effect_message)
-
 	handle_lightning()
 
 // This gets called to do lightning periodically.
@@ -386,41 +386,40 @@ var/datum/planet/virgo3c/planet_virgo3c = null
 		"An intense chill is felt, and chunks of ice start to fall from the sky, towards you."
 	)
 	imminent_transition_message = "Small bits of ice are falling from the sky, growing larger by the second. Hail is starting, get to cover!"
+	effect_flags = HAS_PLANET_EFFECT | EFFECT_ONLY_HUMANS
 
-/datum/weather/virgo3c/hail/process_effects()
-	..()
-	for(var/mob/living/carbon/H as anything in human_mob_list)
-		if(H.z in holder.our_planet.expected_z_levels)
-			var/turf/T = get_turf(H)
-			if(!T.is_outdoors())
-				continue // They're indoors, so no need to pelt them with ice.
+/datum/weather/virgo3c/hail/planet_effect(mob/living/carbon/H)
+	if(H.z in holder.our_planet.expected_z_levels)
+		var/turf/T = get_turf(H)
+		if(!T.is_outdoors())
+			return // They're indoors, so no need to pelt them with ice.
 
-			// If they have an open umbrella, it'll guard from hail
-			var/obj/item/melee/umbrella/U = H.get_active_hand()
-			if(!istype(U) || !U.open)
-				U = H.get_inactive_hand()
+		// If they have an open umbrella, it'll guard from hail
+		var/obj/item/melee/umbrella/U = H.get_active_hand()
+		if(!istype(U) || !U.open)
+			U = H.get_inactive_hand()
 
-			if(istype(U) && U.open)
-				if(show_message)
-					to_chat(H, span_notice("Hail patters onto your umbrella."))
-				continue
-
-			var/target_zone = pick(BP_ALL)
-			var/amount_blocked = H.run_armor_check(target_zone, "melee")
-			var/amount_soaked = H.get_armor_soak(target_zone, "melee")
-
-			var/damage = rand(1,3)
-
-			if(amount_blocked >= 30)
-				continue // No need to apply damage. Hardhats are 30. They should probably protect you from hail on your head.
-				//Voidsuits are likewise 40, and riot, 80. Clothes are all less than 30.
-
-			if(amount_soaked >= damage)
-				continue // No need to apply damage.
-
-			H.apply_damage(damage, BRUTE, target_zone, amount_blocked, amount_soaked, used_weapon = "hail")
+		if(istype(U) && U.open)
 			if(show_message)
-				to_chat(H, effect_message)
+				to_chat(H, span_notice("Hail patters onto your umbrella."))
+			return
+
+		var/target_zone = pick(BP_ALL)
+		var/amount_blocked = H.run_armor_check(target_zone, "melee")
+		var/amount_soaked = H.get_armor_soak(target_zone, "melee")
+
+		var/damage = rand(1,3)
+
+		if(amount_blocked >= 30)
+			return // No need to apply damage. Hardhats are 30. They should probably protect you from hail on your head.
+			//Voidsuits are likewise 40, and riot, 80. Clothes are all less than 30.
+
+		if(amount_soaked >= damage)
+			return // No need to apply damage.
+
+		H.apply_damage(damage, BRUTE, target_zone, amount_blocked, amount_soaked)
+		if(show_message)
+			to_chat(H, effect_message)
 
 /datum/weather/virgo3c/fog
 	name = "fog"
@@ -515,19 +514,18 @@ var/datum/planet/virgo3c/planet_virgo3c = null
 	// Lets recycle.
 	outdoor_sounds_type = /datum/looping_sound/weather/outside_blizzard
 	indoor_sounds_type = /datum/looping_sound/weather/inside_blizzard
+	effect_flags  = HAS_PLANET_EFFECT | EFFECT_ONLY_LIVING
 
-/datum/weather/virgo3c/ash_storm/process_effects()
-	..()
-	for(var/mob/living/L as anything in living_mob_list)
-		if(L.z in holder.our_planet.expected_z_levels)
-			var/turf/T = get_turf(L)
-			if(!T.is_outdoors())
-				continue // They're indoors, so no need to burn them with ash.
-			else if (isanimal(L))
-				continue    //Don't murder the wildlife, they live here it's fine
+/datum/weather/virgo3c/ash_storm/planet_effect(mob/living/L)
+	if(L.z in holder.our_planet.expected_z_levels)
+		var/turf/T = get_turf(L)
+		if(!T.is_outdoors())
+			return // They're indoors, so no need to burn them with ash.
+		else if (isanimal(L))
+			return    //Don't murder the wildlife, they live here it's fine
 
-			L.inflict_heat_damage(1)
-			to_chat(L, span_warning("Smoldering ash singes you!"))
+		L.inflict_heat_damage(1)
+		to_chat(L, span_warning("Smoldering ash singes you!"))
 
 
 
@@ -579,17 +577,16 @@ var/datum/planet/virgo3c/planet_virgo3c = null
 	// How much radiation is bursted onto a random tile near a mob.
 	var/fallout_rad_low = RAD_LEVEL_HIGH
 	var/fallout_rad_high = RAD_LEVEL_VERY_HIGH
+	effect_flags  = HAS_PLANET_EFFECT | EFFECT_ONLY_LIVING
 
-/datum/weather/virgo3c/fallout/process_effects()
-	..()
-	for(var/mob/living/L as anything in living_mob_list)
-		if(L.z in holder.our_planet.expected_z_levels)
-			irradiate_nearby_turf(L)
-			var/turf/T = get_turf(L)
-			if(!T.is_outdoors())
-				continue // They're indoors, so no need to irradiate them with fallout.
+/datum/weather/virgo3c/fallout/planet_effect(mob/living/L)
+	if(L.z in holder.our_planet.expected_z_levels)
+		irradiate_nearby_turf(L)
+		var/turf/T = get_turf(L)
+		if(!T.is_outdoors())
+			return // They're indoors, so no need to irradiate them with fallout.
 
-			L.rad_act(rand(direct_rad_low, direct_rad_high))
+		L.rad_act(rand(direct_rad_low, direct_rad_high))
 
 // This makes random tiles near people radioactive for awhile.
 // Tiles far away from people are left alone, for performance.
@@ -638,7 +635,6 @@ var/datum/planet/virgo3c/planet_virgo3c = null
 	alpha = 0xFF
 	VIRGO3C_SET_ATMOS
 
-VIRGO3C_TURF_CREATE(/turf/simulated/mineral/cave)
 VIRGO3C_TURF_CREATE(/turf/simulated/floor/outdoors/newdirt)
 VIRGO3C_TURF_CREATE(/turf/simulated/floor/outdoors/newdirt_nograss)
 VIRGO3C_TURF_CREATE(/turf/simulated/floor/outdoors/sidewalk)
@@ -649,7 +645,6 @@ VIRGO3C_TURF_CREATE(/turf/simulated/floor/water/deep)
 VIRGO3C_TURF_CREATE(/turf/simulated/floor/tiled)
 VIRGO3C_TURF_CREATE(/turf/simulated/floor/reinforced)
 VIRGO3C_TURF_CREATE(/turf/simulated/floor/glass/reinforced)
-VIRGO3C_TURF_CREATE(/turf/simulated/open)
 VIRGO3C_TURF_CREATE(/turf/simulated/floor/tiled/dark)
 VIRGO3C_TURF_CREATE(/turf/simulated/mineral)
 VIRGO3C_TURF_CREATE(/turf/simulated/mineral/ignore_cavegen)
@@ -673,15 +668,15 @@ VIRGO3C_TURF_CREATE(/turf/simulated/floor/tiled/asteroid_steel/outdoors)
 
 /turf/simulated/mineral/cave/virgo3c
 	VIRGO3C_SET_ATMOS
-	outdoors = 0
+	outdoors = OUTDOORS_NO
 
 /turf/simulated/mineral/floor/virgo3c
 	VIRGO3C_SET_ATMOS
-	outdoors = 0
+	outdoors = OUTDOORS_NO
 
 /turf/simulated/mineral/floor/ignore_mapgen/virgo3c
 	VIRGO3C_SET_ATMOS
-	outdoors = 0
+	outdoors = OUTDOORS_NO
 
 /turf/simulated/floor/outdoors/grass/virgo3c
 	VIRGO3C_SET_ATMOS
@@ -700,21 +695,20 @@ VIRGO3C_TURF_CREATE(/turf/simulated/floor/tiled/asteroid_steel/outdoors)
 
 	var/animal_chance = 0.5
 	var/animal_types = list(
-		/mob/living/simple_mob/vore/alienanimals/teppi = 5,
-		/mob/living/simple_mob/vore/redpanda = 20,
-		/mob/living/simple_mob/vore/redpanda/fae = 1,
-		/mob/living/simple_mob/vore/sheep = 10,
-		/mob/living/simple_mob/vore/rabbit/black = 10,
-		/mob/living/simple_mob/vore/rabbit/white = 10,
-		/mob/living/simple_mob/vore/rabbit/brown = 10,
-		/mob/living/simple_mob/vore/leopardmander = 1,
-		/mob/living/simple_mob/vore/horse/big = 5,
-		/mob/living/simple_mob/vore/bigdragon/friendly = 0.5,
-		/mob/living/simple_mob/vore/alienanimals/dustjumper = 10
+		/mob/living/simple_mob/vore/redpanda = 40,
+		/mob/living/simple_mob/vore/redpanda/fae = 2,
+		/mob/living/simple_mob/vore/sheep = 20,
+		/mob/living/simple_mob/vore/rabbit/black = 20,
+		/mob/living/simple_mob/vore/rabbit/white = 20,
+		/mob/living/simple_mob/vore/rabbit/brown = 20,
+		/mob/living/simple_mob/vore/leopardmander = 2,
+		/mob/living/simple_mob/vore/horse/big = 10,
+		/mob/living/simple_mob/vore/bigdragon/friendly = 1,
+		/mob/living/simple_mob/vore/alienanimals/dustjumper = 20
 		)
 
 
-/turf/simulated/floor/outdoors/grass/forest/virgo3c/Initialize()
+/turf/simulated/floor/outdoors/grass/forest/virgo3c/Initialize(mapload)
 	if(tree_chance && prob(tree_chance) && !check_density())
 		new /obj/structure/flora/tree/bigtree(src)
 

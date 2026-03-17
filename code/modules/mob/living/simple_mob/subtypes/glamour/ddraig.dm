@@ -76,9 +76,7 @@
 	verbs |= /mob/living/proc/glamour_invisibility
 	movement_cooldown = -1
 
-/mob/living/simple_mob/vore/ddraig/init_vore()
-	if(!voremob_loaded)
-		return
+/mob/living/simple_mob/vore/ddraig/load_default_bellies()
 	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "stomach"
@@ -223,12 +221,7 @@
 		ourmob.forceMove(get_dat_turf)
 		ourmob.vore_selected = M.vore_selected
 		M.vore_selected = null
-		for(var/obj/belly/B as anything in M.vore_organs)
-			B.loc = ourmob
-			B.forceMove(ourmob)
-			B.owner = ourmob
-			M.vore_organs -= B
-			ourmob.vore_organs += B
+		ourmob.mob_belly_transfer(M)
 
 		ourmob.Life(1)
 		if(ishuman(M))
@@ -245,55 +238,13 @@
 		var/mob/living/new_mob = spawn_mob(M)
 		new_mob.faction = M.faction
 
-		if(new_mob && isliving(new_mob))
-			for(var/obj/belly/B as anything in new_mob.vore_organs)
-				new_mob.vore_organs -= B
-				qdel(B)
-			new_mob.vore_organs = list()
-			new_mob.name = M.name
-			new_mob.real_name = M.real_name
-			for(var/lang in M.languages)
-				new_mob.languages |= lang
-			M.copy_vore_prefs_to_mob(new_mob)
-			new_mob.vore_selected = M.vore_selected
-			if(ishuman(M))
-				var/mob/living/carbon/human/H = M
-				if(ishuman(new_mob))
-					var/mob/living/carbon/human/N = new_mob
-					N.gender = H.gender
-					N.identifying_gender = H.identifying_gender
-				else
-					new_mob.gender = H.gender
-			else
-				new_mob.gender = M.gender
-				if(ishuman(new_mob))
-					var/mob/living/carbon/human/N = new_mob
-					N.identifying_gender = M.gender
+		new_mob.mob_tf(M)
 
-			for(var/obj/belly/B as anything in M.vore_organs)
-				B.loc = new_mob
-				B.forceMove(new_mob)
-				B.owner = new_mob
-				M.vore_organs -= B
-				new_mob.vore_organs += B
-
-			new_mob.ckey = M.ckey
-			if(M.ai_holder && new_mob.ai_holder)
-				var/datum/ai_holder/old_AI = M.ai_holder
-				old_AI.set_stance(STANCE_SLEEP)
-				var/datum/ai_holder/new_AI = new_mob.ai_holder
-				new_AI.hostile = old_AI.hostile
-				new_AI.retaliate = old_AI.retaliate
-			M.loc = new_mob
-			M.forceMove(new_mob)
-			new_mob.tf_mob_holder = M
-
-			spawn(30 SECONDS)
-				new_mob.revert_mob_tf() //TF them back after 30 seconds, basically takes them out of the fight for a short time.
+		addtimer(CALLBACK(new_mob, TYPE_PROC_REF(/mob/living, revert_mob_tf)), 30 SECONDS, TIMER_DELETE_ME)
 
 /obj/item/projectile/beam/mouselaser/ddraig/spawn_mob(var/mob/living/target)
 	var/list/tf_list = list(/mob/living/simple_mob/animal/passive/mouse,
-		/mob/living/simple_mob/animal/passive/mouse/rat,
+		/mob/living/simple_mob/animal/passive/mouse/rat/strong, // CHOMPEdit
 		/mob/living/simple_mob/vore/alienanimals/dustjumper,
 		/mob/living/simple_mob/vore/woof,
 		/mob/living/simple_mob/animal/passive/dog/corgi,
@@ -339,7 +290,7 @@
 	for(var/mob/living/possible_target in possible_targets)
 		if(!can_attack(possible_target))
 			continue
-		if(istype(target,/mob/living/simple_mob) && !check_attacker(target)) //Do not target simple mobs who didn't attack you (disengage with TF'd mobs)
+		if(isanimal(target) && !check_attacker(target)) //Do not target simple mobs who didn't attack you (disengage with TF'd mobs)
 			continue
 		. |= possible_target
 		if(!isliving(possible_target))
@@ -364,7 +315,7 @@
 		set_stance(STANCE_FLEE)
 		return
 
-	if((holder.health < (holder.maxHealth / 4)) && !used_invis)
+	if((holder.health < (holder.getMaxHealth() / 4)) && !used_invis)
 		holder.cloak()
 		used_invis = 1
 		step_away(holder, target, 8)
@@ -375,7 +326,7 @@
 		spawn(60 SECONDS)
 			holder.uncloak()
 
-	if(istype(target,/mob/living/simple_mob) && !check_attacker(target)) //Immediately disengage with TF'd mobs so you don't one shot the poor guy you turned into a mouse.
+	if(isanimal(target) && !check_attacker(target)) //Immediately disengage with TF'd mobs so you don't one shot the poor guy you turned into a mouse.
 		lose_target()
 
 	// Can we still see them?
@@ -415,7 +366,7 @@
 		on_engagement(target)
 		if(firing_lanes && !test_projectile_safety(target))
 			// Nudge them a bit, maybe they can shoot next time.
-			var/turf/T = get_step(holder, pick(cardinal))
+			var/turf/T = get_step(holder, pick(GLOB.cardinal))
 			if(T)
 				holder.IMove(T) // IMove() will respect movement cooldown.
 				holder.face_atom(target)

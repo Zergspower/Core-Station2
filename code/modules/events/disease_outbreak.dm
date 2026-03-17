@@ -1,11 +1,6 @@
 GLOBAL_LIST_EMPTY(current_pending_diseases)
 /datum/event/disease_outbreak
 	var/datum/disease/chosen_disease
-	var/list/disease_blacklist = list(
-		/datum/disease/advance,
-		/datum/disease/food_poisoning,
-		/datum/disease/gbs // Terrible. It's only in the code to scare people.
-	)
 	var/static/list/transmissable_symptoms = list()
 	var/static/list/diseases_minor = list()
 	var/static/list/diseases_moderate_major = list()
@@ -32,13 +27,13 @@ GLOBAL_LIST_EMPTY(current_pending_diseases)
 		else
 			chosen_disease = create_virus(severity * 2)
 
-	chosen_disease.carrier = TRUE
+	chosen_disease.virus_modifiers |= CARRIER
 
 /datum/event/disease_outbreak/start()
 	GLOB.current_pending_diseases += chosen_disease
 
 	var/list/candidates = list()
-	for(var/mob/living/carbon/human/G in human_mob_list)
+	for(var/mob/living/carbon/human/G in GLOB.human_mob_list)
 		if(G.mind && G.stat != DEAD && G.is_client_active(5) && !player_is_antag(G.mind))
 			var/area/A = get_area(G)
 			if(!A)
@@ -62,6 +57,9 @@ GLOBAL_LIST_EMPTY(current_pending_diseases)
 			candidates -= H
 		chosen_infect--
 
+	if(!GLOB.archive_diseases[chosen_disease.GetDiseaseID()])
+		GLOB.archive_diseases[chosen_disease.GetDiseaseID()] = chosen_disease
+
 //Creates a virus with a harmful effect, guaranteed to be spreadable by contact or airborne
 /datum/event/disease_outbreak/proc/create_virus(max_severity = 6)
 	var/datum/disease/advance/A = new /datum/disease/advance
@@ -78,23 +76,23 @@ GLOBAL_LIST_EMPTY(current_pending_diseases)
 			popleft(A.symptoms)	//We have a full symptom list but are still not transmittable. Try removing one of the "payloads"
 
 		A.AssignProperties(A.GenerateProperties())
-	A.name = pick(alphabet_uppercase) + num2text(rand(1,9)) + pick(alphabet_uppercase) + num2text(rand(1,9)) + pick("v", "V", "-" + num2text(game_year), "")
+	A.name = pick(GLOB.alphabet_upper) + num2text(rand(1,9)) + pick(GLOB.alphabet_upper) + num2text(rand(1,9)) + pick("v", "V", "-" + num2text(GLOB.game_year), "")
 	A.Refresh()
 	return A
 
 /datum/event/disease_outbreak/proc/populate_diseases()
 	for(var/candidate in subtypesof(/datum/disease))
 		var/datum/disease/CD = new candidate
-		if(is_type_in_list(CD, disease_blacklist))
+		if(CD.disease_flags & CAN_NOT_POPULATE)
 			continue
-		switch(CD.severity)
-			if(NONTHREAT, MINOR)
+		switch(CD.danger)
+			if(DISEASE_NONTHREAT, DISEASE_MINOR)
 				diseases_minor += candidate
-			if(MEDIUM, HARMFUL, DANGEROUS, BIOHAZARD)
+			if(DISEASE_MEDIUM, DISEASE_HARMFUL, DISEASE_DANGEROUS, DISEASE_BIOHAZARD)
 				diseases_moderate_major += candidate
 
 /datum/event/disease_outbreak/proc/populate_symptoms()
 	for(var/candidate in subtypesof(/datum/symptom))
 		var/datum/symptom/CS = candidate
-		if(initial(CS.transmittable) > 1)
+		if(initial(CS.transmission) > 1)
 			transmissable_symptoms += candidate

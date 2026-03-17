@@ -21,7 +21,7 @@
 /********
 * photo *
 ********/
-var/global/photo_count = 0
+GLOBAL_VAR_INIT(photo_count, 0)
 
 /obj/item/photo
 	name = "photo"
@@ -37,10 +37,9 @@ var/global/photo_count = 0
 	var/icon/tiny
 	var/photo_size = 3
 
-/obj/item/photo/New()
-	id = photo_count++
-
-
+/obj/item/photo/Initialize(mapload)
+	. = ..()
+	id = GLOB.photo_count++
 
 /obj/item/photo/attack_self(mob/user as mob)
 	user.examinate(src)
@@ -96,7 +95,7 @@ var/global/photo_count = 0
 
 /obj/item/storage/photo_album/MouseDrop(obj/over_object as obj)
 
-	if((istype(usr, /mob/living/carbon/human)))
+	if(ishuman(usr))
 		var/mob/living/carbon/human/M = usr
 		if(!( istype(over_object, /obj/screen) ))
 			return ..()
@@ -201,7 +200,7 @@ var/global/photo_count = 0
 			// If what we got back is actually a picture, draw it.
 			if(istype(img, /icon))
 				// Check if we're looking at a mob that's lying down
-				if(istype(A, /mob/living) && A:lying)
+				if(isliving(A) && A:lying)
 					// If they are, apply that effect to their picture.
 					img.BecomeLying()
 				// Calculate where we are relative to the center of the photo

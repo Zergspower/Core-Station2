@@ -1,6 +1,6 @@
-import { useBackend } from '../backend';
-import { Button, Divider, Section, Table } from '../components';
-import { Window } from '../layouts';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+import { Button, Divider, Section, Table } from 'tgui-core/components';
 
 type Data = {
   device_theme: string;
@@ -34,14 +34,13 @@ export const PlayerNotes = (props) => {
           </Button>
           <Divider />
           <Button.Input
-            onCommit={(e, value) =>
+            buttonText="CKEY to Open"
+            onCommit={(value) =>
               act('show_player_info', {
                 name: value,
               })
             }
-          >
-            CKEY to Open
-          </Button.Input>
+          />
           <Divider vertical />
           <Button color="green" onClick={() => act('clear_player_info_filter')}>
             {filter}

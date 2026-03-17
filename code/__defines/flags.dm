@@ -11,7 +11,7 @@
 //check if all bitflags specified are present
 #define CHECK_MULTIPLE_BITFIELDS(flagvar, flags)	((flagvar & (flags)) == flags)
 
-GLOBAL_LIST_INIT(bitflags, list(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768))
+GLOBAL_LIST_INIT(bitflags, list(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304))
 
 /* Directions */
 ///All the cardinal direction bitflags.
@@ -35,7 +35,7 @@ GLOBAL_LIST_INIT(bitflags, list(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 204
 #define	NOREACT					(1<<6)	// Reagents don't react inside this container.
 #define OVERLAY_QUEUED			(1<<7)// Atom queued to SSoverlay for COMPILE_OVERLAYS
 #define IS_BUSY					(1<<8)	// Atom has a TASK_TARGET_EXCLUSIVE do_after with it as the target.
-#define ATOM_INITIALIZED		(1<<14) // Atom has been initialized. Using a flag instead of a variable saves ~25mb total. //CHOMPEdit
+#define ATOM_INITIALIZED		(1<<23) // Atom has been initialized. Using a flag instead of a variable saves ~25mb total.
 
 //Flags for items (equipment) - Used in /obj/item/var/item_flags
 #define THICKMATERIAL			(1<<0)	// Prevents syringes, parapens and hyposprays if equipped to slot_suit or slot_head.
@@ -45,6 +45,7 @@ GLOBAL_LIST_INIT(bitflags, list(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 204
 #define FLEXIBLEMATERIAL		(1<<4)	// At the moment, masks with this flag will not prevent eating even if they are covering your face.
 #define ALLOW_SURVIVALFOOD		(1<<5)	// Allows special survival food items to be eaten through it
 #define INFINITE_AIR			(1<<6)	// Provides an infinite air supply.
+#define NOSTRIP					(1<<7)  // Items that should never get stripped
 
 // Flags for pass_flags. - Used in /atom/var/pass_flags
 #define PASSTABLE				(1<<0)

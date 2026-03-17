@@ -1,14 +1,14 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../../backend';
+import { useBackend } from 'tgui/backend';
 import {
   Box,
   Button,
   LabeledList,
   ProgressBar,
   Section,
-} from '../../components';
-import { status } from './types';
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
+
+import type { status } from './types';
 
 /** ***************************************************************************\
 *                             HELPER COMPONENTS                                *
@@ -195,11 +195,12 @@ export const EscapePodStatus = (props: {
 export const DockingStatus = (props: { state: string }) => {
   const { state } = props;
 
-  const dockHatch: React.JSX.Element[] = [];
+  const dockHatch: Record<string, React.JSX.Element> = {};
 
-  dockHatch['open'] = <Box color="average">OPEN</Box>;
-  dockHatch['unlocked'] = <Box color="average">UNSECURED</Box>;
-  dockHatch['locked'] = <Box color="good">SECURED</Box>;
+  dockHatch.open = <Box color="average">OPEN</Box>;
+  dockHatch.closed = <Box color="good">CLOSED</Box>;
+  dockHatch.unlocked = <Box color="average">UNSECURED</Box>;
+  dockHatch.locked = <Box color="good">SECURED</Box>;
   return (
     <LabeledList.Item label="Docking Hatch">
       {dockHatch[state] || <Box color="bad">ERROR</Box>}

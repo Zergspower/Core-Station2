@@ -49,15 +49,15 @@
 	if(!job.minimum_character_age && !job.min_age_by_species)
 		return TRUE
 
-	var/min_age = job.get_min_age(prefs.species, prefs.organ_data["brain"])
-	if(prefs.age >= min_age)
+	var/min_age = job.get_min_age(prefs.species, prefs.organ_data[O_BRAIN])
+	if(prefs.read_preference(/datum/preference/numeric/human/age) >= min_age)
 		return TRUE
 	return FALSE
 
 /datum/tgui_module/late_choices/tgui_data(mob/new_player/user)
 	var/list/data = ..()
 
-	var/name = user.client.prefs.be_random_name ? "friend" : user.client.prefs.real_name
+	var/name = user.client.prefs.read_preference(/datum/preference/toggle/human/name_is_always_random) ? "friend" : user.client.prefs.real_name
 
 	data["name"] = name
 	data["duration"] = roundduration2text()
@@ -87,7 +87,7 @@
 
 			var/active = 0
 			// Only players with the job assigned and AFK for less than 10 minutes count as active
-			for(var/mob/M in player_list)
+			for(var/mob/M in GLOB.player_list)
 				if(M.mind?.assigned_role == job.title && M.client?.inactivity <= 10 MINUTES)
 					active++
 
@@ -131,7 +131,7 @@
 				return
 
 			var/datum/species/S = GLOB.all_species[new_user.client.prefs.species]
-			if(!is_alien_whitelisted(new_user, S))
+			if(!is_alien_whitelisted(new_user.client, S))
 				tgui_alert(new_user, "You are currently not whitelisted to play [new_user.client.prefs.species].")
 				return 0
 
@@ -139,4 +139,4 @@
 				tgui_alert_async(new_user,"Your current species, [new_user.client.prefs.species], is not available for play on the station.")
 				return 0
 
-			new_user.AttemptLateSpawn(job, new_user.client.prefs.spawnpoint)
+			new_user.AttemptLateSpawn(job, new_user.read_preference(/datum/preference/choiced/living/spawnpoint))

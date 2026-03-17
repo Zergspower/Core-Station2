@@ -11,15 +11,14 @@
 	plane = ABOVE_MOB_PLANE
 	var/chaos
 
-/obj/item/a_gift/advanced/New()
-	..()
+/obj/item/a_gift/advanced/Initialize(mapload)
+	. = ..()
 	icon_state += "_[pick("g","r","b","y","p")]"
 	if(prob(1))
 		icon_state = "chomp_present_chaos"
 		chaos = TRUE
 		name = "chaotic present"
 		desc = "The casino dev messed up and gave you the wrong present! This one pulses with potential for good or evil!"
-	return
 
 /obj/item/a_gift/advanced/attack_self(mob/M as mob) //WIP - ALWAYS add more items to list! - Jack
 	var/gift_type_advanced = pick(
@@ -98,12 +97,12 @@
 		/obj/item/grenade/spawnergrenade/casino/zorgoia,
 		/obj/item/grenade/spawnergrenade/casino/gygax,
 		/obj/item/lego,
-		/obj/item/dnainjector/nobreath,
-		/obj/item/dnainjector/regenerate,
-		/obj/item/dnainjector/remoteview,
-		/obj/item/dnainjector/runfast,
-		/obj/item/dnainjector/telemut,
-		/obj/item/dnainjector/xraymut,
+		/obj/item/dnainjector/set_trait/nobreathe,
+		/obj/item/dnainjector/set_trait/regenerate,
+		/obj/item/dnainjector/set_trait/remoteview,
+		/obj/item/dnainjector/set_trait/haste,
+		/obj/item/dnainjector/set_trait/tk,
+		/obj/item/dnainjector/set_trait/xray,
 		/obj/item/instrument/accordion,
 		/obj/item/instrument/banjo,
 		/obj/item/instrument/bikehorn,
@@ -164,7 +163,7 @@
 
 	var/gift_type_chaos = pick(
 		/obj/item/grenade/spawnergrenade/casino/gygax/gorilla,
-		/obj/item/dnainjector/hulkmut,
+		/obj/item/dnainjector/set_trait/hulk,
 		/obj/item/grenade/spawnergrenade/casino/infinitycake,
 		/obj/item/grenade/spawnergrenade/casino/universal_technomancer,
 		/obj/item/spellbook,

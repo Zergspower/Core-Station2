@@ -9,7 +9,7 @@
 	buckle_lying = 0 //force people to sit up in chairs when buckled
 	var/propelled = 0 // Check for fire-extinguisher-driven chairs
 
-/obj/structure/bed/chair/Initialize(var/newloc, var/new_material, var/new_padding_material)
+/obj/structure/bed/chair/Initialize(mapload, var/new_material, var/new_padding_material)
 	. = ..()
 	update_layer()
 
@@ -43,14 +43,14 @@
 	..()
 	if(has_buckled_mobs())
 		var/cache_key = "[base_icon]-armrest-[padding_material ? padding_material.name : "no_material"]"
-		if(isnull(stool_cache[cache_key]))
+		if(isnull(GLOB.stool_cache[cache_key]))
 			var/image/I = image(icon, "[base_icon]_armrest")
 			I.plane = MOB_PLANE
 			I.layer = ABOVE_MOB_LAYER
 			if(padding_material)
 				I.color = padding_material.icon_colour
-			stool_cache[cache_key] = I
-		add_overlay(stool_cache[cache_key])
+			GLOB.stool_cache[cache_key] = I
+		add_overlay(GLOB.stool_cache[cache_key])
 
 /obj/structure/bed/chair/proc/update_layer()
 	if(src.dir == NORTH)
@@ -127,38 +127,38 @@
 		I.color = padding_material.icon_colour
 		add_overlay(I)
 
-/obj/structure/bed/chair/comfy/brown/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_LEATHER)
+/obj/structure/bed/chair/comfy/brown/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_LEATHER)
 
-/obj/structure/bed/chair/comfy/red/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CARPET)
+/obj/structure/bed/chair/comfy/red/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CARPET)
 
-/obj/structure/bed/chair/comfy/teal/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_TEAL)
+/obj/structure/bed/chair/comfy/teal/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_TEAL)
 
-/obj/structure/bed/chair/comfy/black/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_BLACK)
+/obj/structure/bed/chair/comfy/black/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_BLACK)
 
-/obj/structure/bed/chair/comfy/green/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_GREEN)
+/obj/structure/bed/chair/comfy/green/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_GREEN)
 
-/obj/structure/bed/chair/comfy/purp/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_PURPLE)
+/obj/structure/bed/chair/comfy/purp/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_PURPLE)
 
-/obj/structure/bed/chair/comfy/blue/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_BLUE)
+/obj/structure/bed/chair/comfy/blue/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_BLUE)
 
-/obj/structure/bed/chair/comfy/beige/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_BEIGE)
+/obj/structure/bed/chair/comfy/beige/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_BEIGE)
 
-/obj/structure/bed/chair/comfy/lime/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_LIME)
+/obj/structure/bed/chair/comfy/lime/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_LIME)
 
-/obj/structure/bed/chair/comfy/yellow/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_YELLOW)
+/obj/structure/bed/chair/comfy/yellow/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_YELLOW)
 
-/obj/structure/bed/chair/comfy/orange/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_ORANGE)
+/obj/structure/bed/chair/comfy/orange/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_ORANGE)
 
 /obj/structure/bed/chair/comfy/rounded
 	name = "rounded chair"
@@ -166,38 +166,38 @@
 	icon_state = "roundedchair"
 	base_icon = "roundedchair"
 
-/obj/structure/bed/chair/comfy/rounded/brown/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_LEATHER)
+/obj/structure/bed/chair/comfy/rounded/brown/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_LEATHER)
 
-/obj/structure/bed/chair/comfy/rounded/red/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CARPET)
+/obj/structure/bed/chair/comfy/rounded/red/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CARPET)
 
-/obj/structure/bed/chair/comfy/rounded/teal/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_TEAL)
+/obj/structure/bed/chair/comfy/rounded/teal/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_TEAL)
 
-/obj/structure/bed/chair/comfy/rounded/black/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_BLACK)
+/obj/structure/bed/chair/comfy/rounded/black/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_BLACK)
 
-/obj/structure/bed/chair/comfy/rounded/green/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_GREEN)
+/obj/structure/bed/chair/comfy/rounded/green/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_GREEN)
 
-/obj/structure/bed/chair/comfy/rounded/purple/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_PURPLE)
+/obj/structure/bed/chair/comfy/rounded/purple/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_PURPLE)
 
-/obj/structure/bed/chair/comfy/rounded/blue/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_BLUE)
+/obj/structure/bed/chair/comfy/rounded/blue/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_BLUE)
 
-/obj/structure/bed/chair/comfy/rounded/beige/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_BEIGE)
+/obj/structure/bed/chair/comfy/rounded/beige/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_BEIGE)
 
-/obj/structure/bed/chair/comfy/rounded/lime/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_LIME)
+/obj/structure/bed/chair/comfy/rounded/lime/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_LIME)
 
-/obj/structure/bed/chair/comfy/rounded/yellow/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_YELLOW)
+/obj/structure/bed/chair/comfy/rounded/yellow/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_YELLOW)
 
-/obj/structure/bed/chair/comfy/rounded/orange/Initialize(var/newloc, var/new_material, var/new_padding_material)
-	. = ..(newloc, MAT_STEEL, MAT_CLOTH_ORANGE)
+/obj/structure/bed/chair/comfy/rounded/orange/Initialize(mapload, var/new_material, var/new_padding_material)
+	. = ..(mapload, MAT_STEEL, MAT_CLOTH_ORANGE)
 
 /obj/structure/bed/chair/office
 	anchored = FALSE
@@ -246,7 +246,7 @@
 			occupant.apply_effect(6, STUTTER, blocked)
 			occupant.apply_damage(10, BRUTE, def_zone, blocked, soaked)
 			playsound(src, 'sound/weapons/punch1.ogg', 50, 1, -1)
-			if(istype(A, /mob/living))
+			if(isliving(A))
 				var/mob/living/victim = A
 				def_zone = ran_zone()
 				blocked = victim.run_armor_check(def_zone, "melee")
@@ -277,8 +277,8 @@
 		return
 	..()
 
-/obj/structure/bed/chair/wood/Initialize(var/newloc)
-	. = ..(newloc, MAT_WOOD)
+/obj/structure/bed/chair/wood/Initialize(mapload)
+	. = ..(mapload, MAT_WOOD)
 
 /obj/structure/bed/chair/wood/wings
 	icon_state = "wooden_chair_wings"
@@ -329,14 +329,14 @@
 /obj/structure/bed/chair/sofa/corner/update_icon()
 	..()
 	var/cache_key = "[base_icon]-armrest-[padding_material ? padding_material.name : "no_material"]-permanent"
-	if(isnull(stool_cache[cache_key]))
+	if(isnull(GLOB.stool_cache[cache_key]))
 		var/image/I = image(icon, "[base_icon]_armrest")
 		I.plane = MOB_PLANE
 		I.layer = ABOVE_MOB_LAYER
 		if(padding_material)
 			I.color = padding_material.icon_colour
-		stool_cache[cache_key] = I
-	add_overlay(stool_cache[cache_key])
+		GLOB.stool_cache[cache_key] = I
+	add_overlay(GLOB.stool_cache[cache_key])
 
 // Wooden nonsofa - no corners
 /obj/structure/bed/chair/sofa/pew
@@ -364,7 +364,7 @@
 	color = null
 	var/padding_color = "#CC0000"
 
-/obj/structure/bed/chair/sofa/bench/Initialize(var/newloc, var/new_material, var/new_padding_material)
+/obj/structure/bed/chair/sofa/bench/Initialize(mapload, var/new_material, var/new_padding_material)
 	. = ..()
 	var/mutable_appearance/MA
 	// If we're north-facing, metal goes above mob, padding overlay goes below mob.

@@ -1,7 +1,6 @@
-import { BooleanLike } from 'common/react';
 import { useState } from 'react';
-
-import { useBackend } from '../backend';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import {
   Box,
   Button,
@@ -10,8 +9,8 @@ import {
   NoticeBox,
   NumberInput,
   Section,
-} from '../components';
-import { Window } from '../layouts';
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   model_text: string;
@@ -43,20 +42,12 @@ export const SuitCycler = (props) => {
     (!!species && species[0]) || undefined,
   );
 
-  function handleSelectedDepartment(value: string | undefined) {
-    setSelectedDepartment(value);
-  }
-
-  function handleSelectedSpecies(value: string | undefined) {
-    setSelectedSpecies(value);
-  }
-
   let subTemplate = (
     <SuitCyclerContent
       selectedDepartment={selectedDepartment}
       selectedSpecies={selectedSpecies}
-      onSelectedDepartment={handleSelectedDepartment}
-      onSelectedSpecies={handleSelectedSpecies}
+      onSelectedDepartment={setSelectedDepartment}
+      onSelectedSpecies={setSelectedSpecies}
     />
   );
 
@@ -78,8 +69,10 @@ export const SuitCycler = (props) => {
 const SuitCyclerContent = (props: {
   selectedDepartment: string | undefined;
   selectedSpecies: string | undefined;
-  onSelectedDepartment: Function;
-  onSelectedSpecies: Function;
+  onSelectedDepartment: React.Dispatch<
+    React.SetStateAction<string | undefined>
+  >;
+  onSelectedSpecies: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) => {
   const { act, data } = useBackend<Data>();
   const {

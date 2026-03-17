@@ -114,13 +114,13 @@ var/list/slot_equipment_priority = list( \
 
 //Puts the item into your l_hand if possible and calls all necessary triggers/updates. returns 1 on success.
 /mob/proc/put_in_l_hand(var/obj/item/W)
-	if(/*lying || */!istype(W)) // CHOMPEdit - Don't care about lying, give me.
+	if(!istype(W))
 		return 0
 	return 1
 
 //Puts the item into your r_hand if possible and calls all necessary triggers/updates. returns 1 on success.
 /mob/proc/put_in_r_hand(var/obj/item/W)
-	if(/*lying || */!istype(W)) // CHOMPEdit - Don't care about lying, give me.
+	if(!istype(W))
 		return 0
 	return 1
 
@@ -140,17 +140,18 @@ var/list/slot_equipment_priority = list( \
 		return 0
 	W.forceMove(drop_location())
 	W.reset_plane_and_layer()
-	W.dropped()
+	W.dropped(src)
 	return 0
 
 // Removes an item from inventory and places it in the target atom.
 // If canremove or other conditions need to be checked then use unEquip instead.
 
 /mob/proc/drop_from_inventory(var/obj/item/W, var/atom/target)
-	if(W)
-		remove_from_mob(W, target)
-		return TRUE
-	return FALSE
+	if(!W)
+		return FALSE
+	if(isnull(target) && istype( src.loc,/obj/structure/disposalholder))
+		return remove_from_mob(W, src.loc)
+	return remove_from_mob(W, target)
 
 //Drops the item in our left hand
 /mob/proc/drop_l_hand(var/atom/Target)

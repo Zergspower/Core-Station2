@@ -5,7 +5,7 @@
  */
 
 import { useDispatch, useSelector } from 'tgui/backend';
-import { Section, Stack, Tabs } from 'tgui/components';
+import { Section, Stack, Tabs } from 'tgui-core/components';
 
 import { ChatPageSettings } from '../chat';
 import { changeSettingsTab } from './actions';
@@ -17,6 +17,7 @@ import { ExportTab } from './SettingTabs/ExportTab';
 import { MessageLimits } from './SettingTabs/MessageLimits';
 import { SettingsGeneral } from './SettingTabs/SettingsGeneral';
 import { TextHighlightSettings } from './SettingTabs/TextHighlightSettings';
+import { TTSSettings } from './SettingTabs/TTSSettings';
 
 export const SettingsPanel = (props) => {
   const activeTab = useSelector(selectActiveTab);
@@ -44,7 +45,7 @@ export const SettingsPanel = (props) => {
           </Tabs>
         </Section>
       </Stack.Item>
-      <Stack.Item grow={1} basis={0}>
+      <Stack.Item grow basis={0}>
         {activeTab === 'general' && <SettingsGeneral />}
         {activeTab === 'limits' && <MessageLimits />}
         {activeTab === 'export' && <ExportTab />}
@@ -52,6 +53,7 @@ export const SettingsPanel = (props) => {
         {activeTab === 'textHighlight' && <TextHighlightSettings />}
         {activeTab === 'statPanel' && <SettingsStatPanel />}
         {activeTab === 'adminSettings' && <AdminSettings />}
+        {activeTab === 'ttsSettings' && <TTSSettings />}
       </Stack.Item>
     </Stack>
   );

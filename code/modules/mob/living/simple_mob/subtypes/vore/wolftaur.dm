@@ -38,8 +38,8 @@
 	pixel_y = 0
 	faction = FACTION_WOLFTAUR
 
-/mob/living/simple_mob/vore/wolftaur/New()
-	..()
+/mob/living/simple_mob/vore/wolftaur/Initialize(mapload)
+	. = ..()
 	if(random_skin)
 		icon_living = pick(skins)
 		icon_rest = "[icon_living]_rest"
@@ -68,10 +68,8 @@
 	base_wander_delay = 8
 	belly_attack = FALSE
 
-/mob/living/simple_mob/vore/wolftaur/init_vore()
-	if(!voremob_loaded)
-		return
-	.=..()
+/mob/living/simple_mob/vore/wolftaur/load_default_bellies()
+	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "stomach"
 	B.desc = "After a gruelling compressive traversal down through the taur's gullet, you briefly get deposited in an oppressively tight stomach at it's humanoid waist. However, the wolf has little interest in keeping you here, instead treating you as a mere snack, an orifice opens beneath you and you're soon dragged deeper into her depths. Soon you're splashing into an active, waiting caustic slurry, and the world around you drops as though you're trapped in a hammock. The taur's underbelly sags with your weight, and you feel a heavy pat from the woman outside settling in to make the most of her meal."

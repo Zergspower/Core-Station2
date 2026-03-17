@@ -1,6 +1,8 @@
-import { useBackend } from '../../backend';
-import { Button, Knob, LabeledList } from '../../components';
-import { Data } from './types';
+import { useBackend } from 'tgui/backend';
+import { Button, Knob, LabeledList } from 'tgui-core/components';
+import { toFixed } from 'tgui-core/math';
+
+import type { Data } from './types';
 
 export const OperatingComputerOptions = (props) => {
   const { act, data } = useBackend<Data>();
@@ -33,7 +35,7 @@ export const OperatingComputerOptions = (props) => {
           value={healthAlarm}
           stepPixelSize={5}
           ml="0"
-          format={(val) => val + '%'}
+          format={(val) => `${toFixed(val)}%`}
           onChange={(e, val: number) =>
             act('health_adj', {
               new: val,
@@ -58,7 +60,7 @@ export const OperatingComputerOptions = (props) => {
           value={oxyAlarm}
           stepPixelSize={5}
           ml="0"
-          format={(val) => val + '%'}
+          format={(val) => `${toFixed(val)}%`}
           onChange={(e, val: number) =>
             act('oxy_adj', {
               new: val,

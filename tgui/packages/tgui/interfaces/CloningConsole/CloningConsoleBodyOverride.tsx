@@ -1,7 +1,8 @@
-import { useBackend } from '../../backend';
-import { Box, Button, LabeledList, Section } from '../../components';
-import { COLORS } from '../../constants';
-import { Data, modalData } from './types';
+import { useBackend } from 'tgui/backend';
+import { COLORS } from 'tgui/constants';
+import { Box, Button, LabeledList, Section } from 'tgui-core/components';
+
+import type { Data, modalData } from './types';
 
 export const viewRecordModalBodyOverride = (modal: modalData) => {
   const { act, data } = useBackend<Data>();
@@ -12,7 +13,7 @@ export const viewRecordModalBodyOverride = (modal: modalData) => {
     modal.args;
   const damages = health.split(' - ');
   return (
-    <Section m="-1rem" pb="1rem" title={'Records of ' + realname}>
+    <Section m="-1rem" pb="1rem" title={`Records of ${realname}`}>
       <LabeledList>
         <LabeledList.Item label="Name">{realname}</LabeledList.Item>
         <LabeledList.Item label="Damage">

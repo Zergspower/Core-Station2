@@ -65,10 +65,8 @@
 	can_pain_emote = FALSE
 	injury_enrages = TRUE
 
-/mob/living/simple_mob/vore/demonAI/init_vore()
-	if(!voremob_loaded)
-		return
-	.=..()
+/mob/living/simple_mob/vore/demonAI/load_default_bellies()
+	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "Stomach"
 	B.desc = "You slide down the slick, slippery gullet of the creature. It's warm, and the air is thick. You can feel the doughy walls of the creatures gut push and knead into your form! Slimy juices coat your form stinging against your flesh as they waste no time to start digesting you. The creature's heartbeat and the gurgling of their stomach are all you can hear as your jostled about, treated like nothing but food."
@@ -183,20 +181,20 @@
 	..()
 
 /mob/living/simple_mob/vore/demonAI/bullet_act()
-    playsound(src, 'sound/misc/demonlaugh.ogg', 50, 1)
-    ..()
+	playsound(src, 'sound/misc/demonlaugh.ogg', 50, 1)
+	..()
 
 /mob/living/simple_mob/vore/demonAI/attack_hand()
-    playsound(src, 'sound/misc/demonlaugh.ogg', 50, 1)
-    ..()
+	playsound(src, 'sound/misc/demonlaugh.ogg', 50, 1)
+	..()
 
 /mob/living/simple_mob/vore/demonAI/hitby()
-    playsound(src, 'sound/misc/demonlaugh.ogg', 50, 1)
-    ..()
+	playsound(src, 'sound/misc/demonlaugh.ogg', 50, 1)
+	..()
 
 /mob/living/simple_mob/vore/demonAI/attackby()
-    playsound(src, 'sound/misc/demonlaugh.ogg', 50, 1)
-    ..()
+	playsound(src, 'sound/misc/demonlaugh.ogg', 50, 1)
+	..()
 
 /mob/living/simple_mob/vore/demonAI/gibspam
 

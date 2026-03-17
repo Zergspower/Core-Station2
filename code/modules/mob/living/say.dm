@@ -64,7 +64,7 @@ var/list/department_radio_keys = list(
 )
 
 
-var/list/channel_to_radio_key = new
+var/list/channel_to_radio_key = list()
 /proc/get_radio_key_from_channel(var/channel)
 	var/key = channel_to_radio_key[channel]
 	if(!key)
@@ -100,6 +100,10 @@ var/list/channel_to_radio_key = new
 		if(S.speaking && (S.speaking.flags & NO_STUTTER || S.speaking.flags & SIGNLANG))
 			continue
 
+		if(disabilities & CENSORED)
+			S.message = censor_swears(S.message) // Googlybonkers
+			. = 1
+
 		if((HULK in mutations) && health >= 25 && length(S.message))
 			S.message = "[uppertext(S.message)]!!!"
 			verb = pick("yells","roars","hollers")
@@ -113,17 +117,15 @@ var/list/channel_to_radio_key = new
 			S.message = stutter(S.message)
 			verb = pick("stammers","stutters")
 			. = 1
-		//VOREStation Edit Start
 		if(muffled)
 			verb = pick("muffles")
 			whispering = 1
 			. = 1
-		//VOREStation Edit End
-		//YW Edit start
-		if(wingdings)
-			S.message = span_wingdings(S.message)
+		if(disabilities & WINGDINGS)
+			verb = pick("gibbers","gabbers","gahoos","gazonks") // Yeah lets just be stupid
+			S.message = Gibberish(S.message, 100) // Googlybonkers
+			S.message = span_wingdings((S.message))
 			. = 1
-		//YW Edit End
 
 	message_data[1] = message_pieces
 	message_data[2] = verb
@@ -176,7 +178,7 @@ var/list/channel_to_radio_key = new
 	//Maybe they are using say/whisper to do a quick emote, so do those
 	switch(copytext(message, 1, 2))
 		if("*") return emote(copytext(message, 2))
-		if("^") return custom_emote(1, copytext(message, 2))
+		if("^") return custom_emote(VISIBLE_MESSAGE, copytext(message, 2))
 
 	//Parse the radio code and consume it
 	if(message_mode)
@@ -316,7 +318,7 @@ var/list/channel_to_radio_key = new
 	//Handle nonverbal languages here
 	for(var/datum/multilingual_say_piece/S in message_pieces)
 		if((S.speaking.flags & NONVERBAL) || (S.speaking.flags & INAUDIBLE))
-			custom_emote(1, "[pick(S.speaking.signlang_verb)].")
+			custom_emote(VISIBLE_MESSAGE, "[pick(S.speaking.signlang_verb)].")
 			do_sound = FALSE
 
 	//These will contain the main receivers of the message
@@ -376,7 +378,7 @@ var/list/channel_to_radio_key = new
 			if(M && src) //If we still exist, when the spawn processes
 				//VOREStation Add - Ghosts don't hear whispers
 				if(whispering && isobserver(M) && (!M.client?.prefs?.read_preference(/datum/preference/toggle/ghost_see_whisubtle) || \
-				(!(client?.prefs?.read_preference(/datum/preference/toggle/whisubtle_vis) || (isbelly(M.loc) && src == M.loc:owner))  && !M.client?.holder)))
+				(!(client?.prefs?.read_preference(/datum/preference/toggle/whisubtle_vis) || (isbelly(M.loc) && src == M.loc:owner))  && !check_rights_for(M.client, R_HOLDER))))
 					M.show_message(span_game(span_say(span_name(src.name) + " [w_not_heard].")), 2)
 					return
 				//VOREStation Add End

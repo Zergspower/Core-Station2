@@ -1,9 +1,9 @@
-import { decodeHtmlEntities } from 'common/string';
+import { useBackend } from 'tgui/backend';
+import { Box, Button, LabeledList, Section } from 'tgui-core/components';
+import { decodeHtmlEntities } from 'tgui-core/string';
 
-import { useBackend } from '../../backend';
-import { Box, Button, LabeledList, Section } from '../../components';
 import { RCS_MAINMENU } from './constants';
-import { Data } from './types';
+import type { Data } from './types';
 
 export const RequestConsoleViewMessages = (props) => {
   const { act, data } = useBackend<Data>();
@@ -37,7 +37,7 @@ export const RequestConsoleMessageAuth = (props) => {
   return (
     <Section title="Message Authentication">
       <LabeledList>
-        <LabeledList.Item label={'Message for ' + recipient}>
+        <LabeledList.Item label={`Message for ${recipient}`}>
           {message}
         </LabeledList.Item>
         <LabeledList.Item label="Priority">

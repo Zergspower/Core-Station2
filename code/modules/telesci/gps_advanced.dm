@@ -14,7 +14,7 @@
 	gps_tag = "COM0"
 	emped = 0
 
-/obj/item/gps/advanced/Initialize()
+/obj/item/gps/advanced/Initialize(mapload)
 	. = ..()
 	add_overlay("working")
 
@@ -36,7 +36,7 @@
 		t += "<BR><A href='byond://?src=\ref[src];advtag=1'>Set Tag</A> "
 		t += "<BR>Tag: [gps_tag]"
 
-		for(var/obj/item/gps/advanced/G in GPS_list)
+		for(var/obj/item/gps/advanced/G in GLOB.GPS_list)
 			var/turf/pos = get_turf(G)
 			var/area/gps_area = get_area(G)
 			var/tracked_gpstag = G.gps_tag
@@ -47,7 +47,6 @@
 
 	var/datum/browser/popup = new(user, "GPS", name, 600, 450)
 	popup.set_content(t)
-	popup.set_title_image(user.browse_rsc_icon(src.icon, src.icon_state))
 	popup.open()
 
 /obj/item/gps/advanced/Topic(href, href_list)

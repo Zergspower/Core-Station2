@@ -4,7 +4,7 @@
 		for(var/turf/simulated/floor/T in orange(1,xmas))
 			for(var/i=1,i<=rand(1,5),i++)
 				new /obj/item/a_gift(T)
-	//for(var/mob/living/simple_mob/corgi/Ian/Ian in mob_list)
+	//for(var/mob/living/simple_mob/corgi/Ian/Ian in GLOB.mob_list)
 	//	Ian.place_on_head(new /obj/item/clothing/head/helmet/space/santahat(Ian))
 
 /proc/ChristmasEvent()
@@ -23,11 +23,8 @@
 	desc = "Directions for use: Requires two people, one to pull each end."
 	var/cracked = 0
 
-/obj/item/toy/xmas_cracker/New()
-	..()
-
 /obj/item/toy/xmas_cracker/attack(mob/target, mob/user)
-	if( !cracked && (istype(target,/mob/living/silicon) || (istype(target,/mob/living/carbon/human) && !target.get_active_hand())) && target.stat == CONSCIOUS)
+	if( !cracked && (issilicon(target) || (ishuman(target) && !target.get_active_hand())) && target.stat == CONSCIOUS)
 		target.visible_message(span_notice("[user] and [target] pop \an [src]! *pop*"), span_notice("You pull \an [src] with [target]! *pop*"), span_notice("You hear a *pop*."))
 		var/obj/item/paper/Joke = new /obj/item/paper(user.loc)
 		Joke.name = "[pick("awful","terrible","unfunny")] joke"

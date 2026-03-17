@@ -1,6 +1,7 @@
-import { useBackend } from '../../backend';
-import { Box, Button, Flex, Section } from '../../components';
-import { Data } from './types';
+import { useBackend } from 'tgui/backend';
+import { Box, Button, Section, Stack } from 'tgui-core/components';
+
+import type { Data } from './types';
 
 export const ChemDispenserRecipes = (props) => {
   const { act, data } = useBackend<Data>();
@@ -15,41 +16,49 @@ export const ChemDispenserRecipes = (props) => {
       fill
       scrollable
       buttons={
-        <>
+        <Stack>
           {!recording && (
-            <Button icon="circle" onClick={() => act('record_recipe')}>
-              Record
-            </Button>
+            <Stack.Item>
+              <Button icon="circle" onClick={() => act('record_recipe')}>
+                Record
+              </Button>
+            </Stack.Item>
           )}
           {recording && (
-            <Button
-              icon="ban"
-              color="bad"
-              onClick={() => act('cancel_recording')}
-            >
-              Discard
-            </Button>
+            <Stack.Item>
+              <Button
+                icon="ban"
+                color="bad"
+                onClick={() => act('cancel_recording')}
+              >
+                Discard
+              </Button>
+            </Stack.Item>
           )}
           {recording && (
-            <Button
-              icon="save"
-              color="green"
-              onClick={() => act('save_recording')}
-            >
-              Save
-            </Button>
+            <Stack.Item>
+              <Button
+                icon="save"
+                color="green"
+                onClick={() => act('save_recording')}
+              >
+                Save
+              </Button>
+            </Stack.Item>
           )}
           {!recording && (
-            <Button.Confirm
-              icon="trash"
-              confirmIcon="trash"
-              color="bad"
-              onClick={() => act('clear_recipes')}
-            >
-              Clear All
-            </Button.Confirm>
+            <Stack.Item>
+              <Button.Confirm
+                icon="trash"
+                confirmIcon="trash"
+                color="bad"
+                onClick={() => act('clear_recipes')}
+              >
+                Clear All
+              </Button.Confirm>
+            </Stack.Item>
           )}
-        </>
+        </Stack>
       }
     >
       {recording && (
@@ -77,8 +86,8 @@ export const ChemDispenserRecipes = (props) => {
       )}
       {recipeData.length
         ? recipeData.map((recipe) => (
-            <Flex key={recipe}>
-              <Flex.Item grow={1}>
+            <Stack key={recipe}>
+              <Stack.Item grow>
                 <Button
                   fluid
                   icon="flask"
@@ -86,8 +95,8 @@ export const ChemDispenserRecipes = (props) => {
                 >
                   {recipe}
                 </Button>
-              </Flex.Item>
-              <Flex.Item>
+              </Stack.Item>
+              <Stack.Item>
                 <Button.Confirm
                   icon="trash"
                   confirmIcon="triangle-exclamation"
@@ -95,8 +104,8 @@ export const ChemDispenserRecipes = (props) => {
                   color="bad"
                   onClick={() => act('remove_recipe', { recipe })}
                 />
-              </Flex.Item>
-            </Flex>
+              </Stack.Item>
+            </Stack>
           ))
         : 'No Recipes.'}
     </Section>

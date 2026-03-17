@@ -1,6 +1,7 @@
-import { useBackend } from '../../backend';
-import { Button, LabeledList, Section } from '../../components';
-import { Data } from './types';
+import { useBackend } from 'tgui/backend';
+import { Button, LabeledList, Section } from 'tgui-core/components';
+
+import type { Data } from './types';
 
 export const CommunicationsConsoleAuth = (props) => {
   const { act, data } = useBackend<Data>();
@@ -34,7 +35,7 @@ export const CommunicationsConsoleAuth = (props) => {
                 selected={authenticated}
                 onClick={() => act('auth')}
               >
-                {authenticated ? 'Log Out (' + authReadable + ')' : 'Log In'}
+                {authenticated ? `Log Out (${authReadable})` : 'Log In'}
               </Button>
             </LabeledList.Item>
           )}

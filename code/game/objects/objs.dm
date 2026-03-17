@@ -22,6 +22,7 @@
 	var/show_examine = TRUE	// Does this pop up on a mob when the mob is examined?
 
 	var/redgate_allowed = TRUE	//can we be taken through the redgate, in either direction?
+	var/being_used = 0
 
 /obj/Destroy()
 	STOP_PROCESSING(SSobj, src)
@@ -39,16 +40,14 @@
 			m.visible_message(span_notice("\The [m] tumbles out of \the [src]!"))
 	//VOREStation Add End
 
-	//CHOMPAdd Start possessed item cleanup
 	if(istype(src, /obj/item))
 		var/obj/item/I = src
 		if(I.possessed_voice && I.possessed_voice.len)
 			for(var/mob/living/voice/V in I.possessed_voice)
 				if(!V.tf_mob_holder)
 					V.ghostize(0)
-					V.stat = DEAD //CHOMPAdd - Helps with autosleeving
-					V.Destroy()
-	//CHOMPAdd End
+					V.stat = DEAD
+					qdel(V)
 
 	return ..()
 
@@ -105,7 +104,7 @@
 	else
 		return null
 
-/obj/proc/updateUsrDialog()
+/obj/proc/updateUsrDialog(mob/user)
 	if(in_use)
 		var/is_in_use = 0
 		var/list/nearby = viewers(1, src)
@@ -113,16 +112,16 @@
 			if ((M.client && M.machine == src))
 				is_in_use = 1
 				src.attack_hand(M)
-		if (istype(usr, /mob/living/silicon/ai) || istype(usr, /mob/living/silicon/robot))
-			if (!(usr in nearby))
-				if (usr.client && usr.machine==src) // && M.machine == src is omitted because if we triggered this by using the dialog, it doesn't matter if our machine changed in between triggering it and this - the dialog is probably still supposed to refresh.
+		if (isAI(user) || isrobot(user))
+			if (!(user in nearby))
+				if (user.client && user.machine==src) // && M.machine == src is omitted because if we triggered this by using the dialog, it doesn't matter if our machine changed in between triggering it and this - the dialog is probably still supposed to refresh.
 					is_in_use = 1
-					src.attack_ai(usr)
+					src.attack_ai(user)
 
 		// check for TK users
 
-		if (istype(usr, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = usr
+		if (ishuman(user))
+			var/mob/living/carbon/human/H = user
 			if(H.get_type_in_hands(/obj/item/tk_grab))
 				if(!(H in nearby))
 					if(H.client && H.machine==src)
@@ -186,10 +185,6 @@
 
 /obj/proc/see_emote(mob/M as mob, text, var/emote_type)
 	return
-/* CHOMP Removal
-/obj/proc/show_message(msg, type, alt, alt_type)//Message, type of message (1 or 2), alternative message, alt message type (1 or 2)
-	return
-*/
 // Used to mark a turf as containing objects that are dangerous to step onto.
 /obj/proc/register_dangerous_to_step()
 	var/turf/T = get_turf(src)
@@ -218,3 +213,85 @@
 			if(src)
 				step(src, pick(NORTH,SOUTH,EAST,WEST))
 				sleep(rand(2,4))
+
+// Gives the object a shake animation.
+/obj/proc/animate_shake()
+	var/init_px = pixel_x
+	var/shake_dir = pick(-1, 1)
+	animate(src, transform=turn(matrix(), 8*shake_dir), pixel_x=init_px + 2*shake_dir, time=1)
+	animate(transform=null, pixel_x=init_px, time=6, easing=ELASTIC_EASING)
+
+/obj/item/wash(clean_types)
+	. = ..()
+	if(blood_overlay && clean_types & CLEAN_WASH)
+		overlays.Remove(blood_overlay)
+	if(gurgled && clean_types & CLEAN_WASH)
+		gurgled = FALSE
+		cut_overlay(gurgled_overlays[gurgled_color])
+	if(contaminated && clean_types & CLEAN_RAD) // Phoron and stuff, washing machine needed
+		contaminated = FALSE
+		cut_overlay(contamination_overlay)
+
+/obj/vv_get_dropdown()
+	. = ..()
+	VV_DROPDOWN_OPTION("", "---")
+	VV_DROPDOWN_OPTION(VV_HK_MASS_DEL_TYPE, "Delete all of type")
+	VV_DROPDOWN_OPTION(VV_HK_FAKE_CONVO, "Add Fake Prop Conversation")
+	//VV_DROPDOWN_OPTION(VV_HK_OSAY, "Object Say")
+
+/obj/vv_do_topic(list/href_list)
+	. = ..()
+
+	if(!.)
+		return
+
+	//if(href_list[VV_HK_OSAY])
+	//	return SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/object_say, src)
+
+	if(href_list[VV_HK_MASS_DEL_TYPE])
+		if(!check_rights(R_DEBUG|R_SERVER))
+			return
+		var/action_type = tgui_alert(usr, "Strict type ([type]) or type and all subtypes?",,list("Strict type","Type and subtypes","Cancel"))
+		if(action_type == "Cancel" || !action_type)
+			return
+		if(tgui_alert(usr, "Are you really sure you want to delete all objects of type [type]?",,list("Yes","No")) != "Yes")
+			return
+		if(tgui_alert(usr, "Second confirmation required. Delete?",,list("Yes","No")) != "Yes")
+			return
+		var/O_type = type
+		switch(action_type)
+			if("Strict type")
+				var/i = 0
+				for(var/obj/Obj in world)
+					if(Obj.type == O_type)
+						i++
+						qdel(Obj)
+					CHECK_TICK
+				if(!i)
+					to_chat(usr, "No objects of this type exist")
+					return
+				log_admin("[key_name(usr)] deleted all objects of type [O_type] ([i] objects deleted) ")
+				message_admins(span_notice("[key_name(usr)] deleted all objects of type [O_type] ([i] objects deleted) "))
+			if("Type and subtypes")
+				var/i = 0
+				for(var/obj/Obj in world)
+					if(istype(Obj,O_type))
+						i++
+						qdel(Obj)
+					CHECK_TICK
+				if(!i)
+					to_chat(usr, "No objects of this type exist")
+					return
+				log_admin("[key_name(usr)] deleted all objects of type or subtype of [O_type] ([i] objects deleted) ")
+				message_admins(span_notice("[key_name(usr)] deleted all objects of type or subtype of [O_type] ([i] objects deleted) "))
+
+	if(href_list[VV_HK_FAKE_CONVO])
+		if(!check_rights(R_FUN))
+			return
+
+		var/obj/item/pda/P = src
+		if(!istype(P))
+			to_chat(usr, span_warning("This can only be done to instances of type /pda"))
+			return
+
+		P.createPropFakeConversation_admin(usr)

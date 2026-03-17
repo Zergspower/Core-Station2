@@ -1,6 +1,7 @@
-import { useBackend } from '../../backend';
-import { Box, Button, LabeledList, Section } from '../../components';
-import { Data } from './types';
+import { useBackend } from 'tgui/backend';
+import { Box, Button, LabeledList, Section, Stack } from 'tgui-core/components';
+
+import type { Data } from './types';
 
 export const AtmoControlFuel = (props) => {
   const { act, data } = useBackend<Data>();
@@ -10,26 +11,32 @@ export const AtmoControlFuel = (props) => {
     <Section
       title="Fuel Injection System"
       buttons={
-        <>
-          <Button
-            icon="syringe"
-            onClick={() => act('injection')}
-            disabled={automation || !device_info}
-          >
-            Inject
-          </Button>
-          <Button icon="sync" onClick={() => act('refresh_status')}>
-            Refresh
-          </Button>
-          <Button
-            icon="power-off"
-            onClick={() => act('toggle_injector')}
-            selected={device_info ? device_info.power : false}
-            disabled={automation || !device_info}
-          >
-            Injector Power
-          </Button>
-        </>
+        <Stack>
+          <Stack.Item>
+            <Button
+              icon="syringe"
+              onClick={() => act('injection')}
+              disabled={automation || !device_info}
+            >
+              Inject
+            </Button>
+          </Stack.Item>
+          <Stack.Item>
+            <Button icon="sync" onClick={() => act('refresh_status')}>
+              Refresh
+            </Button>
+          </Stack.Item>
+          <Stack.Item>
+            <Button
+              icon="power-off"
+              onClick={() => act('toggle_injector')}
+              selected={device_info ? device_info.power : false}
+              disabled={automation || !device_info}
+            >
+              Injector Power
+            </Button>
+          </Stack.Item>
+        </Stack>
       }
     >
       {device_info ? (

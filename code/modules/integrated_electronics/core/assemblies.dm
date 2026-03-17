@@ -17,14 +17,14 @@
 	var/detail_color = COLOR_ASSEMBLY_BLACK
 
 
-/obj/item/electronic_assembly/Initialize()
+/obj/item/electronic_assembly/Initialize(mapload)
 	battery = new(src)
 	START_PROCESSING(SSobj, src)
 	return ..()
 
 /obj/item/electronic_assembly/Destroy()
-	battery = null // It will be qdel'd by ..() if still in our contents
 	STOP_PROCESSING(SSobj, src)
+	battery = null // It will be qdel'd by ..() if still in our contents
 	return ..()
 
 /obj/item/electronic_assembly/process()
@@ -266,15 +266,18 @@
 	IC.assembly = src
 
 /obj/item/electronic_assembly/afterattack(atom/target, mob/user, proximity)
+	var/scanned = FALSE
 	if(proximity)
-		var/scanned = FALSE
+		// Existing sensor support
 		for(var/obj/item/integrated_circuit/input/sensor/S in contents)
-//			S.set_pin_data(IC_OUTPUT, 1, WEAKREF(target))
-//			S.check_then_do_work()
 			if(S.scan(target))
 				scanned = TRUE
 		if(scanned)
 			visible_message(span_infoplain(span_bold("\The [user]") + " waves \the [src] around [target]."))
+
+	// Support for reference grabber + future ranged circuitry.
+	for(var/obj/item/integrated_circuit/input/reference_grabber/G in contents)
+		G.afterattack(target, user, proximity, null)
 
 /obj/item/electronic_assembly/attackby(var/obj/item/I, var/mob/user)
 	if(can_anchor && I.has_tool_quality(TOOL_WRENCH))
@@ -288,7 +291,7 @@
 		return TRUE
 
 	else if(istype(I, /obj/item/integrated_circuit))
-		if(!user.unEquip(I) && !istype(user, /mob/living/silicon/robot)) //Robots cannot de-equip items in grippers.
+		if(!user.unEquip(I) && !isrobot(user)) //Robots cannot de-equip items in grippers.
 			return FALSE
 		if(add_circuit(I, user))
 			to_chat(user, span_notice("You slide \the [I] inside \the [src]."))

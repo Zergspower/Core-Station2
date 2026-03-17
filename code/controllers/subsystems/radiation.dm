@@ -15,7 +15,7 @@ SUBSYSTEM_DEF(radiation)
 	if (!resumed)
 		current_sources = sources.Copy()
 		current_res_cache = resistance_cache.Copy()
-		listeners = living_mob_list.Copy()
+		listeners = GLOB.living_mob_list.Copy()
 
 	while(current_sources.len)
 		var/datum/radiation_source/S = current_sources[current_sources.len]
@@ -146,10 +146,3 @@ SUBSYSTEM_DEF(radiation)
 		return
 	var/turf/epicentre = locate(round(world.maxx / 2), round(world.maxy / 2), source.z)
 	flat_radiate(epicentre, power, world.maxx, respect_maint)
-
-//CHOMPEdit Begin
-//Putting this here so it can be promptly nuked if I ever redo the radiation subsystem
-/mob/living/Destroy()
-	. = ..()
-	SSradiation.listeners -= src
-//CHOMPEdit End

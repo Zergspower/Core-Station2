@@ -157,6 +157,8 @@
 		/obj/item/taperoll/medical,
 		/obj/item/storage/box/freezer,
 		/obj/item/clothing/mask/chewable/candy/lolli,
+		/obj/item/extrapolator,
+		/obj/item/gene_scanner,
 	) //Vorestation add - added a bunch of misc medical stuff
 	max_storage_space = ITEMSIZE_COST_SMALL*3 //Vorestation Add - makes it slightly smaller since its a lot of stuff with pocket access
 

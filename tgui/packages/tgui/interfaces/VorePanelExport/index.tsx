@@ -1,7 +1,6 @@
-import { useBackend } from '../../backend';
-import { Button, Section } from '../../components';
-import { Window } from '../../layouts';
-import { Data } from './types';
+import { Window } from 'tgui/layouts';
+import { Button, Section } from 'tgui-core/components';
+
 import { downloadPrefs } from './VorePanelExportDownload';
 
 export const VorePanelExport = () => {
@@ -15,10 +14,6 @@ export const VorePanelExport = () => {
 };
 
 const VorePanelExportContent = (props) => {
-  const { act, data } = useBackend<Data>();
-
-  const { bellies } = data;
-
   return (
     <Section title="Vore Export Panel">
       <Section title="Export">

@@ -13,8 +13,8 @@
 	var/fake_lightning = result == "Yes (Cosmetic)"
 
 	lightning_strike(get_turf(usr), fake_lightning)
-	log_and_message_admins("[key_name(src)] has caused [fake_lightning ? "cosmetic":"harmful"] lightning to strike at their position ([src.mob.x], [src.mob.y], [src.mob.z]). \
-	(<A href='byond://?_src_=holder;[HrefToken()];adminplayerobservecoodjump=1;X=[src.mob.x];Y=[src.mob.y];Z=[src.mob.z]'>JMP</a>)")
+	log_and_message_admins("has caused [fake_lightning ? "cosmetic":"harmful"] lightning to strike at their position ([src.mob.x], [src.mob.y], [src.mob.z]). \
+	(<A href='byond://?_src_=holder;[HrefToken()];adminplayerobservecoodjump=1;X=[src.mob.x];Y=[src.mob.y];Z=[src.mob.z]'>JMP</a>)", src)
 
 #define LIGHTNING_REDIRECT_RANGE 28 // How far in tiles certain things draw lightning from.
 #define LIGHTNING_ZAP_RANGE 1 // How far the tesla effect zaps, as well as the bad effects from a direct strike.
@@ -63,7 +63,7 @@
 	// And for those far away. If the strike happens on a planet, everyone on the planet will hear it.
 	// Otherwise only those on the current z-level will hear it.
 	var/sound = get_sfx("thunder")
-	for(var/mob/M in player_list)
+	for(var/mob/M in GLOB.player_list)
 		if( (P && (M.z in P.expected_z_levels)) || M.z == T.z)
 			if(M.check_sound_preference(/datum/preference/toggle/weather_sounds))
 				M.playsound_local(get_turf(M), soundin = sound, vol = 70, vary = FALSE, is_global = TRUE)

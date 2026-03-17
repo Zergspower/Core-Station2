@@ -5,7 +5,7 @@
 		M.remove_ventcrawl()
 		M.forceMove(get_turf(src))
 	if(pipe_image)
-		for(var/mob/living/M in player_list)
+		for(var/mob/living/M in GLOB.player_list)
 			if(M.client)
 				M.client.images -= pipe_image
 				M.pipes_shown -= pipe_image
@@ -18,7 +18,7 @@
 	. = ..()
 
 /obj/machinery/atmospherics/Entered(atom/movable/Obj)
-	if(istype(Obj, /mob/living))
+	if(isliving(Obj))
 		var/mob/living/L = Obj
 		L.ventcrawl_layer = layer
 	. = ..()

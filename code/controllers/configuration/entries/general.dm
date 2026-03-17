@@ -164,7 +164,23 @@
 /datum/config_entry/flag/allow_holidays/ValidateAndSet()
 	. = ..()
 	if(.)
-		Holiday = config_entry_value
+		GLOB.Holiday = config_entry_value
+
+/datum/config_entry/number/minute_topic_limit
+	config_entry_value = 250
+	min_val = 0
+
+/datum/config_entry/number/second_topic_limit
+	config_entry_value = 15
+	min_val = 0
+
+/datum/config_entry/number/minute_click_limit
+	config_entry_value = 400
+	min_val = 0
+
+/datum/config_entry/number/second_click_limit
+	config_entry_value = 15
+	min_val = 0
 
 /datum/config_entry/number/fps
 	default = 20
@@ -179,7 +195,7 @@
 		sync_validate = TRUE
 		var/datum/config_entry/number/ticklag/TL = config.entries_by_type[/datum/config_entry/number/ticklag]
 		if(!TL.sync_validate)
-			TL.ValidateAndSet(10 / config_entry_value)
+			TL.ValidateAndSet("[10 / config_entry_value]")
 		sync_validate = FALSE
 
 /datum/config_entry/number/ticklag
@@ -197,7 +213,7 @@
 		sync_validate = TRUE
 		var/datum/config_entry/number/fps/FPS = config.entries_by_type[/datum/config_entry/number/fps]
 		if(!FPS.sync_validate)
-			FPS.ValidateAndSet(10 / config_entry_value)
+			FPS.ValidateAndSet("[10 / config_entry_value]")
 		sync_validate = FALSE
 
 /// SSinitialization throttling
@@ -422,8 +438,17 @@
 
 /datum/config_entry/flag/no_click_cooldown
 
-/// Defines whether the server uses the legacy admin system with admins.txt or the SQL system. Config option in config.txt
-/datum/config_entry/flag/admin_legacy_system
+/datum/config_entry/flag/admin_legacy_system //Defines whether the server uses the legacy admin system with admins.txt or the SQL system
+	protection = CONFIG_ENTRY_LOCKED
+
+/datum/config_entry/flag/protect_legacy_admins //Stops any admins loaded by the legacy system from having their rank edited by the permissions panel
+	protection = CONFIG_ENTRY_LOCKED
+
+/datum/config_entry/flag/protect_legacy_ranks //Stops any ranks loaded by the legacy system from having their flags edited by the permissions panel
+	protection = CONFIG_ENTRY_LOCKED
+
+/datum/config_entry/flag/load_legacy_ranks_only //Loads admin ranks only from legacy admin_ranks.txt, while enabled ranks are mirrored to the database
+	protection = CONFIG_ENTRY_LOCKED
 
 /// Defines whether the server uses the legacy banning system with the files in /data or the SQL system. Config option in config.txt
 /datum/config_entry/flag/ban_legacy_system
@@ -556,7 +581,8 @@
 /datum/config_entry/flag/allow_url_links
 	default = TRUE // honestly if I were you i'd leave this one off, only use in dire situations
 
-/datum/config_entry/flag/starlight // Whether space turfs have ambient light or not
+/datum/config_entry/number/starlight // Whether space turfs have ambient light or not and how strong it is.
+	default = 0
 
 // FIXME: Unused
 ///datum/config_entry/str_list/ert_species
@@ -696,3 +722,71 @@
 /// Controls whether simple mobs may recolour themselves once/spawn by giving them the recolour verb
 /// Admins may manually give them the verb even if disabled
 /datum/config_entry/flag/allow_simple_mob_recolor
+
+/// Chatlogs are now saved by calling the chatlogging library instead of letting the clients handle it
+/// REQUIRES an database
+/datum/config_entry/flag/chatlog_database_backend
+	default = FALSE
+
+/// The endpoint for the chat to fetch the chatlogs from (for example, the last 2500 messages on init for the history)
+/// REQUIRES chatlog_database_backend to be enabled
+/datum/config_entry/string/chatlog_database_api_endpoint
+
+/datum/config_entry/flag/forbid_admin_profiling
+
+/datum/config_entry/flag/pixel_size_limit
+	default = FALSE
+
+/// These are for tgs4 channels, for discord chatbots used in TGS.
+/datum/config_entry/string/ahelp_channel_tag
+
+/// Turn this off if you don't want the TGS bot sending you messages whenever an ahelp ticket is created.
+/datum/config_entry/flag/discord_ahelps_disabled
+	default = FALSE
+
+/// So, nodebot is a supplement to the TGS discord bot pretty much. For things likes faxes and the manifest it's very helpful because it's able to render html into an image and post it.
+/datum/config_entry/flag/nodebot_enabled
+	default = FALSE
+
+/// We need to print the manifest to this location so nodebot can render it to chat.
+/// NOTE: TO BE REPLACED BY BETTER CODE FOR FETCHING MANIFEST
+/datum/config_entry/string/nodebot_location
+
+/datum/config_entry/string/fax_channel_tag
+
+/datum/config_entry/string/role_request_channel_tag
+
+/// These are for the role request TGS discord bot. Role IDs to ping.
+/datum/config_entry/string/role_request_id_command
+
+/datum/config_entry/string/role_request_id_security
+
+/datum/config_entry/string/role_request_id_engineering
+
+/datum/config_entry/string/role_request_id_medical
+
+/datum/config_entry/string/role_request_id_research
+
+/datum/config_entry/string/role_request_id_supply
+
+/datum/config_entry/string/role_request_id_service
+
+/datum/config_entry/string/role_request_id_expedition
+
+/datum/config_entry/string/role_request_id_silicon
+
+/// Only turn this on if you're not using the nodebot.
+/datum/config_entry/flag/discord_faxes_autoprint
+	default = FALSE
+
+/// Turn this off if you don't want the TGS bot sending you messages whenever a fax is sent to central.
+/datum/config_entry/flag/discord_faxes_disabled
+	default = FALSE
+
+/// Turn this on if you want all admin-PMs to go to be sent to discord, and not only the first message of a ticket.
+/datum/config_entry/flag/discord_ahelps_all
+	default = FALSE
+
+/datum/config_entry/number/rounds_until_hard_restart
+	default = -1
+	min_val = 0

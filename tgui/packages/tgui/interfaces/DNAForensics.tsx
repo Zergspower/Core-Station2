@@ -1,8 +1,14 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
-import { Box, Button, LabeledList, ProgressBar, Section } from '../components';
-import { Window } from '../layouts';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+import {
+  Box,
+  Button,
+  LabeledList,
+  ProgressBar,
+  Section,
+  Stack,
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   scan_progress: number;
@@ -20,23 +26,27 @@ export const DNAForensics = (props) => {
         <Section
           title="Status"
           buttons={
-            <>
-              <Button
-                selected={scanning}
-                disabled={!bloodsamp}
-                icon="power-off"
-                onClick={() => act('scanItem')}
-              >
-                {scanning ? 'Halt Scan' : 'Begin Scan'}
-              </Button>
-              <Button
-                disabled={!bloodsamp}
-                icon="eject"
-                onClick={() => act('ejectItem')}
-              >
-                Eject Bloodsample
-              </Button>
-            </>
+            <Stack>
+              <Stack.Item>
+                <Button
+                  selected={scanning}
+                  disabled={!bloodsamp}
+                  icon="power-off"
+                  onClick={() => act('scanItem')}
+                >
+                  {scanning ? 'Halt Scan' : 'Begin Scan'}
+                </Button>
+              </Stack.Item>
+              <Stack.Item>
+                <Button
+                  disabled={!bloodsamp}
+                  icon="eject"
+                  onClick={() => act('ejectItem')}
+                >
+                  Eject Bloodsample
+                </Button>
+              </Stack.Item>
+            </Stack>
           }
         >
           <LabeledList>

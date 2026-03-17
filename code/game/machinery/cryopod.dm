@@ -238,7 +238,7 @@
 	//This inherits from the robot cryo, so synths can be properly cryo'd.  If a non-synth enters and is cryo'd, ..() is called and it'll still work.
 	name = "Airlock of Wonders"
 	desc = "An airlock that isn't an airlock, and shouldn't exist.  Yell at a coder/mapper."
-	icon = 'icons/obj/doors/Doorint.dmi'
+	icon = 'icons/obj/doors/doorint.dmi'
 	icon_state = "door_open"
 	base_icon_state = "door_open"
 	occupied_icon_state = "door_closed"
@@ -290,9 +290,9 @@
 
 	time_till_despawn = 60 //1 second, because gateway.
 
-/obj/machinery/cryopod/New()
+/obj/machinery/cryopod/Initialize(mapload)
+	. = ..()
 	announce = new /obj/item/radio/intercom(src)
-	..()
 
 /obj/machinery/cryopod/Destroy()
 	if(occupant)
@@ -300,7 +300,7 @@
 		occupant.resting = 1
 	return ..()
 
-/obj/machinery/cryopod/Initialize()
+/obj/machinery/cryopod/Initialize(mapload)
 	. = ..()
 
 	find_control_computer()
@@ -448,7 +448,7 @@
 			preserve = 1
 
 		if(istype(W,/obj/item/implant/health))
-			for(var/obj/machinery/computer/cloning/com in machines)
+			for(var/obj/machinery/computer/cloning/com in GLOB.machines)
 				for(var/datum/dna2/record/R in com.records)
 					if(locate(R.implant) == W)
 						qdel(R)
@@ -470,7 +470,7 @@
 			qdel(B)
 
 	//Update any existing objectives involving this mob.
-	for(var/datum/objective/O in all_objectives)
+	for(var/datum/objective/O in GLOB.all_objectives)
 		// We don't want revs to get objectives that aren't for heads of staff. Letting
 		// them win or lose based on cryo is silly so we remove the objective.
 		if(O.target == to_despawn.mind)
@@ -502,28 +502,28 @@
 
 		// Delete them from datacore.
 
-		if(PDA_Manifest.len)
-			PDA_Manifest.Cut()
-		for(var/datum/data/record/R in data_core.medical)
+		if(GLOB.PDA_Manifest.len)
+			GLOB.PDA_Manifest.Cut()
+		for(var/datum/data/record/R in GLOB.data_core.medical)
 			if((R.fields["name"] == to_despawn.real_name))
 				qdel(R)
-		for(var/datum/data/record/T in data_core.security)
+		for(var/datum/data/record/T in GLOB.data_core.security)
 			if((T.fields["name"] == to_despawn.real_name))
 				qdel(T)
-		for(var/datum/data/record/G in data_core.general)
+		for(var/datum/data/record/G in GLOB.data_core.general)
 			if((G.fields["name"] == to_despawn.real_name))
 				qdel(G)
 
 		// Also check the hidden version of each datacore, if they're an offmap role.
 		var/datum/job/J = SSjob.get_job(job)
 		if(J?.offmap_spawn)
-			for(var/datum/data/record/R in data_core.hidden_general)
+			for(var/datum/data/record/R in GLOB.data_core.hidden_general)
 				if((R.fields["name"] == to_despawn.real_name))
 					qdel(R)
-			for(var/datum/data/record/T in data_core.hidden_security)
+			for(var/datum/data/record/T in GLOB.data_core.hidden_security)
 				if((T.fields["name"] == to_despawn.real_name))
 					qdel(T)
-			for(var/datum/data/record/G in data_core.hidden_medical)
+			for(var/datum/data/record/G in GLOB.data_core.hidden_medical)
 				if((G.fields["name"] == to_despawn.real_name))
 					qdel(G)
 
@@ -535,7 +535,7 @@
 		//Make an announcement and log the person entering storage.
 		control_computer.frozen_crew += "[to_despawn.real_name], [to_despawn.mind.role_alt_title] - [stationtime2text()]"
 		control_computer._admin_logs += "[key_name(to_despawn)] ([to_despawn.mind.role_alt_title]) at [stationtime2text()]"
-		log_and_message_admins("[key_name(to_despawn)] ([to_despawn.mind.role_alt_title]) entered cryostorage.")
+		log_and_message_admins("([to_despawn.mind.role_alt_title]) entered cryostorage.", to_despawn)
 
 		//VOREStation Edit Start
 		var/depart_announce = TRUE

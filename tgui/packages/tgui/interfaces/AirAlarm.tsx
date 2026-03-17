@@ -1,13 +1,13 @@
-import { toFixed } from 'common/math';
-import { BooleanLike } from 'common/react';
 import { Fragment, useState } from 'react';
+import { useBackend } from 'tgui/backend';
+import { getGasColor, getGasLabel } from 'tgui/constants';
+import { Window } from 'tgui/layouts';
+import { Box, Button, LabeledList, Section } from 'tgui-core/components';
+import { toFixed } from 'tgui-core/math';
+import type { BooleanLike } from 'tgui-core/react';
 
-import { useBackend } from '../backend';
-import { Box, Button, LabeledList, Section } from '../components';
-import { getGasColor, getGasLabel } from '../constants';
-import { Window } from '../layouts';
 import { Scrubber, Vent } from './common/AtmosControls';
-import { single_scrubber, single_vent } from './common/CommonTypes';
+import type { single_scrubber, single_vent } from './common/CommonTypes';
 import { InterfaceLockNoticeBox } from './common/InterfaceLockNoticeBox';
 
 type Data = {
@@ -43,14 +43,7 @@ type thresholds = {
   settings: {
     env: string;
     val: number;
-    selected: {
-      oxygen: number[];
-      carbon_dioxide: number;
-      phoron: number;
-      other: number;
-      pressure: number;
-      temperature: number;
-    };
+    selected: number;
   }[];
 };
 
@@ -345,7 +338,7 @@ const AirAlarmControlThresholds = (props) => {
         {thresholds.map((threshold) => (
           <tr key={threshold.name}>
             <td className="LabeledList__label">
-              <span className={'color-' + getGasColor(threshold.name)}>
+              <span className={`color-${getGasColor(threshold.name)}`}>
                 {getGasLabel(threshold.name)}
               </span>
             </td>

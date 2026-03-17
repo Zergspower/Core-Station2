@@ -1,10 +1,16 @@
-import { filter, sortBy } from 'common/collections';
-import { flow } from 'common/fp';
 import { useState } from 'react';
+import { useBackend } from 'tgui/backend';
+import {
+  Box,
+  Button,
+  Divider,
+  Input,
+  Section,
+  Stack,
+} from 'tgui-core/components';
+import { createSearch } from 'tgui-core/string';
 
-import { useBackend } from '../../backend';
-import { Box, Button, Section, Stack } from '../../components';
-import { Data, supplyPack } from './types';
+import type { Data, supplyPack } from './types';
 
 export const SupplyConsoleMenuOrder = (props) => {
   const { act, data } = useBackend<Data>();
@@ -12,25 +18,45 @@ export const SupplyConsoleMenuOrder = (props) => {
   const { categories, supply_packs, contraband, supply_points } = data;
 
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [searchCategory, setSearchCategory] = useState<string>('');
+  const [searchContent, setSearchContent] = useState<string>('');
 
-  const viewingPacks: supplyPack[] = flow([
-    (supply_packs: supplyPack[]) =>
-      filter(supply_packs, (val) => val.group === activeCategory),
-    (supply_packs: supplyPack[]) =>
-      filter(supply_packs, (val) => !val.contraband || !!contraband),
-    (supply_packs: supplyPack[]) => sortBy(supply_packs, (val) => val.name),
-    (supply_packs: supplyPack[]) =>
-      sortBy(supply_packs, (val) => val.cost > supply_points),
-  ])(supply_packs);
+  function sortPack(a: supplyPack, b: supplyPack) {
+    if (a.cost < supply_points && b.cost > supply_points) return -1;
+    if (a.cost > supply_points && b.cost < supply_points) return 1;
 
-  // const viewingPacks = sortBy(val => val.name)(supply_packs).filter(val => val.group === activeCategory);
+    return a.name.localeCompare(b.name);
+  }
+
+  const viewingPacks: supplyPack[] = supply_packs
+    .filter(
+      (pack) =>
+        pack.group === activeCategory && (!pack.contraband || !!contraband),
+    )
+    .sort((a, b) => sortPack(a, b));
+
+  const categorySearch = createSearch(searchCategory);
+  const contentSearch = createSearch(
+    searchContent,
+    (pack: supplyPack) => pack.name,
+  );
+
+  const filteredCategories = categories.filter(categorySearch);
+  const filteredPack = viewingPacks.filter(contentSearch);
 
   return (
-    <Section>
-      <Stack>
-        <Stack.Item basis="25%">
-          <Section title="Categories" scrollable fill height="290px">
-            {categories.map((category) => (
+    <Stack fill>
+      <Stack.Item basis="25%">
+        <Section title="Categories" fill>
+          <Input
+            fluid
+            placeholder={'Search for category...'}
+            value={searchCategory}
+            onChange={(val) => setSearchCategory(val)}
+          />
+          <Divider />
+          <Section scrollable fill>
+            {filteredCategories.map((category) => (
               <Button
                 key={category}
                 fluid
@@ -41,13 +67,22 @@ export const SupplyConsoleMenuOrder = (props) => {
               </Button>
             ))}
           </Section>
-        </Stack.Item>
-        <Stack.Item grow={1} ml={2}>
-          <Section title="Contents" scrollable fill height="290px">
-            {viewingPacks.map((pack) => (
+        </Section>
+      </Stack.Item>
+      <Stack.Item grow ml={2}>
+        <Section title="Contents" fill>
+          <Input
+            fluid
+            placeholder={'Search for pack...'}
+            value={searchCategory}
+            onChange={(val) => setSearchContent(val)}
+          />
+          <Divider />
+          <Section scrollable fill>
+            {filteredPack.map((pack) => (
               <Box key={pack.name}>
                 <Stack align="center" justify="flex-start">
-                  <Stack.Item basis="70%">
+                  <Stack.Item maxWidth="70%" basis="70%">
                     <Button
                       fluid
                       icon="shopping-cart"
@@ -76,7 +111,7 @@ export const SupplyConsoleMenuOrder = (props) => {
                       Info
                     </Button>
                   </Stack.Item>
-                  <Stack.Item grow={1}>{pack.cost} points</Stack.Item>
+                  <Stack.Item grow>{pack.cost} points</Stack.Item>
                 </Stack>
               </Box>
             ))}
@@ -99,8 +134,8 @@ export const SupplyConsoleMenuOrder = (props) => {
               </Collapsible>
             ))} */}
           </Section>
-        </Stack.Item>
-      </Stack>
-    </Section>
+        </Section>
+      </Stack.Item>
+    </Stack>
   );
 };

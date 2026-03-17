@@ -1,4 +1,5 @@
-import { useBackend } from '../../backend';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import {
   Box,
   Button,
@@ -6,8 +7,7 @@ import {
   LabeledList,
   NoticeBox,
   Section,
-} from '../../components';
-import { Window } from '../../layouts';
+} from 'tgui-core/components';
 
 type Data = {
   screenstate: string;
@@ -47,7 +47,7 @@ const SeedStatus = (props) => {
           <LabeledList.Item label="Name">{seedname}</LabeledList.Item>
           {health < 100 ? (
             <LabeledList.Item label="Genetic Integrity">
-              {100 - health + '%'}
+              {`${100 - health}%`}
             </LabeledList.Item>
           ) : (
             <LabeledList.Item label="Genetic Integrity">
@@ -119,7 +119,7 @@ const BiochemEditor = (props) => {
     <LabeledList>
       {health < 100 ? (
         <LabeledList.Item label="Genetic Integrity">
-          {100 - health + '%'}
+          {`${100 - health}%`}
         </LabeledList.Item>
       ) : (
         <LabeledList.Item label="Genetic Integrity">
@@ -157,7 +157,7 @@ const BiochemEditor = (props) => {
               ))}
             </LabeledList.Item>
           ) : (
-            <NoticeBox warning>
+            <NoticeBox>
               {'WARNING: Genetic integrity of seed is too poor to proceed.'}
             </NoticeBox>
           )}

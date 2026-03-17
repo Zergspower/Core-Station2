@@ -1,8 +1,7 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
-import { Box, Button, LabeledList, Section } from '../components';
-import { Window } from '../layouts';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+import { Box, Button, LabeledList, Section } from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   on: BooleanLike;
@@ -42,7 +41,7 @@ export const Cleanbot = (props) => {
     <Window width={400} height={400}>
       <Window.Content scrollable>
         <Section
-          title={'Automatic Station Cleaner ' + version}
+          title={`Automatic Station Cleaner ${version}`}
           buttons={
             <Button icon="power-off" selected={on} onClick={() => act('start')}>
               {on ? 'On' : 'Off'}

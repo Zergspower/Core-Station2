@@ -4,7 +4,7 @@
 /mob/living/silicon/robot/platform/cargo
 	req_access = list(access_cargo_bot)
 
-/obj/item/card/id/platform/Initialize()
+/obj/item/card/id/platform/Initialize(mapload)
 	. = ..()
 	// access |= access_explorer
 	// access |= access_pilot
@@ -15,14 +15,7 @@
 
 /datum/map_template/shelter/dark_portal/New()
 	. = ..()
-	blacklisted_areas = typecacheof(list(/area/centcom, /area/shadekin, /area/vr))
-
-/mob/living/carbon/human/shadekin_ability_check()
-	. = ..()
-	if(. && istype(get_area(src), /area/vr))
-		to_chat(src, span_danger("The VR systems cannot comprehend this power! This is useless to you!"))
-		. = FALSE
-
+	GLOB.blacklisted_areas = typecacheof(list(/area/centcom, /area/shadekin, /area/vr))
 
 /obj/item/disposable_teleporter/attack_self(mob/user as mob)//Prevents people from using technomancer gear to escape to station from the VR pods.
 	if(istype(get_area(user), /area/vr))

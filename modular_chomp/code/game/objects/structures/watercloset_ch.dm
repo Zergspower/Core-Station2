@@ -12,7 +12,7 @@
 	var/total_w = 0
 	var/panic_mult = 1
 
-/obj/structure/toilet/Initialize()
+/obj/structure/toilet/Initialize(mapload)
 	if(z in global.using_map.map_levels)
 		teleplumbed = TRUE
 		exit_landmark = locate(/obj/effect/landmark/teleplumb_exit)
@@ -133,11 +133,10 @@
 	var/mob/living/simple_mob/vore/aggressive/corrupthound/muffinmonster
 	var/obj/machinery/recycling/crusher/crusher //Bluespace connection for recyclables
 
-/obj/structure/biowaste_tank/Initialize()
+/obj/structure/biowaste_tank/Initialize(mapload)
 	muffinmonster = new /mob/living/simple_mob/vore/aggressive/corrupthound/muffinmonster(src)
 	muffinmonster.name = "Activate Muffin Monster"
-	muffinmonster.voremob_loaded = TRUE
-	muffinmonster.init_vore()
+	muffinmonster.init_vore(TRUE)
 	crusher = locate(/obj/machinery/recycling/crusher)
 	return ..()
 
@@ -206,10 +205,8 @@
 	has_eye_glow = FALSE
 	vore_default_item_mode = IM_DIGEST
 
-/mob/living/simple_mob/vore/aggressive/corrupthound/muffinmonster/init_vore()
-	if(!voremob_loaded)
-		return
-	.=..()
+/mob/living/simple_mob/vore/aggressive/corrupthound/muffinmonster/load_default_bellies()
+	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "waste hopper"
 	B.desc = "With a resounding CRUNCH, your form has gotten snagged by the Muffin Monster's rotational interlocking cutters indiscriminately crunching away at anything unlucky enough to end up in its hopper, only for the insatiable machine to grind it all down into a slurry mulch fine enough to pass through the narrow sewage lines trouble-free..."

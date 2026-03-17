@@ -14,7 +14,7 @@
 
 	var/area/shock_area = /area/tether/surfacebase/tram
 
-/turf/simulated/floor/maglev/Initialize()
+/turf/simulated/floor/maglev/Initialize(mapload)
 	. = ..()
 	shock_area = locate(shock_area)
 
@@ -44,9 +44,6 @@
 	item_state = "newscodex"
 	author = "Central Command"		 // Who wrote the thing, can be changed by pen or PC. It is not automatically assigned
 	title = "Stellar Delight User's Guide"
-
-/obj/item/book/manual/sd_guide/New()
-	..()
 	dat = {"<html>
 				<head>
 				<style>
@@ -165,7 +162,7 @@
 	name = "science outpost linked multitool"
 	desc = "It has the data for the science outpost's quantum pad pre-loaded... assuming you didn't override it."
 
-/obj/item/multitool/scioutpost/Initialize()
+/obj/item/multitool/scioutpost/Initialize(mapload)
 	. = ..()
 	for(var/obj/machinery/power/quantumpad/scioutpost/outpost in world)
 		connectable = outpost

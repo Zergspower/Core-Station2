@@ -1,10 +1,9 @@
-import { round } from 'common/math';
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
-import { Button, Flex, NumberInput, Section } from '../components';
-import { formatTime } from '../format';
-import { Window } from '../layouts';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+import { Button, NumberInput, Section, Stack } from 'tgui-core/components';
+import { formatTime } from 'tgui-core/format';
+import { round } from 'tgui-core/math';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   time_left: number;
@@ -37,25 +36,29 @@ export const BrigTimer = (props) => {
         <Section
           title="Cell Timer"
           buttons={
-            <>
-              <Button
-                icon="clock-o"
-                selected={timing}
-                onClick={() => act(timing ? 'stop' : 'start')}
-              >
-                {timing ? 'Stop' : 'Start'}
-              </Button>
-              {(flash_found && (
+            <Stack>
+              <Stack.Item>
                 <Button
-                  icon="lightbulb-o"
-                  disabled={flash_charging}
-                  onClick={() => act('flash')}
+                  icon="clock-o"
+                  selected={timing}
+                  onClick={() => act(timing ? 'stop' : 'start')}
                 >
-                  {flash_charging ? 'Recharging' : 'Flash'}
+                  {timing ? 'Stop' : 'Start'}
                 </Button>
+              </Stack.Item>
+              {(flash_found && (
+                <Stack.Item>
+                  <Button
+                    icon="lightbulb-o"
+                    disabled={flash_charging}
+                    onClick={() => act('flash')}
+                  >
+                    {flash_charging ? 'Recharging' : 'Flash'}
+                  </Button>
+                </Stack.Item>
               )) ||
                 null}
-            </>
+            </Stack>
           }
         >
           <NumberInput
@@ -68,35 +71,35 @@ export const BrigTimer = (props) => {
             format={(val: number) => formatTime(round(val * 10, 0))}
             onDrag={(val: number) => act('time', { time: val })}
           />
-          <Flex mt={1}>
-            <Flex.Item grow={1}>
+          <Stack mt={1}>
+            <Stack.Item grow>
               <Button
                 fluid
                 icon="hourglass-start"
                 onClick={() => act('preset', { preset: 'short' })}
               >
-                {'Add ' + formatTime(preset_short)}
+                {`Add ${formatTime(preset_short)}`}
               </Button>
-            </Flex.Item>
-            <Flex.Item grow={1}>
+            </Stack.Item>
+            <Stack.Item grow>
               <Button
                 fluid
                 icon="hourglass-start"
                 onClick={() => act('preset', { preset: 'medium' })}
               >
-                {'Add ' + formatTime(preset_medium)}
+                {`Add ${formatTime(preset_medium)}`}
               </Button>
-            </Flex.Item>
-            <Flex.Item grow={1}>
+            </Stack.Item>
+            <Stack.Item grow>
               <Button
                 fluid
                 icon="hourglass-start"
                 onClick={() => act('preset', { preset: 'long' })}
               >
-                {'Add ' + formatTime(preset_long)}
+                {`Add ${formatTime(preset_long)}`}
               </Button>
-            </Flex.Item>
-          </Flex>
+            </Stack.Item>
+          </Stack>
         </Section>
       </Window.Content>
     </Window>

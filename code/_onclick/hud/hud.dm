@@ -3,21 +3,21 @@
 	The global hud:
 	Uses the same visual objects for all players.
 */
-var/datum/global_hud/global_hud = new()
-var/list/global_huds = list(
-		global_hud.druggy,
-		global_hud.blurry,
-		global_hud.whitense,
-		global_hud.vimpaired,
-		global_hud.darkMask,
-		global_hud.centermarker,
-		global_hud.nvg,
-		global_hud.thermal,
-		global_hud.meson,
-		global_hud.science,
-		global_hud.material,
-		global_hud.holomap
-		)
+GLOBAL_DATUM_INIT(global_hud, /datum/global_hud, new)
+GLOBAL_LIST_INIT(global_huds, list(
+		GLOB.global_hud.druggy,
+		GLOB.global_hud.blurry,
+		GLOB.global_hud.whitense,
+		GLOB.global_hud.vimpaired,
+		GLOB.global_hud.darkMask,
+		GLOB.global_hud.centermarker,
+		GLOB.global_hud.nvg,
+		GLOB.global_hud.thermal,
+		GLOB.global_hud.meson,
+		GLOB.global_hud.science,
+		GLOB.global_hud.material,
+		GLOB.global_hud.holomap
+))
 
 /datum/hud/var/obj/screen/grab_intent
 /datum/hud/var/obj/screen/hurt_intent
@@ -341,15 +341,15 @@ var/list/global_huds = list(
 	if(!ismob(mymob))
 		return 0
 
+	toggle_palette = new()
+	palette_down = new()
+	palette_up = new()
 	mymob.create_mob_hud(src)
 
 	// Past this point, mymob.hud_used is set
 
-	toggle_palette = new()
 	toggle_palette.set_hud(src)
-	palette_down = new()
 	palette_down.set_hud(src)
-	palette_up = new()
 	palette_up.set_hud(src)
 
 	persistant_inventory_update()
@@ -361,14 +361,51 @@ var/list/global_huds = list(
 	if(!client)
 		return 0
 
-	HUD.ui_style = ui_style2icon(client?.prefs?.UI_style)
-	HUD.ui_color = client?.prefs?.UI_style_color
-	HUD.ui_alpha = client?.prefs?.UI_style_alpha
+	HUD.ui_style = ui_style2icon(read_preference(/datum/preference/choiced/ui_style))
+	HUD.ui_color = read_preference(/datum/preference/color/ui_style_color)
+	HUD.ui_alpha = read_preference(/datum/preference/numeric/ui_style_alpha)
 	set_hud_used(HUD)
 
 /mob/proc/set_hud_used(datum/hud/new_hud)
 	hud_used = new_hud
 	new_hud.build_action_groups()
+
+/mob/proc/update_ui_style(UI_style_new, UI_style_alpha_new, UI_style_color_new)
+	if(!hud_used)
+		return
+
+	if(!UI_style_alpha_new)
+		UI_style_alpha_new = hud_used.ui_alpha
+	hud_used.ui_alpha = UI_style_alpha_new
+	if(!UI_style_color_new)
+		UI_style_color_new = hud_used.ui_color
+	hud_used.ui_color = UI_style_color_new
+
+	var/list/icons = hud_used.adding + hud_used.other + hud_used.hotkeybuttons + hud_used.other_important
+	icons.Add(zone_sel)
+	icons.Add(gun_setting_icon)
+	icons.Add(item_use_icon)
+	icons.Add(gun_move_icon)
+	icons.Add(radio_use_icon)
+
+	var/icon/ic
+
+	if(UI_style_new)
+		if(isrobot(src))
+			ic = all_ui_styles_robot[UI_style_new]
+		else
+			ic = all_ui_styles[UI_style_new]
+		hud_used.ui_style = ic
+	else
+		ic = hud_used.ui_style
+
+	for(var/obj/screen/I in icons)
+		if(I.name in list(I_HELP, I_HURT, I_DISARM, I_GRAB))
+			continue
+		if(!(I.name in list("check known languages", "autowhisper", "autowhisper mode", "move downwards", "move upwards", "set pose")))
+			I.icon = ic
+		I.color = UI_style_color_new
+		I.alpha = UI_style_alpha_new
 
 /datum/hud/proc/apply_minihud(var/datum/mini_hud/MH)
 	if(MH in minihuds)
@@ -509,6 +546,31 @@ var/list/global_huds = list(
 
 /mob/new_player/add_click_catcher()
 	return
+
+/mob/living/create_mob_hud(datum/hud/HUD, apply_to_client = TRUE)
+	..()
+
+	var/list/hud_elements = list()
+	shadekin_display = new /obj/screen/shadekin()
+	shadekin_display.screen_loc = ui_shadekin_display
+	shadekin_display.icon_state = "shadekin"
+	hud_elements |= shadekin_display
+
+	xenochimera_danger_display = new /obj/screen/xenochimera/danger_level()
+	xenochimera_danger_display.screen_loc = ui_xenochimera_danger_display
+	xenochimera_danger_display.icon_state = "danger00"
+	hud_elements |= xenochimera_danger_display
+
+	lleill_display = new /obj/screen/lleill()
+	lleill_display.screen_loc = ui_lleill_display
+	lleill_display.icon_state = "lleill"
+	hud_elements |= lleill_display
+
+	if(client)
+		client.screen = list()
+
+		client.screen += hud_elements
+		client.screen += client.void
 
 /* TGMC Ammo HUD Port
  * These procs call to screen_objects.dm's respective procs.

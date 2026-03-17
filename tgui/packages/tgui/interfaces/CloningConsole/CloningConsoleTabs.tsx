@@ -1,18 +1,18 @@
-import { toFixed } from 'common/math';
-
-import { resolveAsset } from '../../assets';
-import { useBackend } from '../../backend';
+import { resolveAsset } from 'tgui/assets';
+import { useBackend } from 'tgui/backend';
 import {
   Box,
   Button,
-  Flex,
   Icon,
   Image,
   LabeledList,
   ProgressBar,
   Section,
-} from '../../components';
-import { Data } from './types';
+  Stack,
+} from 'tgui-core/components';
+import { toFixed } from 'tgui-core/math';
+
+import type { Data } from './types';
 
 export const CloningConsoleMain = (props) => {
   const { act, data } = useBackend<Data>();
@@ -33,26 +33,32 @@ export const CloningConsoleMain = (props) => {
       <Section
         title="Scanner"
         buttons={
-          <>
-            <Box inline color="label">
-              Scanner Lock:&nbsp;
-            </Box>
-            <Button
-              disabled={!occupant}
-              selected={isLocked}
-              icon={isLocked ? 'toggle-on' : 'toggle-off'}
-              onClick={() => act('lock')}
-            >
-              {isLocked ? 'Engaged' : 'Disengaged'}
-            </Button>
-            <Button
-              disabled={isLocked || !occupant}
-              icon="user-slash"
-              onClick={() => act('eject')}
-            >
-              Eject Occupant
-            </Button>
-          </>
+          <Stack>
+            <Stack.Item>
+              <Box inline color="label">
+                Scanner Lock:&nbsp;
+              </Box>
+            </Stack.Item>
+            <Stack.Item>
+              <Button
+                disabled={!occupant}
+                selected={isLocked}
+                icon={isLocked ? 'toggle-on' : 'toggle-off'}
+                onClick={() => act('lock')}
+              >
+                {isLocked ? 'Engaged' : 'Disengaged'}
+              </Button>
+            </Stack.Item>
+            <Stack.Item>
+              <Button
+                disabled={isLocked || !occupant}
+                icon="user-slash"
+                onClick={() => act('eject')}
+              >
+                Eject Occupant
+              </Button>
+            </Stack.Item>
+          </Stack>
         }
       >
         <LabeledList>
@@ -104,7 +110,7 @@ export const CloningConsoleMain = (props) => {
                   }}
                   mt="0.5rem"
                 >
-                  <Box textAlign="center">{toFixed(pod.progress) + '%'}</Box>
+                  <Box textAlign="center">{`${toFixed(pod.progress)}%`}</Box>
                 </ProgressBar>
               );
             } else if (pod.status === 'mess') {
@@ -134,7 +140,7 @@ export const CloningConsoleMain = (props) => {
               <Box key={i} width="64px" textAlign="center" inline mr="0.5rem">
                 <Image
                   fixBlur
-                  src={resolveAsset('pod_' + pod.status + '.gif')}
+                  src={resolveAsset(`pod_${pod.status}.gif`)}
                   style={{
                     width: '100%',
                   }}
@@ -162,13 +168,13 @@ export const CloningConsoleRecords = (props) => {
   const { records } = data;
   if (!records.length) {
     return (
-      <Flex height="100%">
-        <Flex.Item grow="1" align="center" textAlign="center" color="label">
+      <Stack height="100%">
+        <Stack.Item grow align="center" textAlign="center" color="label">
           <Icon name="user-slash" mb="0.5rem" size={5} />
           <br />
           No records found.
-        </Flex.Item>
-      </Flex>
+        </Stack.Item>
+      </Stack>
     );
   }
   return (

@@ -65,7 +65,7 @@
 	if(emagged)
 		projectile = /obj/item/projectile/beam
 
-	playsound(src, emagged ? 'sound/weapons/Laser.ogg' : 'sound/weapons/Taser.ogg', 50, 1)
+	playsound(src, emagged ? 'sound/weapons/Laser.ogg' : 'sound/weapons/taser.ogg', 50, 1)
 	var/obj/item/projectile/P = new projectile(loc)
 
 	P.firer = src
@@ -83,14 +83,14 @@
 	created_name = "ED-209 Security Robot"
 	var/lasercolor = ""
 
-/obj/item/secbot_assembly/ed209_assembly/attackby(var/obj/item/W as obj, var/mob/user as mob)
+/obj/item/secbot_assembly/ed209_assembly/attackby(var/obj/item/W, var/mob/user)
 	..()
 
 	if(istype(W, /obj/item/pen))
 		var/t = sanitizeSafe(tgui_input_text(user, "Enter new robot name", name, created_name, MAX_NAME_LEN), MAX_NAME_LEN)
 		if(!t)
 			return
-		if(!in_range(src, usr) && src.loc != usr)
+		if(!in_range(src, user) && src.loc != user)
 			return
 		created_name = t
 		return

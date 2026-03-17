@@ -1,5 +1,6 @@
-import { useBackend } from '../../backend';
-import { Box, Button, LabeledList, Section } from '../../components';
+import { useBackend } from 'tgui/backend';
+import { Box, Button, LabeledList, Section, Stack } from 'tgui-core/components';
+
 import { RCS_MAINMENU } from './constants';
 
 export const RequestConsoleSendMenu = (props: {
@@ -16,20 +17,24 @@ export const RequestConsoleSendMenu = (props: {
             <LabeledList.Item
               label={dept}
               buttons={
-                <>
-                  <Button
-                    icon="envelope-open-text"
-                    onClick={() => act('write', { write: dept, priority: 1 })}
-                  >
-                    Message
-                  </Button>
-                  <Button
-                    icon="exclamation-triangle"
-                    onClick={() => act('write', { write: dept, priority: 2 })}
-                  >
-                    High Priority
-                  </Button>
-                </>
+                <Stack>
+                  <Stack.Item>
+                    <Button
+                      icon="envelope-open-text"
+                      onClick={() => act('write', { write: dept, priority: 1 })}
+                    >
+                      Message
+                    </Button>
+                  </Stack.Item>
+                  <Stack.Item>
+                    <Button
+                      icon="exclamation-triangle"
+                      onClick={() => act('write', { write: dept, priority: 2 })}
+                    >
+                      High Priority
+                    </Button>
+                  </Stack.Item>
+                </Stack>
               }
             />
           )) ||

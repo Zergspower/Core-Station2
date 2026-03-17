@@ -104,6 +104,7 @@
 	w_class = ITEMSIZE_NORMAL
 	max_storage_space = ITEMSIZE_COST_NORMAL * 25
 	max_w_class = ITEMSIZE_NORMAL
+	allow_quick_empty = FALSE
 	can_hold = list(/obj/item/ore)
 	var/current_capacity = 0
 	var/max_pickup = 100 //How much ore can be picked up in one go. There to prevent someone from walking on a turf with 10000 ore and making the server cry.
@@ -207,19 +208,15 @@
 
 /obj/item/storage/bag/ore/equipped(mob/user)
 	..()
-	if(user.get_inventory_slot(src) == slot_wear_suit || slot_l_hand || slot_l_hand || slot_belt) //Basically every place they can go. Makes sure it doesn't unregister if moved to other slots.
-		user.AddComponent(/datum/component/recursive_move)
-		RegisterSignal(user, COMSIG_OBSERVER_MOVED, /obj/item/storage/bag/ore/proc/autoload, user, override = TRUE)
+	user.AddComponent(/datum/component/recursive_move)
+	RegisterSignal(user, COMSIG_OBSERVER_MOVED, /obj/item/storage/bag/ore/proc/autoload, user)
 
 /obj/item/storage/bag/ore/dropped(mob/user)
 	..()
-	if(user.get_inventory_slot(src) == slot_wear_suit || slot_l_hand || slot_l_hand || slot_belt) //See above. This should really be a define.
-		user.AddComponent(/datum/component/recursive_move)
-		RegisterSignal(user, COMSIG_OBSERVER_MOVED, /obj/item/storage/bag/ore/proc/autoload, user, override = TRUE)
-	else
-		UnregisterSignal(user, COMSIG_OBSERVER_MOVED)
+	UnregisterSignal(user, COMSIG_OBSERVER_MOVED)
 
 /obj/item/storage/bag/ore/proc/autoload(mob/user)
+	SIGNAL_HANDLER
 	var/obj/item/ore/O = locate() in get_turf(src)
 	if(O)
 		gather_all(get_turf(src), user)
@@ -235,7 +232,7 @@
 	if(!Adjacent(user)) //Can only check the contents of ore bags if you can physically reach them.
 		return .
 
-	if(istype(user, /mob/living))
+	if(isliving(user))
 		add_fingerprint(user)
 
 	. += span_notice("It holds:")
@@ -281,7 +278,7 @@
 	icon_state = "sheetsnatcher"
 	desc = "A patented storage system designed for any kind of mineral sheet."
 
-	var/capacity = 300; //the number of sheets it can carry.
+	var/capacity = 500 //the number of sheets it can carry.
 	w_class = ITEMSIZE_NORMAL
 	storage_slots = 7
 
@@ -326,11 +323,15 @@
 			break
 
 	if(!inserted)
-		usr.remove_from_mob(S)
-		if (usr.client && usr.s_active != src)
-			usr.client.screen -= S
-		S.dropped(usr)
-		S.loc = src
+		if(capacity < current + S.get_amount())
+			var/obj/item/stack/F = S.split(amount)
+			F.loc = src
+		else
+			usr.remove_from_mob(S)
+			if (usr.client && usr.s_active != src)
+				usr.client.screen -= S
+			S.dropped(usr)
+			S.loc = src
 
 	orient2hud(usr)
 	if(usr.s_active)
@@ -396,13 +397,24 @@
 	return ..(S,new_location)
 
 // -----------------------------
+//    Sheet Snatcher (Bluespace)
+// -----------------------------
+
+/obj/item/storage/bag/sheetsnatcher/holding
+	name = "sheet snatcher of holding"
+	icon_state = "sheetsnatcher_bspace"
+	desc = "A patented storage system designed for any kind of mineral sheet, this one has been upgraded with bluespace technology to allow it to carry ten times as much."
+
+	capacity = 5000 //Should be far more than enough.
+
+// -----------------------------
 //    Sheet Snatcher (Cyborg)
 // -----------------------------
 
 /obj/item/storage/bag/sheetsnatcher/borg
 	name = "sheet snatcher 9000"
 	desc = null
-	capacity = 500//Borgs get more because >specialization
+	capacity = 700//Borgs get more because >specialization
 
 // -----------------------------
 //           Cash Bag

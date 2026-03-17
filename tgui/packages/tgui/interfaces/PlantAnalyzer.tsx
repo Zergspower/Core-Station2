@@ -1,8 +1,7 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
-import { Box, Button, LabeledList, Section } from '../components';
-import { Window } from '../layouts';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+import { Box, Button, LabeledList, Section, Stack } from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   no_seed: BooleanLike;
@@ -10,7 +9,7 @@ type Data = {
     name: string;
     uid: number;
     endurance: string;
-    yield: string;
+    crop_yield: string;
     maturation_time: string;
     production_time: string;
     potency: string;
@@ -28,7 +27,7 @@ export const PlantAnalyzer = (props) => {
   if (seed) {
     calculatedHeight += 18 * seed.trait_info.length;
   }
-  if (reagents && reagents.length) {
+  if (reagents?.length) {
     calculatedHeight += 55;
     calculatedHeight += 20 * reagents.length;
   }
@@ -60,16 +59,20 @@ const PlantAnalyzerContent = (props) => {
     <Section
       title="Plant Information"
       buttons={
-        <>
-          <Button icon="print" onClick={() => act('print')}>
-            Print Report
-          </Button>
-          <Button
-            icon="window-close"
-            color="red"
-            onClick={() => act('close')}
-          />
-        </>
+        <Stack>
+          <Stack.Item>
+            <Button icon="print" onClick={() => act('print')}>
+              Print Report
+            </Button>
+          </Stack.Item>
+          <Stack.Item>
+            <Button
+              icon="window-close"
+              color="red"
+              onClick={() => act('close')}
+            />
+          </Stack.Item>
+        </Stack>
       }
     >
       <LabeledList>
@@ -77,7 +80,7 @@ const PlantAnalyzerContent = (props) => {
           {seed.name}#{seed.uid}
         </LabeledList.Item>
         <LabeledList.Item label="Endurance">{seed.endurance}</LabeledList.Item>
-        <LabeledList.Item label="Yield">{seed.yield}</LabeledList.Item>
+        <LabeledList.Item label="Yield">{seed.crop_yield}</LabeledList.Item>
         <LabeledList.Item label="Maturation Time">
           {seed.maturation_time}
         </LabeledList.Item>

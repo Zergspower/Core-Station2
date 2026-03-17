@@ -9,7 +9,7 @@
 	layer = TABLE_LAYER
 	explosion_resistance = 1
 	var/health = 10
-	var/destroyed = 0
+	var/destroyed = FALSE
 
 
 /obj/structure/grille/ex_act(severity)
@@ -32,7 +32,7 @@
 
 	var/damage_dealt = 1
 	var/attack_message = "kicks"
-	if(istype(user,/mob/living/carbon/human))
+	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
 		if(H.species.can_shred(H))
 			attack_message = "mangles"
@@ -60,7 +60,7 @@
 
 	//Flimsy grilles aren't so great at stopping projectiles. However they can absorb some of the impact
 	var/damage = Proj.get_structure_damage()
-	var/passthrough = 0
+	var/passthrough = FALSE
 
 	if(!damage) return
 
@@ -72,15 +72,15 @@
 			if(Proj.original == src || prob(20))
 				Proj.damage *= between(0, Proj.damage/60, 0.5)
 				if(prob(max((damage-10)/25, 0))*100)
-					passthrough = 1
+					passthrough = TRUE
 			else
 				Proj.damage *= between(0, Proj.damage/60, 1)
-				passthrough = 1
+				passthrough = TRUE
 		if(BURN)
 			//beams and other projectiles are either blocked completely by grilles or stop half the damage.
 			if(!(Proj.original == src || prob(20)))
 				Proj.damage *= 0.5
-				passthrough = 1
+				passthrough = TRUE
 
 	if(passthrough)
 		. = PROJECTILE_CONTINUE
@@ -104,7 +104,7 @@
 			playsound(src, W.usesound, 100, 1)
 			anchored = !anchored
 			user.visible_message(span_notice("[user] [anchored ? "fastens" : "unfastens"] the grille."), \
-								 span_notice("You have [anchored ? "fastened the grille to" : "unfastened the grille from"] the floor."))
+									span_notice("You have [anchored ? "fastened the grille to" : "unfastened the grille from"] the floor."))
 			return
 
 	//window placing begin //TODO CONVERT PROPERLY TO MATERIAL DATUM
@@ -117,7 +117,7 @@
 		if(loc == user.loc)
 			dir_to_set = user.dir
 		else
-			if( ( x == user.x ) || (y == user.y) ) //Only supposed to work for cardinal directions.
+			if( ( x == user.x ) || (y == user.y) ) //Only supposed to work for GLOB.cardinal directions.
 				if( x == user.x )
 					if( y > user.y )
 						dir_to_set = 2
@@ -130,7 +130,7 @@
 						dir_to_set = 4
 			else
 				to_chat(user, span_notice("You can't reach."))
-				return //Only works for cardinal direcitons, diagonals aren't supposed to work like this.
+				return //Only works for GLOB.cardinal direcitons, diagonals aren't supposed to work like this.
 		for(var/obj/structure/window/WINDOW in loc)
 			if(WINDOW.dir == dir_to_set)
 				to_chat(user, span_notice("There is already a window facing this way there."))
@@ -221,12 +221,12 @@
 
 // Used in mapping to avoid
 /obj/structure/grille/broken
-	destroyed = 1
+	destroyed = TRUE
 	icon_state = "grille-b"
 	density = FALSE
 
-/obj/structure/grille/broken/New()
-	..()
+/obj/structure/grille/broken/Initialize(mapload)
+	. = ..()
 	health = rand(-5, -1) //In the destroyed but not utterly threshold.
 	healthcheck() //Send this to healthcheck just in case we want to do something else with it.
 
@@ -282,6 +282,11 @@
 			return TRUE
 	return FALSE
 */
+
+/obj/structure/grille/occult_act(mob/living/user)
+	new /obj/structure/grille/cult(get_turf(src))
+	qdel(src)
+	return TRUE
 
 /obj/structure/grille/take_damage(var/damage)
 	health -= damage

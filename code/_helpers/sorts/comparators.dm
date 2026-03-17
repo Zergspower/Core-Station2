@@ -99,7 +99,6 @@
 /proc/cmp_stored_item_name(datum/stored_item/A, datum/stored_item/B)
 	return sorttext(B.item_name, A.item_name)
 
-// CHOMPEdit Start - More text compares
 /proc/cmp_embed_text_asc(a,b)
 	if(isdatum(a))
 		a = REF(a)
@@ -113,4 +112,10 @@
 	if(isdatum(b))
 		b = REF(b)
 	return sorttext("[a]", "[b]")
-// CHOMPEdit End
+
+
+/proc/cmp_name_asc(atom/a, atom/b)
+	return sorttext(b.name, a.name)
+
+/proc/cmp_name_dsc(atom/a, atom/b)
+	return sorttext(a.name, b.name)

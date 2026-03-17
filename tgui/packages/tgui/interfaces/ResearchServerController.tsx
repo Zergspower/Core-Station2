@@ -1,9 +1,7 @@
-import { filter } from 'common/collections';
-import { BooleanLike } from 'common/react';
-
-import { useBackend, useSharedState } from '../backend';
-import { Box, Button, LabeledList, Section, Tabs } from '../components';
-import { Window } from '../layouts';
+import { useBackend, useSharedState } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+import { Box, Button, LabeledList, Section, Tabs } from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = { badmin: BooleanLike; servers: server[]; consoles: console[] };
 
@@ -41,7 +39,7 @@ const ResearchControllerContent = (props) => {
     null,
   );
 
-  let realServer = servers.find((s) => s.id === selectedServer);
+  const realServer = servers.find((s) => s.id === selectedServer);
 
   if (realServer) {
     return (
@@ -67,7 +65,7 @@ const ResearchControllerContent = (props) => {
 
 const ResearchServer = (props: {
   server: server;
-  setSelectedServer: Function;
+  setSelectedServer: React.Dispatch<React.SetStateAction<number | null>>;
 }) => {
   const { data } = useBackend<Data>();
   const { badmin } = data;
@@ -133,7 +131,7 @@ const ResearchServerAccess = (props: { server: server }) => {
           consoles.map((console) => (
             <LabeledList.Item
               key={console.name}
-              label={console.name + ' (' + console.loc + ')'}
+              label={`${console.name} (${console.loc})`}
             >
               <Button
                 icon={hasUploadAccess(server, console) ? 'lock-open' : 'lock'}
@@ -195,8 +193,9 @@ const ResearchServerData = (props: { server: server }) => {
         ))}
       </Section>
       <Section title="Designs">
-        {filter(server.designs, (design: techDes) => !!design.name).map(
-          (design) => (
+        {server.designs
+          .filter((design: techDes) => !!design.name)
+          .map((design) => (
             <LabeledList.Item
               label={design.name}
               key={design.name}
@@ -216,8 +215,7 @@ const ResearchServerData = (props: { server: server }) => {
                 </Button.Confirm>
               }
             />
-          ),
-        )}
+          ))}
       </Section>
     </>
   );

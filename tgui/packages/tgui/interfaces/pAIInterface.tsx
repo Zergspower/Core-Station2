@@ -1,8 +1,7 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
-import { Button, LabeledList, Section } from '../components';
-import { Window } from '../layouts';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+import { Button, LabeledList, Section } from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   bought: { id: string; name: string; on: BooleanLike }[];
@@ -31,7 +30,7 @@ export const pAIInterface = (props) => {
             </Button>
           ))}
         </Section>
-        <Section title={'Software (Available RAM: ' + available_ram + ')'}>
+        <Section title={`Software (Available RAM: ${available_ram})`}>
           <LabeledList>
             <LabeledList.Item label="Installed">
               {bought.map((app) => (
@@ -52,7 +51,7 @@ export const pAIInterface = (props) => {
                   disabled={app.ram > available_ram}
                   onClick={() => act('purchase', { purchase: app.id })}
                 >
-                  {app.name + ' (' + app.ram + ')'}
+                  {`${app.name} (${app.ram})`}
                 </Button>
               ))}
             </LabeledList.Item>

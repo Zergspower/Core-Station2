@@ -19,7 +19,7 @@
 	pickup_sound = 'sound/items/pickup/device.ogg'
 	drop_sound = 'sound/items/drop/device.ogg'
 
-/obj/item/chameleon/dropped()
+/obj/item/chameleon/dropped(mob/user)
 	disrupt()
 	..()
 
@@ -156,4 +156,4 @@
 
 /obj/effect/dummy/chameleon/Destroy()
 	master.disrupt(0)
-	..()
+	. = ..()

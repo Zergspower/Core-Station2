@@ -1,11 +1,13 @@
-import { decodeHtmlEntities } from 'common/string';
+import { useBackend } from 'tgui/backend';
+import { Button, Input, LabeledList, Section } from 'tgui-core/components';
+import { decodeHtmlEntities } from 'tgui-core/string';
 
-import { useBackend } from '../../backend';
-import { Button, Input, LabeledList, Section } from '../../components';
 import { NEWSCASTER_SCREEN_MAIN } from './constants';
-import { Data } from './types';
+import type { Data } from './types';
 
-export const NewscasterNewWanted = (props: { setScreen: Function }) => {
+export const NewscasterNewWanted = (props: {
+  setScreen: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   const { act, data } = useBackend<Data>();
 
   const { channel_name, msg, photo_data, user, wanted_issue } = data;
@@ -32,14 +34,14 @@ export const NewscasterNewWanted = (props: { setScreen: Function }) => {
           <Input
             fluid
             value={decodeHtmlEntities(channel_name)}
-            onInput={(e, val) => act('set_channel_name', { val: val })}
+            onBlur={(val) => act('set_channel_name', { val: val })}
           />
         </LabeledList.Item>
         <LabeledList.Item label="Description">
           <Input
             fluid
             value={decodeHtmlEntities(msg)}
-            onInput={(e, val) => act('set_wanted_desc', { val: val })}
+            onBlur={(val) => act('set_wanted_desc', { val: val })}
           />
         </LabeledList.Item>
         <LabeledList.Item label="Attach Photo">

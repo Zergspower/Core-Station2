@@ -1,6 +1,7 @@
-import { useBackend } from '../../backend';
-import { Button, LabeledList, Section } from '../../components';
-import { Data } from './types';
+import { useBackend } from 'tgui/backend';
+import { Button, LabeledList, Section, Stack } from 'tgui-core/components';
+
+import type { Data } from './types';
 
 export const SupplyConsoleMenuHistoryExport = (props) => {
   const { act, data } = useBackend<Data>();
@@ -11,7 +12,7 @@ export const SupplyConsoleMenuHistoryExport = (props) => {
   }
 
   return (
-    <Section scrollable fill height="290px">
+    <Section scrollable fill>
       {receipts.map((r, ri) => (
         <Section key={ri}>
           <LabeledList>
@@ -52,33 +53,37 @@ export const SupplyConsoleMenuHistoryExport = (props) => {
                   key={i}
                   buttons={
                     order_auth ? (
-                      <>
-                        <Button
-                          icon="pen"
-                          onClick={() =>
-                            act('export_edit_field', {
-                              ref: r.ref,
-                              index: i + 1,
-                              edit: 'meow',
-                              default: item.object,
-                            })
-                          }
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          icon="trash"
-                          color="red"
-                          onClick={() =>
-                            act('export_delete_field', {
-                              ref: r.ref,
-                              index: i + 1,
-                            })
-                          }
-                        >
-                          Delete
-                        </Button>
-                      </>
+                      <Stack>
+                        <Stack.Item>
+                          <Button
+                            icon="pen"
+                            onClick={() =>
+                              act('export_edit_field', {
+                                ref: r.ref,
+                                index: i + 1,
+                                edit: 'meow',
+                                default: item.object,
+                              })
+                            }
+                          >
+                            Edit
+                          </Button>
+                        </Stack.Item>
+                        <Stack.Item>
+                          <Button
+                            icon="trash"
+                            color="red"
+                            onClick={() =>
+                              act('export_delete_field', {
+                                ref: r.ref,
+                                index: i + 1,
+                              })
+                            }
+                          >
+                            Delete
+                          </Button>
+                        </Stack.Item>
+                      </Stack>
                     ) : (
                       ''
                     )

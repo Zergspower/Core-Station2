@@ -6,9 +6,6 @@
 	flags = TURF_ACID_IMMUNE
 
 /turf/unsimulated/Initialize(mapload)
-	if(skip_init)
-		flags |= ATOM_INITIALIZED //CHOMPEdit
-		return INITIALIZE_HINT_NORMAL
 	. = ..()
 
 //VOREStation Add
@@ -17,7 +14,6 @@
 	icon = 'icons/turf/space.dmi'
 	icon_state = "0"
 	dynamic_lighting = FALSE
-	//initialized = FALSE CHOMP Removal (what the fuck)
 
 /turf/unsimulated/fake_space/Initialize(mapload)
 	. = ..()
@@ -29,4 +25,7 @@
 	return FALSE
 
 /turf/unsimulated/rcd_act(mob/living/user, obj/item/rcd/the_rcd, passed_mode)
+	return FALSE
+
+/turf/unsimulated/occult_act(mob/living/user)
 	return FALSE

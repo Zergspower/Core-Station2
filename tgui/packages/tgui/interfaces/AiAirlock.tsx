@@ -1,8 +1,7 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
-import { Button, LabeledList, Section } from '../components';
-import { Window } from '../layouts';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+import { Button, LabeledList, Section, Stack } from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   power: {
@@ -113,29 +112,35 @@ export const AiAirlock = (props) => {
               label="Electrify"
               color={statusElectrify.color}
               buttons={
-                <>
-                  <Button
-                    icon="wrench"
-                    disabled={!(wires.shock && shock === 0)}
-                    onClick={() => act('shock-restore')}
-                  >
-                    Restore
-                  </Button>
-                  <Button
-                    icon="bolt"
-                    disabled={!wires.shock}
-                    onClick={() => act('shock-temp')}
-                  >
-                    Temporary
-                  </Button>
-                  <Button
-                    icon="bolt"
-                    disabled={!wires.shock}
-                    onClick={() => act('shock-perm')}
-                  >
-                    Permanent
-                  </Button>
-                </>
+                <Stack>
+                  <Stack.Item>
+                    <Button
+                      icon="wrench"
+                      disabled={!(wires.shock && shock === 0)}
+                      onClick={() => act('shock-restore')}
+                    >
+                      Restore
+                    </Button>
+                  </Stack.Item>
+                  <Stack.Item>
+                    <Button
+                      icon="bolt"
+                      disabled={!wires.shock}
+                      onClick={() => act('shock-temp')}
+                    >
+                      Temporary
+                    </Button>
+                  </Stack.Item>
+                  <Stack.Item>
+                    <Button
+                      icon="bolt"
+                      disabled={!wires.shock}
+                      onClick={() => act('shock-perm')}
+                    >
+                      Permanent
+                    </Button>
+                  </Stack.Item>
+                </Stack>
               }
             >
               {shock === 2 ? 'Safe' : 'Electrified'}{' '}

@@ -1,17 +1,17 @@
-import { BooleanLike } from 'common/react';
-import { decodeHtmlEntities } from 'common/string';
-
-import { useBackend } from '../../backend';
+import { useBackend } from 'tgui/backend';
 import {
   Box,
   Button,
   Dropdown,
-  Flex,
   Input,
   LabeledList,
   Section,
-} from '../../components';
-import { Data } from './types';
+  Stack,
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
+import { decodeHtmlEntities } from 'tgui-core/string';
+
+import type { Data } from './types';
 
 export const MessageMonitorMain = (props) => {
   const { act, data } = useBackend<Data>();
@@ -22,18 +22,22 @@ export const MessageMonitorMain = (props) => {
     <Section
       title="Main Menu"
       buttons={
-        <>
-          <Button icon="link" onClick={() => act('find')}>
-            Server Link
-          </Button>
-          <Button
-            icon="power-off"
-            selected={linkedServer.active}
-            onClick={() => act('active')}
-          >
-            {'Server ' + (linkedServer.active ? 'Enabled' : 'Disabled')}
-          </Button>
-        </>
+        <Stack>
+          <Stack.Item>
+            <Button icon="link" onClick={() => act('find')}>
+              Server Link
+            </Button>
+          </Stack.Item>
+          <Stack.Item>
+            <Button
+              icon="power-off"
+              selected={linkedServer.active}
+              onClick={() => act('active')}
+            >
+              {`Server ${linkedServer.active ? 'Enabled' : 'Disabled'}`}
+            </Button>
+          </Stack.Item>
+        </Stack>
       }
     >
       <LabeledList>
@@ -93,11 +97,11 @@ export const MessageMonitorLogs = (props: {
         </Button.Confirm>
       }
     >
-      <Flex wrap="wrap">
+      <Stack wrap="wrap">
         {logs.map((log, i) => (
-          <Flex.Item m="2px" key={log.ref} basis="49%" grow={i % 2}>
+          <Stack.Item m="2px" key={log.ref} basis="49%" grow={i % 2}>
             <Section
-              title={log.sender + ' -> ' + log.recipient}
+              title={`${log.sender} -> ${log.recipient}`}
               buttons={
                 <Button.Confirm
                   confirmContent="Delete Log?"
@@ -130,9 +134,9 @@ export const MessageMonitorLogs = (props: {
                 log.message
               )}
             </Section>
-          </Flex.Item>
+          </Stack.Item>
         ))}
-      </Flex>
+      </Stack>
     </Section>
   );
 };
@@ -157,14 +161,14 @@ export const MessageMonitorAdmin = (props) => {
           <Input
             fluid
             value={customsender}
-            onChange={(e, val) => act('set_sender', { val: val })}
+            onBlur={(val) => act('set_sender', { val: val })}
           />
         </LabeledList.Item>
         <LabeledList.Item label="Sender's Job">
           <Input
             fluid
             value={customjob}
-            onChange={(e, val) => act('set_sender_job', { val: val })}
+            onBlur={(val) => act('set_sender_job', { val: val })}
           />
         </LabeledList.Item>
         <LabeledList.Item label="Recipient">
@@ -186,7 +190,7 @@ export const MessageMonitorAdmin = (props) => {
             fluid
             mb={0.5}
             value={custommessage}
-            onChange={(e, val: string) => act('set_message', { val: val })}
+            onBlur={(val: string) => act('set_message', { val: val })}
           />
         </LabeledList.Item>
       </LabeledList>

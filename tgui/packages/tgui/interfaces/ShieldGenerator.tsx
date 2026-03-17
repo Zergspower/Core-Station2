@@ -1,7 +1,5 @@
-import { toFixed } from 'common/math';
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import {
   Box,
   Button,
@@ -9,9 +7,11 @@ import {
   LabeledList,
   NumberInput,
   Section,
-} from '../components';
-import { formatPower, formatSiUnit } from '../format';
-import { Window } from '../layouts';
+} from 'tgui-core/components';
+import { formatPower, formatSiUnit } from 'tgui-core/format';
+import { toFixed } from 'tgui-core/math';
+import type { BooleanLike } from 'tgui-core/react';
+
 import { FullscreenNotice } from './common/FullscreenNotice';
 
 type Data = {
@@ -49,7 +49,7 @@ export const ShieldGenerator = (props) => {
 
   return (
     <Window width={500} height={400}>
-      <Window.Content>
+      <Window.Content scrollable>
         {locked ? <ShieldGeneratorLocked /> : <ShieldGeneratorContent />}
       </Window.Content>
     </Window>
@@ -109,10 +109,10 @@ const ShieldGeneratorContent = (props) => {
             {toFixed(average_field_strength, 2) +
               ' Renwick (' +
               (target_field_strength &&
-                toFixed(
+                `${toFixed(
                   (100 * average_field_strength) / target_field_strength,
                   1,
-                ) + '%)') || 'NA)'}
+                )}%)`) || 'NA)'}
           </LabeledList.Item>
           <LabeledList.Item label="Upkeep Power">
             {formatPower(upkeep)}
@@ -127,7 +127,7 @@ const ShieldGeneratorContent = (props) => {
             <LabeledList>
               {capacitorLen ? (
                 capacitors.map((cap, i) => (
-                  <LabeledList.Item key={i} label={'Capacitor #' + i}>
+                  <LabeledList.Item key={i} label={`Capacitor #${i}`}>
                     {cap.active ? (
                       <Box color="good">Online</Box>
                     ) : (

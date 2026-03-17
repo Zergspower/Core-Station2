@@ -34,7 +34,7 @@
 					log_message("Drilled through [target]")
 					target.ex_act(2)
 
-			else if(istype(target, /turf/simulated/mineral))
+			else if(ismineralturf(target))
 				if(enable_special)
 					for(var/turf/simulated/mineral/M in range(chassis,1))
 						if(get_dir(chassis,M)&chassis.dir)
@@ -65,7 +65,7 @@
 		target.apply_damage(drill_force, BRUTE)
 		return
 
-	else if(istype(target, /mob/living/simple_mob))
+	else if(isanimal(target))
 		var/mob/living/simple_mob/S = target
 		if(target.stat == DEAD)
 			if(S.meat_amount > 0)
@@ -116,7 +116,7 @@
 				else
 					log_message("Bored through [target]")
 					target.ex_act(2)
-			else if(istype(target, /turf/simulated/mineral))
+			else if(ismineralturf(target))
 				var/turf/simulated/mineral/M = target
 				if(enable_special && !M.density)
 					M.ex_act(2)

@@ -1,12 +1,15 @@
 #define FIRE_MAX_TEMP 20000
 
 /turf/proc/lingering_fire(fl)
-	return
+	return FALSE
+
+/turf/simulated/floor/water/lingering_fire(fl)
+	return FALSE
+
+/turf/simulated/floor/flesh/lingering_fire(fl)
+	return FALSE
 
 /turf/simulated/lingering_fire(fl)
-	if(istype(src, /turf/space) || istype(src, /turf/simulated/floor/water) || istype(src, /turf/simulated/flesh))
-		return FALSE
-
 	if(istype(src, /turf/simulated/open))
 		var/turf/below = GetBelow(src)
 		if(below)
@@ -86,7 +89,7 @@
 	if(air_contents.temperature < FIRE_MAX_TEMP) // May as well limit this
 		var/starting_energy = air_contents.temperature * air_contents.heat_capacity()
 		if(starting_energy > 0)
-			air_contents.temperature = (starting_energy + vsc.fire_fuel_energy_release * (gas_exchange * 1.05)) / air_contents.heat_capacity()
+			air_contents.temperature = min((starting_energy + vsc.fire_fuel_energy_release * (gas_exchange * 1.025)) / air_contents.heat_capacity(), FIRE_MAX_TEMP)
 	air_contents.update_values()
 
 	// Affect contents
@@ -98,7 +101,7 @@
 		A.fire_act(air_contents, air_contents.temperature, air_contents.volume)
 
 	// Spreading behaviour
-	for(var/direction in shuffle(cardinal))
+	for(var/direction in shuffle(GLOB.cardinal))
 		var/turf/simulated/enemy_tile = get_step(my_tile, direction)
 		if(istype(enemy_tile))
 			if(my_tile.open_directions & direction)
@@ -119,17 +122,17 @@
 						firelevel /= 2
 					continue
 
-				if(firelevel >= 0.15 && prob(60) && my_tile.CanPass(src, enemy_tile) && enemy_tile.CanPass(src, my_tile))
+				if(firelevel >= 0.15 && prob(20) && my_tile.CanPass(src, enemy_tile) && enemy_tile.CanPass(src, my_tile))
 					var/splitrate = 0.85
 					enemy_tile.lingering_fire(firelevel * splitrate)
 					firelevel -= (1 - splitrate)
 
-			else if(prob(20))
+			else if(prob(10))
 				enemy_tile.adjacent_fire_act(loc, air_contents, air_contents.temperature, air_contents.volume)
 
 	var/total_oxidizers = 0
 	for(var/g in air_contents.gas)
-		if(gas_data.flags[g] & XGM_GAS_OXIDIZER)
+		if(GLOB.gas_data.flags[g] & XGM_GAS_OXIDIZER)
 			total_oxidizers += air_contents.gas[g]
 
 	var/invalid_fire = total_oxidizers < 1 || air_contents.temperature <= (T0C + 15) || ultimate_burnout >= 1 || my_tile.is_outdoors() || SSair.lingering_fires >= 1000

@@ -1,8 +1,9 @@
 /mob/Destroy()//This makes sure that mobs withGLOB.clients/keys are not just deleted from the game.
-	mob_list -= src
-	dead_mob_list -= src
-	living_mob_list -= src
-	player_list -= src
+	SSmobs.currentrun -= src
+	GLOB.mob_list -= src
+	GLOB.dead_mob_list -= src
+	GLOB.living_mob_list -= src
+	GLOB.player_list -= src
 	unset_machine()
 	clear_fullscreen()
 	if(client)
@@ -12,10 +13,10 @@
 		client.screen = list()
 	if(mind && mind.current == src)
 		spellremove(src)
-	if(!istype(src,/mob/observer)) //CHOMPEdit
-		ghostize() //CHOMPEdit
-	//ChompEDIT start - fix hard qdels
-	QDEL_NULL(soulgem) //CHOMPAdd
+	if(!istype(src,/mob/observer))
+		ghostize(FALSE)
+	QDEL_NULL(soulgem) //Soulcatcher
+	QDEL_NULL(dna)
 	QDEL_NULL(plane_holder)
 	QDEL_NULL(hud_used)
 	for(var/key in alerts) //clear out alerts
@@ -23,9 +24,22 @@
 	if(pulling)
 		stop_pulling() //TG does this on atom/movable but our stop_pulling proc is here so whatever
 
+	if(ability_master)
+		QDEL_NULL(ability_master)
+
+	if(vore_organs)
+		QDEL_NULL_LIST(vore_organs)
+	if(vorePanel)
+		QDEL_NULL(vorePanel)
+
+	for(var/mob/observer/dead/M in following_mobs)
+		M.stop_following()
+	following_mobs = null
 	previewing_belly = null // from code/modules/vore/eating/mob_ch.dm
 	vore_selected = null // from code/modules/vore/eating/mob_vr
 	focus = null
+
+	motiontracker_unsubscribe(TRUE) // Force unsubscribe
 
 	if(mind)
 		if(mind.current == src)
@@ -36,6 +50,7 @@
 	. = ..()
 	update_client_z(null)
 	//return QDEL_HINT_HARDDEL_NOW
+
 
 /mob/proc/remove_screen_obj_references()
 	hands = null
@@ -53,20 +68,19 @@
 	spell_masters = null
 	zone_sel = null
 
-/mob/Initialize()
-	mob_list += src
+/mob/Initialize(mapload)
+	GLOB.mob_list += src
 	if(stat == DEAD)
-		dead_mob_list += src
+		GLOB.dead_mob_list += src
 	else
-		living_mob_list += src
+		GLOB.living_mob_list += src
 	lastarea = get_area(src)
 	set_focus(src) // VOREStation Add - Key Handling
-	hook_vr("mob_new",list(src)) //VOREStation Code
+	update_transform() // Some mobs may start bigger or smaller than normal.
 	. = ..()
 	//return QDEL_HINT_HARDDEL_NOW Just keep track of mob references. They delete SO much faster now.
 
-/mob/show_message(msg, type, alt, alt_type)//Message, type of message (1 or 2), alternative message, alt message type (1 or 2) //CHOMPEdit show_message() moved to /atom/movable
-	var/time = say_timestamp()
+/mob/show_message(msg, type, alt, alt_type)
 
 	if(!client && !teleop)	return
 
@@ -89,12 +103,7 @@
 	if(stat == UNCONSCIOUS || sleeping > 0)
 		to_chat(src, span_filter_notice(span_italics("... You can almost hear someone talking ...")))
 	else
-		if(client && client.prefs.chat_timestamp)
-			// TG-Chat filters latch directly to the spans, we no longer need that
-			//msg = replacetext(msg, new/regex("^(<span(?: \[^>]*)?>)((?:.|\\n)*</span>)", ""), "$1[time] $2") // Insteres timestamps after the first qualifying span
-			//msg = replacetext(msg, new/regex("^\[^<]((?:.|\\n)*)", ""), "[time] $1") // Spanless messages also get timestamped
-			to_chat(src,"[time] [msg]")
-		else if(teleop)
+		if(teleop)
 			to_chat(teleop, create_text_tag("body", "BODY:", teleop.client) + "[msg]")
 		else
 			to_chat(src,msg)
@@ -111,7 +120,7 @@
 			exclude_mobs |= src
 		else
 			exclude_mobs = list(src)
-		src.show_message(self_message, 1, blind_message, 2)
+		show_message(self_message, 1, blind_message, 2)
 	if(isnull(runemessage))
 		runemessage = -1
 	. = ..(message, blind_message, exclude_mobs, range, runemessage) // Really not ideal that atom/visible_message has different arg numbering :(
@@ -123,7 +132,7 @@
 /atom/proc/drain_power(var/drain_check,var/surge, var/amount = 0)
 	return -1
 
- // used for petrification machines
+// used for petrification machines
 /atom/proc/get_ultimate_mob()
 	var/mob/ultimate_mob
 	var/atom/to_check = loc
@@ -167,7 +176,7 @@
 			M.create_chat_message(src, "[runemessage || message]", FALSE, list("emote"), audible = FALSE)
 
 /mob/proc/findname(msg)
-	for(var/mob/M in mob_list)
+	for(var/mob/M in GLOB.mob_list)
 		if (M.real_name == text("[]", msg))
 			return M
 	return 0
@@ -241,37 +250,6 @@
 				client.perspective = EYE_PERSPECTIVE
 				client.eye = loc
 		return TRUE
-/* CHOMPEdit - Moved to modular_chomp/modules/point/point.dm
-/mob/verb/pointed(atom/A as mob|obj|turf in view())
-	set name = "Point To"
-	set category = "Object"
-
-	if(!src || !isturf(src.loc) || !(A in view(src.loc)))
-		return 0
-	if(istype(A, /obj/effect/decal/point))
-		return 0
-
-	var/turf/tile = get_turf(A)
-	if (!tile)
-		return 0
-
-	var/turf/our_tile = get_turf(src)
-	var/obj/visual = new /obj/effect/decal/point(our_tile)
-	visual.invisibility = invisibility
-	visual.plane = ABOVE_PLANE
-	visual.layer = FLY_LAYER
-
-	animate(visual,
-		pixel_x = (tile.x - our_tile.x) * world.icon_size + A.pixel_x,
-		pixel_y = (tile.y - our_tile.y) * world.icon_size + A.pixel_y,
-		time = 1.7,
-		easing = EASE_OUT)
-
-	QDEL_IN(visual, 2 SECONDS) //Better qdel
-
-	face_atom(A)
-	return 1
-*/
 
 /mob/proc/ret_grab(list/L, flag)
 	return
@@ -290,13 +268,14 @@
 	for(var/t in typesof(/area))
 		master += text("[]\n", t)
 		//Foreach goto(26)
-	src << browse(master)
+	src << browse("<html>[master]</html>")
 	return
 */
 
 /mob/verb/memory()
 	set name = "Notes"
-	set category = "IC.Game"
+	set desc = "View notes stored for this round only."
+	set category = "IC.Notes"
 	if(mind)
 		mind.show_memory(src)
 	else
@@ -304,7 +283,8 @@
 
 /mob/verb/add_memory(msg as message)
 	set name = "Add Note"
-	set category = "IC.Game"
+	set desc = "Add notes stored for this round only."
+	set category = "IC.Notes"
 
 	msg = sanitize(msg)
 
@@ -330,8 +310,8 @@
 /mob/proc/update_flavor_text()
 	set src in usr
 	if(usr != src)
-		to_chat(usr, "No.")
-	var/msg = sanitize(tgui_input_text(usr,"Set the flavor text in your 'examine' verb.","Flavor Text",html_decode(flavor_text), multiline = TRUE, prevent_enter = TRUE), extra = 0)	//VOREStation Edit: separating out OOC notes
+		to_chat(src, "No.")
+	var/msg = sanitize(tgui_input_text(src,"Set the flavor text in your 'examine' verb.","Flavor Text",html_decode(flavor_text), multiline = TRUE, prevent_enter = TRUE), extra = 0)	//VOREStation Edit: separating out OOC notes
 
 	if(msg != null)
 		flavor_text = msg
@@ -393,24 +373,27 @@
 /mob/verb/abandon_mob()
 	set name = "Return to Menu"
 	set category = "OOC.Game"
+	if(istype(src, /mob/new_player))
+		to_chat(src, span_boldnotice("You are already in the lobby!"))
+		return
 
 	if(stat != DEAD || !ticker)
-		to_chat(usr, span_boldnotice("You must be dead to use this!"))
+		to_chat(src, span_boldnotice("You must be dead to use this!"))
 		return
 
 	// Final chance to abort "respawning"
 	if(mind && timeofdeath) // They had spawned before
-		var/choice = tgui_alert(usr, "Returning to the menu will prevent your character from being revived in-round. Are you sure?", "Confirmation", list("No, wait", "Yes, leave"))
+		var/choice = tgui_alert(src, "Returning to the menu will prevent your character from being revived in-round. Are you sure?", "Confirmation", list("No, wait", "Yes, leave"))
 		if(!choice || choice == "No, wait")
 			return
 		else if(mind.assigned_role)
-			var/extra_check = tgui_alert(usr, "Do you want to Quit This Round before you return to lobby?\
+			var/extra_check = tgui_alert(src, "Do you want to Quit This Round before you return to lobby?\
 			This will properly remove you from manifest, as well as prevent resleeving. BEWARE: Pressing 'NO' will STILL return you to lobby!",
 			"Quit This Round",list("Quit Round","No"))
 			if(extra_check == "Quit Round")
 				//Update any existing objectives involving this mob.
-				for(var/datum/objective/O in all_objectives)
-					if(O.target == src.mind)
+				for(var/datum/objective/O in GLOB.all_objectives)
+					if(O.target == mind)
 						if(O.owner && O.owner.current)
 							to_chat(O.owner.current,span_warning("You get the feeling your target is no longer within your reach..."))
 						qdel(O)
@@ -420,48 +403,49 @@
 					SStranscore.leave_round(src)
 
 				//Job slot cleanup
-				var/job = src.mind.assigned_role
+				var/job = mind.assigned_role
 				job_master.FreeRole(job)
 
 				//Their objectives cleanup
-				if(src.mind.objectives.len)
-					qdel(src.mind.objectives)
-					src.mind.special_role = null
+				if(mind.objectives.len)
+					qdel(mind.objectives)
+					mind.special_role = null
 
 				//Cut the PDA manifest (ugh)
-				if(PDA_Manifest.len)
-					PDA_Manifest.Cut()
-				for(var/datum/data/record/R in data_core.medical)
-					if((R.fields["name"] == src.real_name))
+				if(GLOB.PDA_Manifest.len)
+					GLOB.PDA_Manifest.Cut()
+				for(var/datum/data/record/R in GLOB.data_core.medical)
+					if((R.fields["name"] == real_name))
 						qdel(R)
-				for(var/datum/data/record/T in data_core.security)
-					if((T.fields["name"] == src.real_name))
+				for(var/datum/data/record/T in GLOB.data_core.security)
+					if((T.fields["name"] == real_name))
 						qdel(T)
-				for(var/datum/data/record/G in data_core.general)
-					if((G.fields["name"] == src.real_name))
+				for(var/datum/data/record/G in GLOB.data_core.general)
+					if((G.fields["name"] == real_name))
 						qdel(G)
 
 				//This removes them from being 'active' list on join screen
-				src.mind.assigned_role = null
+				mind.assigned_role = null
 				to_chat(src,span_notice("Your job has been free'd up, and you can rejoin as another character or quit. Thanks for properly quitting round, it helps the server!"))
 
 	// Beyond this point, you're going to respawn
 
 	if(!client)
-		log_game("[usr.key] AM failed due to disconnect.")
+		log_game("[key] AM failed due to disconnect.")
 		return
 	client.screen.Cut()
 	client.screen += client.void
 	if(!client)
-		log_game("[usr.key] AM failed due to disconnect.")
+		log_game("[key] AM failed due to disconnect.")
 		return
 
 	announce_ghost_joinleave(client, 0)
 
 	var/mob/new_player/M = new /mob/new_player()
 	if(!client)
-		log_game("[usr.key] AM failed due to disconnect.")
+		log_game("[key] AM failed due to disconnect.")
 		qdel(M)
+		M.key = null
 		return
 
 	M.has_respawned = TRUE //When we returned to main menu, send respawn message
@@ -474,28 +458,23 @@
 /client/verb/changes()
 	set name = "Changelog"
 	set category = "OOC.Resources"
-	// CHOMPedit Start - Better Changelog
-	//src << browse('html/changelog.html', "window=changes;size=675x650")
-	//return
 
 	if(!GLOB.changelog_tgui)
 		GLOB.changelog_tgui = new /datum/changelog()
 	GLOB.changelog_tgui.tgui_interact(usr)
-	// CHOMPedit END
-	if(prefs.lastchangelog != changelog_hash)
-		prefs.lastchangelog = changelog_hash
-		SScharacter_setup.queue_preferences_save(prefs)
-		// winset(src, "rpane.changelog", "background-color=none;font-style=;") //ChompREMOVE
+
+	if(prefs?.read_preference(/datum/preference/text/lastchangelog) != GLOB.changelog_hash)
+		prefs.write_preference_by_type(/datum/preference/text/lastchangelog, GLOB.changelog_hash)
 
 /mob/verb/observe()
 	set name = "Observe"
 	set category = "OOC.Game"
 	var/is_admin = 0
 
-	if(client.holder && (client.holder.rights & R_ADMIN|R_EVENT))
+	if(check_rights_for(client, R_ADMIN|R_EVENT))
 		is_admin = 1
-	else if(stat != DEAD || istype(src, /mob/new_player))
-		to_chat(usr, span_filter_notice("[span_blue("You must be observing to use this!")]"))
+	else if(stat != DEAD || isnewplayer(src))
+		to_chat(src, span_filter_notice("[span_blue("You must be observing to use this!")]"))
 		return
 
 	if(is_admin && stat == DEAD)
@@ -504,10 +483,10 @@
 	var/list/targets = list()
 
 
-	targets += observe_list_format(nuke_disks)
-	targets += observe_list_format(GLOB.all_singularities) //CHOMP Edit
+	targets += observe_list_format(GLOB.nuke_disks)
+	targets += observe_list_format(GLOB.all_singularities)
 	targets += getmobs()
-	targets += observe_list_format(sortAtom(mechas_list))
+	targets += observe_list_format(sort_names(GLOB.mechas_list))
 	targets += observe_list_format(SSshuttles.ships)
 
 	client.perspective = EYE_PERSPECTIVE
@@ -515,7 +494,7 @@
 	var/eye_name = null
 
 	var/ok = "[is_admin ? "Admin Observe" : "Observe"]"
-	eye_name = tgui_input_list(usr, "Select something to [ok]:", "Select Target", targets)
+	eye_name = tgui_input_list(src, "Select something to [ok]:", "Select Target", targets)
 
 	if (!eye_name)
 		return
@@ -542,8 +521,19 @@
 		src << browse(null, t1)
 
 	if(href_list["flavor_more"])
-		usr << browse(text("<HTML><HEAD><TITLE>[]</TITLE></HEAD><BODY><TT>[]</TT></BODY></HTML>", name, replacetext(flavor_text, "\n", "<BR>")), text("window=[];size=500x200", name))
-		onclose(usr, "[name]")
+		var/examine_text = splittext(flavor_text, "||")
+		var/index = 0
+		var/rendered_text = ""
+		for(var/part in examine_text)
+			if(index % 2)
+				rendered_text += span_spoiler("[part]")
+			else
+				rendered_text += "[part]"
+			index++
+		examine_text = replacetext(rendered_text, "\n", "<BR>")
+		var/datum/browser/popup = new(usr, "[name]", "[name]", 500, 300, src)
+		popup.set_content(examine_text)
+		popup.open()
 	if(href_list["flavor_change"])
 		update_flavor_text()
 	return ..()
@@ -570,14 +560,14 @@
 
 /mob/proc/start_pulling(var/atom/movable/AM)
 
-	if ( !AM || !usr || src==AM || !isturf(src.loc) )	//if there's no person pulling OR the person is pulling themself OR the object being pulled is inside something: abort!
+	if ( !AM || src==AM || !isturf(loc) )	//if there's no person pulling OR the person is pulling themself OR the object being pulled is inside something: abort!
 		return
 
 	if (AM.anchored)
 		to_chat(src, span_warning("It won't budge!"))
 		return
 
-	if(lying) // CHOMPAdd - No pulling while we crawl.
+	if(lying)
 		return
 
 	var/mob/M = AM
@@ -616,6 +606,10 @@
 		else
 			M.LAssailant = usr
 
+		if(M.no_pull_when_living && !(M.stat == DEAD)) //If it's now allowed to be pulled when living, and it's not dead yet, deny.
+			to_chat(src, span_warning("\The [M] won't let you just pull them!"))
+			return
+
 	else if(isobj(AM))
 		var/obj/I = AM
 		if(!can_pull_size || can_pull_size < I.w_class)
@@ -629,7 +623,7 @@
 		if(pulling_old == AM)
 			return
 
-	src.pulling = AM
+	pulling = AM
 	AM.pulledby = src
 
 	if(pullin)
@@ -645,7 +639,7 @@
 			visible_message(span_warning("\The [src] grips \the [H]'s arm."), span_notice("You grip \the [H]'s arm."), exclude_mobs = list(H))
 			if(!H.stat)
 				to_chat(H, span_warning("\The [src] grips your arm."))
-		playsound(src.loc, 'sound/weapons/thudswoosh.ogg', 25) //Quieter than hugging/grabbing but we still want some audio feedback
+		playsound(loc, 'sound/weapons/thudswoosh.ogg', 25) //Quieter than hugging/grabbing but we still want some audio feedback
 
 		if(H.pull_damage())
 			to_chat(src, span_filter_notice("[span_red(span_bold("Pulling \the [H] in their current condition would probably be a bad idea."))]"))
@@ -658,13 +652,13 @@
 // We have pulled something before, so we should be able to safely continue pulling it. This proc is only for portals!
 /mob/proc/continue_pulling(var/atom/movable/AM)
 
-	if ( !AM || src==AM || !isturf(src.loc) )	//if there's no person pulling OR the person is pulling themself OR the object being pulled is inside something: abort!
+	if ( !AM || src==AM || !isturf(loc) )	//if there's no person pulling OR the person is pulling themself OR the object being pulled is inside something: abort!
 		return
 
 	if (AM.anchored)
 		return
 
-	src.pulling = AM
+	pulling = AM
 	AM.pulledby = src
 
 	if(pullin)
@@ -679,7 +673,7 @@
 	return
 
 /mob/proc/is_active()
-	return (0 >= usr.stat)
+	return (0 >= stat)
 
 /mob/proc/is_dead()
 	return stat == DEAD
@@ -1019,9 +1013,9 @@
 	set_face_dir()
 
 	if(!facing_dir)
-		to_chat(usr, span_filter_notice("You are now not facing anything."))
+		to_chat(src, span_filter_notice("You are now not facing anything."))
 	else
-		to_chat(usr, span_filter_notice("You are now facing [dir2text(facing_dir)]."))
+		to_chat(src, span_filter_notice("You are now facing [dir2text(facing_dir)]."))
 
 /mob/proc/set_face_dir(var/newdir)
 	if(newdir == facing_dir)
@@ -1138,21 +1132,21 @@
 //Throwing stuff
 
 /mob/proc/toggle_throw_mode()
-	if (src.in_throw_mode)
+	if (in_throw_mode)
 		throw_mode_off()
 	else
 		throw_mode_on()
 
 /mob/proc/throw_mode_off()
-	src.in_throw_mode = 0
-	if(src.throw_icon && !issilicon(src)) //in case we don't have the HUD and we use the hotkey. Silicon use this for something else. Do not overwrite their HUD icon
-		src.throw_icon.icon_state = "act_throw_off"
+	in_throw_mode = 0
+	if(throw_icon && !issilicon(src)) //in case we don't have the HUD and we use the hotkey. Silicon use this for something else. Do not overwrite their HUD icon
+		throw_icon.icon_state = "act_throw_off"
 
 /mob/proc/throw_mode_on()
-	src.in_throw_mode = 1
-	if(src.throw_icon && !issilicon(src)) // Silicon use this for something else. Do not overwrite their HUD icon
-		src.throw_icon.icon_state = "act_throw_on"
-/* CHOMPedit removal begin
+	in_throw_mode = 1
+	if(throw_icon && !issilicon(src)) // Silicon use this for something else. Do not overwrite their HUD icon
+		throw_icon.icon_state = "act_throw_on"
+
 /mob/verb/spacebar_throw_on()
 	set name = ".throwon"
 	set hidden = TRUE
@@ -1164,7 +1158,7 @@
 	set hidden = TRUE
 	set instant = TRUE
 	throw_mode_off()
-ChompEdit removal end*/
+
 /mob/proc/isSynthetic()
 	return 0
 
@@ -1184,6 +1178,7 @@ ChompEdit removal end*/
 
 
 /obj/Destroy()
+	// CHOMPEdit Start
 	if(exploit_for)
 		var/mob/exploited = exploit_for.resolve()
 		exploited?.exploit_addons -= src
@@ -1240,8 +1235,23 @@ ChompEdit removal end*/
 // This is for inheritence since /mob/living will serve most cases. If you need ghosts to use this you'll have to implement that yourself.
 /mob/proc/update_client_color()
 	if(client && client.color)
-		animate(client, color = null, time = 10)
+		animate(client, color = get_location_color_tint(), time = 10)
 	return
+
+/mob/proc/get_location_color_tint()
+	PROTECTED_PROC(TRUE)
+	SHOULD_NOT_OVERRIDE(TRUE)
+	var/turf/T = get_turf(src)
+	var/area/A = get_area(src)
+	if(!T || !A)
+		return null
+	if(T.is_outdoors()) // check weather
+		var/datum/planet/P = LAZYACCESS(SSplanets.z_to_planet, T.z)
+		var/weather_tint = P?.weather_holder.current_weather.get_color_tint()
+		if(weather_tint) // But not if the weather has no blending!
+			return weather_tint
+	// If not weather based then just area's
+	return A.get_color_tint()
 
 /mob/proc/swap_hand()
 	return
@@ -1327,3 +1337,297 @@ GLOBAL_LIST_EMPTY_TYPED(living_players_by_zlevel, /list)
 /mob/proc/grab_ghost(force)
 	if(mind)
 		return mind.grab_ghost(force = force)
+
+/mob/is_incorporeal()
+	if(incorporeal_move)
+		return 1
+	return ..()
+
+/**
+ * Get the mob VV dropdown extras
+ */
+/mob/vv_get_dropdown()
+	. = ..()
+	VV_DROPDOWN_OPTION("", "---------")
+	VV_DROPDOWN_OPTION(VV_HK_GIB, "Gib")
+	VV_DROPDOWN_OPTION(VV_HK_GIVE_AI, "Give AI Controller")
+	//VV_DROPDOWN_OPTION(VV_HK_GIVE_AI_SPEECH, "Give Random AI Speech")
+	VV_DROPDOWN_OPTION(VV_HK_GIVE_SPELL, "Give Spell")
+	VV_DROPDOWN_OPTION(VV_HK_REMOVE_SPELL, "Remove Spell")
+	VV_DROPDOWN_OPTION(VV_HK_ADDLANGUAGE, "Add Language")
+	VV_DROPDOWN_OPTION(VV_HK_REMOVELANGUAGE, "Remove Language")
+	VV_DROPDOWN_OPTION(VV_HK_ADDVERB, "Add Verb")
+	VV_DROPDOWN_OPTION(VV_HK_REMOVEVERB, "Remove Verb")
+	VV_DROPDOWN_OPTION(VV_HK_ADDORGAN, "Add Organ")
+	VV_DROPDOWN_OPTION(VV_HK_REMOVEORGAN, "Remove Organ")
+	//VV_DROPDOWN_OPTION(VV_HK_GIVE_MOB_ACTION, "Give Mob Ability")
+	//VV_DROPDOWN_OPTION(VV_HK_REMOVE_MOB_ACTION, "Remove Mob Ability")
+	//VV_DROPDOWN_OPTION(VV_HK_GIVE_DISEASE, "Give Disease")
+	VV_DROPDOWN_OPTION(VV_HK_GODMODE, "Toggle Godmode")
+	VV_DROPDOWN_OPTION(VV_HK_DROP_ALL, "Drop Everything")
+	VV_DROPDOWN_OPTION(VV_HK_REGEN_ICONS, "Regenerate Icons")
+	VV_DROPDOWN_OPTION(VV_HK_REGEN_ICONS_FULL, "Regenerate Icons & Clear Stuck Overlays")
+	VV_DROPDOWN_OPTION(VV_HK_PLAYER_PANEL, "Show player panel")
+	VV_DROPDOWN_OPTION(VV_HK_BUILDMODE, "Toggle Buildmode")
+	VV_DROPDOWN_OPTION(VV_HK_DIRECT_CONTROL, "Assume Direct Control")
+	//VV_DROPDOWN_OPTION(VV_HK_GIVE_DIRECT_CONTROL, "Give Direct Control")
+	//VV_DROPDOWN_OPTION(VV_HK_OFFER_GHOSTS, "Offer Control to Ghosts")
+	//VV_DROPDOWN_OPTION(VV_HK_VIEW_PLANES, "View/Edit Planes")
+
+/mob/vv_do_topic(list/href_list)
+	. = ..()
+
+	if(!.)
+		return
+
+	if(href_list[VV_HK_REGEN_ICONS])
+		if(!check_rights(NONE))
+			return
+		regenerate_icons()
+
+	if(href_list[VV_HK_REGEN_ICONS_FULL])
+		if(!check_rights(NONE))
+			return
+		cut_overlays()
+		regenerate_icons()
+
+	if(href_list[VV_HK_PLAYER_PANEL])
+		return SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/show_player_panel, src)
+
+	if(href_list[VV_HK_GODMODE])
+		if(!check_rights(R_ADMIN))
+			return
+		usr.client.cmd_admin_godmode(src)
+
+	if(href_list[VV_HK_ADDLANGUAGE])
+		if(!check_rights(R_SPAWN))
+			return
+
+		var/mob/H = src
+		if(!istype(H))
+			to_chat(usr, "This can only be done to instances of type /mob")
+			return
+
+		var/new_language = tgui_input_list(usr, "Please choose a language to add.", "Language", GLOB.all_languages)
+		if(!new_language)
+			return
+
+		if(!H)
+			to_chat(usr, "Mob doesn't exist anymore")
+			return
+
+		if(H.add_language(new_language))
+			to_chat(usr, "Added [new_language] to [H].")
+			return
+
+		to_chat(usr, "Mob already knows that language.")
+
+	if(href_list[VV_HK_REMOVELANGUAGE])
+		if(!check_rights(R_SPAWN))
+			return
+
+		var/mob/H = src
+		if(!istype(H))
+			to_chat(usr, "This can only be done to instances of type /mob")
+			return
+
+		if(!H.languages.len)
+			to_chat(usr, "This mob knows no languages.")
+			return
+
+		var/datum/language/rem_language = tgui_input_list(usr, "Please choose a language to remove.", "Language", H.languages)
+
+		if(!rem_language)
+			return
+
+		if(!H)
+			to_chat(usr, "Mob doesn't exist anymore")
+			return
+
+		if(H.remove_language(rem_language.name))
+			to_chat(usr, "Removed [rem_language] from [H].")
+			return
+
+		to_chat(usr, "Mob doesn't know that language.")
+
+	if(href_list[VV_HK_ADDVERB])
+		if(!check_rights(R_DEBUG))
+			return
+
+		var/mob/H = src
+
+		if(!ismob(H))
+			to_chat(usr, "This can only be done to instances of type /mob")
+			return
+		var/list/possibleverbs = list()
+		possibleverbs += "Cancel" 								// One for the top...
+		possibleverbs += typesof(/mob/proc, /mob/verb)
+		if(isobserver(H))
+			possibleverbs += typesof(/mob/observer/dead/proc,/mob/observer/dead/verb)
+		if(isliving(H))
+			possibleverbs += typesof(/mob/living/proc,/mob/living/verb)
+		if(ishuman(H))
+			possibleverbs += typesof(/mob/living/carbon/proc,/mob/living/carbon/verb,/mob/living/carbon/human/verb,/mob/living/carbon/human/proc)
+		if(isrobot(H))
+			possibleverbs += typesof(/mob/living/silicon/proc,/mob/living/silicon/robot/proc,/mob/living/silicon/robot/verb)
+		if(isAI(H))
+			possibleverbs += typesof(/mob/living/silicon/proc,/mob/living/silicon/ai/proc,/mob/living/silicon/ai/verb)
+		if(isanimal(H))
+			possibleverbs += typesof(/mob/living/simple_mob/proc)
+		possibleverbs -= H.verbs
+		possibleverbs += "Cancel" 								// ...And one for the bottom
+
+		var/verb = tgui_input_list(usr, "Select a verb!", "Verbs", possibleverbs)
+		if(!verb || verb == "Cancel")
+			return
+
+		if(!H)
+			to_chat(usr, "Mob doesn't exist anymore")
+			return
+
+		add_verb(H, verb)
+
+	if(href_list[VV_HK_REMOVEVERB])
+		if(!check_rights(R_DEBUG))
+			return
+
+		var/mob/H = src
+
+		if(!istype(H))
+			to_chat(usr, "This can only be done to instances of type /mob")
+			return
+		var/verb = tgui_input_list(usr, "Please choose a verb to remove.", "Verbs", H.verbs)
+		if(!verb)
+			return
+
+		if(!H)
+			to_chat(usr, "Mob doesn't exist anymore")
+			return
+
+		remove_verb(H, verb)
+
+	if(href_list[VV_HK_ADDORGAN])
+		if(!check_rights(R_SPAWN))
+			return
+
+		var/mob/living/carbon/M = src
+		if(!istype(M))
+			to_chat(usr, "This can only be done to instances of type /mob/living/carbon")
+			return
+
+		var/new_organ = tgui_input_list(usr, "Please choose an organ to add.", "Organ", subtypesof(/obj/item/organ))
+		if(!new_organ)
+			return
+
+		if(!M)
+			to_chat(usr, "Mob doesn't exist anymore")
+			return
+
+		if(locate(new_organ) in M.internal_organs)
+			to_chat(usr, "Mob already has that organ.")
+			return
+
+		new new_organ(M)
+
+
+	if(href_list[VV_HK_REMOVEORGAN])
+		if(!check_rights(R_SPAWN))
+			return
+
+		var/mob/living/carbon/M = src
+		if(!istype(M))
+			to_chat(usr, "This can only be done to instances of type /mob/living/carbon")
+			return
+
+		var/obj/item/organ/rem_organ = tgui_input_list(usr, "Please choose an organ to remove.", "Organ", M.internal_organs)
+		if(!rem_organ)
+			return
+
+		if(!M)
+			to_chat(usr, "Mob doesn't exist anymore")
+			return
+
+		if(!(locate(rem_organ) in M.internal_organs))
+			to_chat(usr, "Mob does not have that organ.")
+			return
+
+		to_chat(usr, "Removed [rem_organ] from [M].")
+		rem_organ.removed()
+		qdel(rem_organ)
+
+	if(href_list[VV_HK_GIVE_AI])
+		if(!check_rights(R_HOLDER))
+			return
+
+		var/mob/M = src
+		if(!isliving(M))
+			to_chat(src, span_notice("This can only be used on instances of type /mob/living"))
+			return
+		var/mob/living/L = M
+		if(L.client || L.teleop)
+			to_chat(src, span_warning("This cannot be used on player mobs!"))
+			return
+
+		if(L.ai_holder)	//Cleaning up the original ai
+			var/ai_holder_old = L.ai_holder
+			L.ai_holder = null
+			qdel(ai_holder_old)	//Only way I could make #TESTING - Unable to be GC'd to stop. del() logs show it works.
+		L.ai_holder_type = tgui_input_list(usr, "Choose AI holder", "AI Type", typesof(/datum/ai_holder/))
+		L.initialize_ai_holder()
+		L.faction = sanitize(tgui_input_text(usr, "Please input AI faction", "AI faction", "neutral"))
+		L.a_intent = tgui_input_list(usr, "Please choose AI intent", "AI intent", list(I_HURT, I_HELP))
+		if(tgui_alert(usr, "Make mob wake up? This is needed for carbon mobs.", "Wake mob?", list("Yes", "No")) == "Yes")
+			L.AdjustSleeping(-100)
+
+	//if(href_list[VV_HK_GIVE_AI_SPEECH])
+	//	return SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/give_ai_speech, src)
+
+	//if(href_list[VV_HK_GIVE_MOB_ACTION])
+	//	return SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/give_mob_action, src)
+
+	//if(href_list[VV_HK_REMOVE_MOB_ACTION])
+	//	return SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/remove_mob_action, src)
+
+	if(href_list[VV_HK_GIVE_SPELL])
+		return SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/give_spell, src)
+
+	if(href_list[VV_HK_REMOVE_SPELL])
+		return SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/remove_spell, src)
+
+	//if(href_list[VV_HK_GIVE_DISEASE])
+	//	return SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/give_disease, src)
+
+	if(href_list[VV_HK_GIB])
+		return SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/gib_them, src)
+
+	if(href_list[VV_HK_BUILDMODE])
+		if(!check_rights(R_BUILDMODE))
+			return
+		togglebuildmode(src)
+
+	if(href_list[VV_HK_DROP_ALL])
+		return SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/drop_everything, src)
+
+	if(href_list[VV_HK_DIRECT_CONTROL])
+		return SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/cmd_assume_direct_control, src)
+
+	//if(href_list[VV_HK_GIVE_DIRECT_CONTROL])
+	//	return SSadmin_verbs.dynamic_invoke_verb(usr, /datum/admin_verb/cmd_give_direct_control, src)
+
+	//if(href_list[VV_HK_OFFER_GHOSTS])
+	//	if(!check_rights(NONE))
+	//		return
+	//	offer_control(src)
+
+	//if(href_list[VV_HK_VIEW_PLANES])
+	//	if(!check_rights(R_DEBUG))
+	//		return
+	//	usr.client.edit_plane_masters(src)
+/**
+ * extra var handling for the logging var
+ */
+/mob/vv_get_var(var_name)
+	//switch(var_name)
+	//	if(NAMEOF(src, logging))
+	//		return debug_variable(var_name, logging, 0, src, FALSE)
+	. = ..()

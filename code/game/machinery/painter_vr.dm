@@ -29,7 +29,8 @@
 		/obj/item/clothing,
 		/obj/item/storage/backpack,
 		/obj/item/storage/belt,
-		/obj/item/toy
+		/obj/item/toy,
+		/obj/item/stack/material
 	)
 
 /obj/machinery/gear_painter/Initialize(mapload)
@@ -68,6 +69,8 @@
 		return
 
 	if(is_type_in_list(I, allowed_types) && !inoperable())
+		if(istype(I,/obj/item/stack/material/cyborg)) //Needs an exception for borg materials to avoid glitches.
+			return
 		user.visible_message(span_notice("[user] inserts \the [I] into the Color Mate receptable."))
 		user.drop_from_inventory(I)
 		I.forceMove(src)
@@ -168,7 +171,7 @@
 				active_mode = text2num(params["mode"])
 				return TRUE
 			if("choose_color")
-				var/chosen_color = input(ui.user, "Choose a color: ", "ColorMate colour picking", activecolor) as color|null
+				var/chosen_color = tgui_color_picker(ui.user, "Choose a color: ", "ColorMate colour picking", activecolor)
 				if(chosen_color)
 					activecolor = chosen_color
 				return TRUE

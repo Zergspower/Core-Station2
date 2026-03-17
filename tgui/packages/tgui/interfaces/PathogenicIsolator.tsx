@@ -1,19 +1,19 @@
-import { BooleanLike } from 'common/react';
 import { useState } from 'react';
-
-import { useBackend } from '../backend';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import {
   Box,
   Button,
-  Flex,
   LabeledList,
   NoticeBox,
   Section,
+  Stack,
   Tabs,
-} from '../components';
-import { Window } from '../layouts';
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
+
 import { ComplexModal, modalRegisterBodyOverride } from './common/ComplexModal';
-import { modalData } from './MedicalRecords/types';
+import type { modalData } from './MedicalRecords/types';
 
 type Data = {
   syringe_inserted: BooleanLike;
@@ -45,18 +45,26 @@ const virusModalBodyOverride = (modal: modalData) => {
       m="-1rem"
       title={virus.name || 'Virus'}
       buttons={
-        <>
-          <Button
-            disabled={!can_print}
-            icon="print"
-            onClick={() =>
-              act('print', { type: 'virus_record', vir: virus.record })
-            }
-          >
-            Print
-          </Button>
-          <Button icon="times" color="red" onClick={() => act('modal_close')} />
-        </>
+        <Stack>
+          <Stack.Item>
+            <Button
+              disabled={!can_print}
+              icon="print"
+              onClick={() =>
+                act('print', { type: 'virus_record', vir: virus.record })
+              }
+            >
+              Print
+            </Button>
+          </Stack.Item>
+          <Stack.Item>
+            <Button
+              icon="times"
+              color="red"
+              onClick={() => act('modal_close')}
+            />
+          </Stack.Item>
+        </Stack>
       }
     >
       <Box mx="0.5rem">
@@ -79,7 +87,7 @@ const virusModalBodyOverride = (modal: modalData) => {
           <LabeledList.Item label="Symptoms">
             <LabeledList>
               {virus.symptoms.map((s) => (
-                <LabeledList.Item key={s.stage} label={s.stage + '. ' + s.name}>
+                <LabeledList.Item key={s.stage} label={`${s.stage}. ${s.name}`}>
                   <Box inline>
                     <Box inline color="label">
                       Strength:
@@ -119,7 +127,7 @@ export const PathogenicIsolator = (props) => {
       <ComplexModal maxHeight="100%" maxWidth="95%" />
       <Window.Content scrollable>
         {(isolating && (
-          <NoticeBox warning>The Isolator is currently isolating...</NoticeBox>
+          <NoticeBox>The Isolator is currently isolating...</NoticeBox>
         )) ||
           ''}
         <Tabs>
@@ -143,34 +151,38 @@ const PathogenicIsolatorTabHome = (props) => {
     <Section
       title="Pathogens"
       buttons={
-        <>
-          <Button
-            icon="print"
-            disabled={!can_print}
-            onClick={() => act('print', { type: 'patient_diagnosis' })}
-          >
-            Print
-          </Button>
-          <Button
-            icon="eject"
-            disabled={!syringe_inserted}
-            onClick={() => act('eject')}
-          >
-            Eject Syringe
-          </Button>
-        </>
+        <Stack>
+          <Stack.Item>
+            <Button
+              icon="print"
+              disabled={!can_print}
+              onClick={() => act('print', { type: 'patient_diagnosis' })}
+            >
+              Print
+            </Button>
+          </Stack.Item>
+          <Stack.Item>
+            <Button
+              icon="eject"
+              disabled={!syringe_inserted}
+              onClick={() => act('eject')}
+            >
+              Eject Syringe
+            </Button>
+          </Stack.Item>
+        </Stack>
       }
     >
       {(pathogen_pool.length &&
         pathogen_pool.map((pathogen) => (
           <Section key={pathogen.unique_id}>
             <Box color="label">
-              <Flex align="center">
-                <Flex.Item grow={1}>
+              <Stack align="center">
+                <Stack.Item grow>
                   <u>Stamm #{pathogen.unique_id}</u>
                   {pathogen.is_in_database ? ' (Analyzed)' : ' (Not Analyzed)'}
-                </Flex.Item>
-                <Flex.Item>
+                </Stack.Item>
+                <Stack.Item>
                   <Button
                     icon="virus"
                     onClick={() =>
@@ -186,8 +198,8 @@ const PathogenicIsolatorTabHome = (props) => {
                   >
                     Database
                   </Button>
-                </Flex.Item>
-              </Flex>
+                </Stack.Item>
+              </Stack>
             </Box>
             <Box>
               <Box color="average" mb={1}>

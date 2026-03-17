@@ -33,6 +33,7 @@
 	var/interface_path = "RIGSuit"
 	var/ai_interface_path = "RIGSuit"
 	var/interface_title = "Hardsuit Controller"
+	var/interface_intro = "NT"
 	var/wearer_move_delay //Used for AI moving.
 	var/ai_controlled_move_delay = 10
 
@@ -70,6 +71,7 @@
 	// Rig status vars.
 	var/open = 0                                              // Access panel status.
 	var/locked = 1                                            // Lock status.
+	var/unremovable = FALSE											//If the rig can be removed or not. Used for protean rigs.
 	var/subverted = 0
 	var/interface_locked = 0
 	var/control_overridden = 0
@@ -106,8 +108,8 @@
 	var/obj/item/storage/backpack/rig_storage
 	permeability_coefficient = 0  //Protect the squishies, after all this shit should be waterproof.
 
-/obj/item/rig/New()
-	..()
+/obj/item/rig/Initialize(mapload)
+	. = ..()
 
 	suit_state = icon_state
 	item_state = icon_state
@@ -176,12 +178,19 @@
 	chest = null
 	cell = null
 	air_supply = null
+	for(var/obj/item/rig_module/module in installed_modules)
+		qdel(module)
 	STOP_PROCESSING(SSobj, src)
 	qdel(wires)
 	wires = null
 	qdel(spark_system)
 	spark_system = null
 	return ..()
+
+/obj/item/rig/MouseDrop(obj/over_object)
+	if(unremovable)
+		return
+	..()
 
 /obj/item/rig/examine(mob/user)
 	. = ..()
@@ -191,7 +200,7 @@
 				continue
 			. += "[icon2html(piece, user.client)] \The [piece] [piece.gender == PLURAL ? "are" : "is"] deployed."
 
-	if(src.loc == usr)
+	if(src.loc == user)
 		. += "The access panel is [locked? "locked" : "unlocked"]."
 		. += "The maintenance panel is [open ? "open" : "closed"]."
 		. += "Hardsuit systems are [offline ? span_warning("offline") : span_notice("online")]."
@@ -212,7 +221,7 @@
 	var/mob/living/M
 	for(var/obj/item/piece in list(gloves,boots,helmet,chest))
 		if(piece.loc != src && !(wearer && piece.loc == wearer))
-			if(istype(piece.loc, /mob/living))
+			if(isliving(piece.loc))
 				M = piece.loc
 				M.unEquip(piece)
 			piece.forceMove(src)
@@ -273,14 +282,17 @@
 	toggle_piece("chest", loc, ONLY_RETRACT, TRUE)
 	update_icon(1)
 
-/obj/item/rig/proc/toggle_seals(var/mob/living/carbon/human/M,var/instant)
+/obj/item/rig/proc/toggle_seals(mob/living/carbon/human/M, instant, destructive)
 
 	if(sealing) return
 
 	if(!check_power_cost(M))
 		return 0
 
-	deploy(M,instant)
+	//NOTE: DESTRUCTIVE SHOULD ONLY BE CALLED ONCE (DURING THE INITIAL DEPLOYMENT)
+	//DESTRUCTIVE WILL DELETE ANY CLOTHING THAT WOULD OTHERWISE BE BLOCKING IT.
+	//IF DESTRUCTIVE IS CALLED WHILE THE RIG IS ALREADY DEPLOYED, THE RIG WILL DELETE ITSELF.
+	deploy(M,destructive)
 
 	var/seal_target = !canremove
 	var/failed_to_seal
@@ -430,14 +442,14 @@
 		return
 
 	cooling_on = 1
-	to_chat(usr, span_notice("You switch \the [src]'s cooling system on."))
+	to_chat(user, span_notice("You switch \the [src]'s cooling system on."))
 
 
 /obj/item/rig/proc/turn_cooling_off(var/mob/user, var/failed)
 	if(failed)
 		visible_message("\The [src]'s cooling system clicks and whines as it powers down.")
 	else
-		to_chat(usr, span_notice("You switch \the [src]'s cooling system off."))
+		to_chat(user, span_notice("You switch \the [src]'s cooling system off."))
 	cooling_on = 0
 
 /obj/item/rig/proc/get_environment_temperature()
@@ -577,7 +589,7 @@
 		var/mob/living/carbon/human/H = user
 		if(istype(H) && (H.back != src && H.belt != src))
 			fail_msg = span_warning("You must be wearing \the [src] to do this.")
-		else if(user.incorporeal_move)
+		else if(user.is_incorporeal())
 			fail_msg = span_warning("You must be solid to do this.")
 	if(sealing)
 		fail_msg = span_warning("The hardsuit is in the process of adjusting seals and cannot be activated.")
@@ -691,15 +703,15 @@
 	if((!istype(wearer) || (!wearer.back == src && !wearer.belt == src)) && !forced)
 		return
 
-	if((usr == wearer && (usr.stat||usr.paralysis||usr.stunned)) && !forced) // If the usr isn't wearing the suit it's probably an AI.
+	if(!H)
+		return
+
+	if((H == wearer && (H.stat||H.paralysis||H.stunned)) && !forced) // If the user isn't wearing the suit it's probably an AI.
 		return
 
 	var/obj/item/check_slot
 	var/equip_to
 	var/obj/item/use_obj
-
-	if(!H)
-		return
 
 	switch(piece)
 		if("helmet")
@@ -733,7 +745,7 @@
 						use_obj.canremove = TRUE
 						holder.drop_from_inventory(use_obj)
 						use_obj.forceMove(get_turf(src))
-						use_obj.dropped()
+						use_obj.dropped(holder)
 						use_obj.canremove = FALSE
 						use_obj.forceMove(src)
 
@@ -753,7 +765,7 @@
 	if(piece == "helmet" && helmet?.light_system == STATIC_LIGHT)
 		helmet.update_light()
 
-/obj/item/rig/proc/deploy(mob/M,var/sealed)
+/obj/item/rig/proc/deploy(mob/M,destructive)
 
 	var/mob/living/carbon/human/H = M
 
@@ -762,7 +774,7 @@
 	if(H.back != src && H.belt != src)
 		return
 
-	if(sealed)
+	if(destructive)
 		if(H.head)
 			var/obj/item/garbage = H.head
 			H.drop_from_inventory(garbage)
@@ -790,8 +802,10 @@
 	for(var/piece in list("helmet","gauntlets","chest","boots"))
 		toggle_piece(piece, H, ONLY_DEPLOY)
 
-/obj/item/rig/dropped(var/mob/user)
+/obj/item/rig/dropped(mob/user)
 	. = ..(user)
+	// So the next user will see the boot animation
+	tgui_shared_states?.Cut()
 	for(var/piece in list("helmet","gauntlets","chest","boots"))
 		toggle_piece(piece, user, ONLY_RETRACT)
 	if(wearer && wearer.wearing_rig == src)
@@ -947,7 +961,7 @@
 			return 0
 
 	if(malfunctioning)
-		direction = pick(cardinal)
+		direction = pick(GLOB.cardinal)
 
 	// Inside an object, tell it we moved.
 	if(isobj(wearer.loc) || ismob(wearer.loc))
@@ -985,8 +999,8 @@
 			return wearer.pulledby.relaymove(wearer, direction)
 		else if(istype(wearer.buckled, /obj/structure/bed/chair/wheelchair))
 			if(ishuman(wearer.buckled))
-				var/obj/item/organ/external/l_hand = wearer.get_organ("l_hand")
-				var/obj/item/organ/external/r_hand = wearer.get_organ("r_hand")
+				var/obj/item/organ/external/l_hand = wearer.get_organ(BP_L_HAND)
+				var/obj/item/organ/external/r_hand = wearer.get_organ(BP_R_HAND)
 				if((!l_hand || (l_hand.status & ORGAN_DESTROYED)) && (!r_hand || (r_hand.status & ORGAN_DESTROYED)))
 					return // No hands to drive your chair? Tough luck!
 			wearer_move_delay += 2
@@ -1012,6 +1026,15 @@
 		return back
 	else if(istype(belt, /obj/item/rig))
 		return belt
+	else
+		return null
+
+/atom/proc/get_voidsuit()
+	return null
+
+/mob/living/carbon/human/get_voidsuit()
+	if(istype(wear_suit, /obj/item/clothing/suit/space/void))
+		return wear_suit
 	else
 		return null
 

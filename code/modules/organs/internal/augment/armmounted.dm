@@ -16,7 +16,7 @@
 
 	target_slot = slot_l_hand
 
-	target_parent_classes = list(ORGAN_FLESH, ORGAN_ASSISTED)
+	target_parent_classes = list(ORGAN_FLESH, ORGAN_ROBOT)
 
 	integrated_object_type = /obj/item/gun/energy/laser/mounted/augment
 
@@ -108,6 +108,8 @@
 	icon_state = "augment_armframe"
 
 	organ_tag = O_AUG_R_UPPERARM
+	parent_organ = BP_R_ARM
+	target_slot = slot_r_hand
 
 	w_class = ITEMSIZE_HUGE
 
@@ -144,7 +146,7 @@
 		else
 			return
 
-	if(istype(owner, /mob/living/carbon/human))
+	if(ishuman(owner))
 		var/mob/living/carbon/human/H = owner
 		H.add_modifier(/datum/modifier/melee_surge, 0.75 MINUTES)
 
@@ -163,8 +165,6 @@
 	desc = "A large implant that fits into a subject's arm. It deploys an array of tools by some painful means."
 
 	icon_state = "augment_toolkit"
-
-	organ_tag = O_AUG_R_UPPERARM
 
 	w_class = ITEMSIZE_HUGE
 
@@ -192,7 +192,7 @@
 		/datum/matter_synth/wire
 		)
 
-/obj/item/organ/internal/augment/armmounted/shoulder/multiple/Initialize()
+/obj/item/organ/internal/augment/armmounted/shoulder/multiple/Initialize(mapload)
 	. = ..()
 
 	if(integrated_object)

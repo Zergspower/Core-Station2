@@ -5,7 +5,6 @@
 	icon_state = "bsb_off"
 	anchored = 1
 	density = 1
-	climbable = 0
 	breakable = 0
 	var/on = 0
 	var/icon_state_off = "bsb_off"
@@ -13,7 +12,7 @@
 	var/wrenchable = 0
 	var/activatable_hand = 1
 	var/togglable = 1
-	var/text_activated = "The strucutre turns on."
+	var/text_activated = "The structure turns on."
 	var/text_deactivated = "The structure turns off."
 	var/effect = 0
 	var/object = 0
@@ -42,7 +41,7 @@
 				s.set_up(3, 1, src)
 				s.start()
 			if(effect == 2)
-				for(var/obj/machinery/light/L in machines)
+				for(var/obj/machinery/light/L in GLOB.machines)
 					if(L.z != src.z || get_dist(src,L) > 10)
 						continue
 					else
@@ -53,13 +52,13 @@
 						continue
 
 					var/flash_time = 10
-					if(istype(O, /mob/living/carbon/human))
+					if(ishuman(O))
 						var/mob/living/carbon/human/H = O
-						//VOREStation Edit Start
 						if(H.nif && H.nif.flag_check(NIF_V_FLASHPROT,NIF_FLAGS_VISION))
 							H.nif.notify("High intensity light detected, and blocked!",TRUE)
 							continue
-						//VOREStation Edit End
+						if(FLASHPROOF in H.mutations)
+							continue
 						if(!H.eyecheck() <= 0)
 							continue
 						flash_time *= H.species.flash_mod
@@ -82,7 +81,7 @@
 					if(get_dist(src, O) > 7)
 						continue
 
-					if(istype(O, /mob/living/carbon/human))
+					if(ishuman(O))
 						var/mob/living/carbon/human/H = O
 						H.fear = 200
 			if(sound_activated)
@@ -227,7 +226,7 @@
 	var/check_togglable
 
 
-	if(!holder)
+	if(!check_rights_for(src, R_HOLDER))
 		return
 
 	var/s_name = tgui_input_text(src, "Structure Name:", "Name")

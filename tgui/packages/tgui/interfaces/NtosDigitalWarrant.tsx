@@ -1,9 +1,13 @@
-import { filter } from 'common/collections';
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
-import { Button, LabeledList, Section, Table } from '../components';
-import { NtosWindow } from '../layouts';
+import { useBackend } from 'tgui/backend';
+import { NtosWindow } from 'tgui/layouts';
+import {
+  Button,
+  LabeledList,
+  Section,
+  Stack,
+  Table,
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   warrantname: string | null;
@@ -64,8 +68,7 @@ const WarrantList = (props) => {
 
   const { allwarrants = [] } = data;
 
-  const ourWarrants = filter(
-    allwarrants,
+  const ourWarrants = allwarrants.filter(
     (w: warrant) => w.arrestsearch === type,
   );
 
@@ -92,7 +95,7 @@ const WarrantList = (props) => {
           </Table.Row>
         ))) || (
         <Table.Row>
-          <Table.Cell colspan="3" color="bad">
+          <Table.Cell colSpan={3} color="bad">
             No {type} warrants found.
           </Table.Cell>
         </Table.Row>
@@ -115,17 +118,27 @@ const ActiveWarrant = (props) => {
     <Section
       title={isArrest ? 'Editing Arrest Warrant' : 'Editing Search Warrant'}
       buttons={
-        <>
-          <Button icon="save" onClick={() => act('savewarrant')}>
-            Save
-          </Button>
-          <Button color="bad" icon="trash" onClick={() => act('deletewarrant')}>
-            Delete
-          </Button>
-          <Button icon="undo" onClick={() => act('back')}>
-            Back
-          </Button>
-        </>
+        <Stack>
+          <Stack.Item>
+            <Button icon="save" onClick={() => act('savewarrant')}>
+              Save
+            </Button>
+          </Stack.Item>
+          <Stack.Item>
+            <Button
+              color="bad"
+              icon="trash"
+              onClick={() => act('deletewarrant')}
+            >
+              Delete
+            </Button>
+          </Stack.Item>
+          <Stack.Item>
+            <Button icon="undo" onClick={() => act('back')}>
+              Back
+            </Button>
+          </Stack.Item>
+        </Stack>
       }
     >
       <LabeledList>
@@ -133,13 +146,20 @@ const ActiveWarrant = (props) => {
           label={warrantnameLabel}
           buttons={
             (isArrest && (
-              <>
-                <Button icon="search" onClick={() => act('editwarrantname')} />
-                <Button
-                  icon="pen"
-                  onClick={() => act('editwarrantnamecustom')}
-                />
-              </>
+              <Stack>
+                <Stack.Item>
+                  <Button
+                    icon="search"
+                    onClick={() => act('editwarrantname')}
+                  />
+                </Stack.Item>
+                <Stack.Item>
+                  <Button
+                    icon="pen"
+                    onClick={() => act('editwarrantnamecustom')}
+                  />
+                </Stack.Item>
+              </Stack>
             )) || (
               <Button icon="pen" onClick={() => act('editwarrantnamecustom')} />
             )

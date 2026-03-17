@@ -76,7 +76,7 @@
 		force = 3//not so robust now
 		attack_verb = list("hit", "punched")
 
-	if(istype(user,/mob/living/carbon/human))
+	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
 		H.update_inv_l_hand()
 		H.update_inv_r_hand()
@@ -84,7 +84,7 @@
 	playsound(src, 'sound/weapons/empty.ogg', 50, 1)
 	add_fingerprint(user)
 
-	if(blood_overlay && blood_DNA && (blood_DNA.len >= 1)) //updates blood overlay, if any
+	if(blood_overlay && forensic_data?.has_blooddna()) //updates blood overlay, if any
 		cut_overlays()
 
 		var/icon/I = new /icon(src.icon, src.icon_state)

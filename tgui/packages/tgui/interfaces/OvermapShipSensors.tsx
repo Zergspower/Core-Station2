@@ -1,8 +1,14 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
-import { Box, Button, LabeledList, ProgressBar, Section } from '../components';
-import { Window } from '../layouts';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+import {
+  Box,
+  Button,
+  LabeledList,
+  ProgressBar,
+  Section,
+  Stack,
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   viewing: BooleanLike;
@@ -45,22 +51,26 @@ export const OvermapShipSensorsContent = (props) => {
       <Section
         title="Status"
         buttons={
-          <>
-            <Button
-              icon="eye"
-              selected={viewing}
-              onClick={() => act('viewing')}
-            >
-              Map View
-            </Button>
-            <Button
-              icon="power-off"
-              selected={on}
-              onClick={() => act('toggle_sensor')}
-            >
-              {on ? 'Sensors Enabled' : 'Sensors Disabled'}
-            </Button>
-          </>
+          <Stack>
+            <Stack.Item>
+              <Button
+                icon="eye"
+                selected={viewing}
+                onClick={() => act('viewing')}
+              >
+                Map View
+              </Button>
+            </Stack.Item>
+            <Stack.Item>
+              <Button
+                icon="power-off"
+                selected={on}
+                onClick={() => act('toggle_sensor')}
+              >
+                {on ? 'Sensors Enabled' : 'Sensors Disabled'}
+              </Button>
+            </Stack.Item>
+          </Stack>
         }
       >
         <LabeledList>

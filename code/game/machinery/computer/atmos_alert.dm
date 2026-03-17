@@ -1,9 +1,3 @@
-//This file was auto-corrected by findeclaration.exe on 25.5.2012 20:42:31
-
-var/global/list/priority_air_alarms = list()
-var/global/list/minor_air_alarms = list()
-
-
 /obj/machinery/computer/atmos_alert
 	name = "atmospheric alert computer"
 	desc = "Used to access the station's atmospheric sensors."
@@ -12,13 +6,13 @@ var/global/list/minor_air_alarms = list()
 	icon_screen = "alert:0"
 	light_color = "#e6ffff"
 
-/obj/machinery/computer/atmos_alert/New()
-	..()
+/obj/machinery/computer/atmos_alert/Initialize(mapload)
+	. = ..()
 	atmosphere_alarm.register_alarm(src, /atom/proc/update_icon)
 
 /obj/machinery/computer/atmos_alert/Destroy()
 	atmosphere_alarm.unregister_alarm(src)
-	..()
+	. = ..()
 
 /obj/machinery/computer/atmos_alert/attack_hand(mob/user)
 	tgui_interact(user)
@@ -50,19 +44,19 @@ var/global/list/minor_air_alarms = list()
 		var/list/alarms = atmosphere_alarm.major_alarms()
 		if(alarms.len)
 			icon_screen = "alert:2"
-			playsound(src, 'modular_chomp/sound/effects/comp_alert_major.ogg', 70, 1) // CHOMPEdit: Alarm notifications
+			playsound(src, 'sound/effects/comp_alert_major.ogg', 70, 1) // CHOMPEdit: Alarm notifications
 			spawn(100) // Wait 10 seconds, then play it again
-				playsound(src, 'modular_chomp/sound/effects/comp_alert_major.ogg', 70, 1) // CHOMPEdit: Alarm notifications
+				playsound(src, 'sound/effects/comp_alert_major.ogg', 70, 1) // CHOMPEdit: Alarm notifications
 		else
 			alarms = atmosphere_alarm.minor_alarms()
 			if(alarms.len)
 				icon_screen = "alert:1"
-				playsound(src, 'modular_chomp/sound/effects/comp_alert_minor.ogg', 50, 1) // CHOMPEdit: Alarm notifications
+				playsound(src, 'sound/effects/comp_alert_minor.ogg', 50, 1) // CHOMPEdit: Alarm notifications
 				spawn(100) // Wait 10 seconds, then play it again
-					playsound(src, 'modular_chomp/sound/effects/comp_alert_minor.ogg', 50, 1) // CHOMPEdit: Alarm notifications
+					playsound(src, 'sound/effects/comp_alert_minor.ogg', 50, 1) // CHOMPEdit: Alarm notifications
 			else
 				icon_screen = initial(icon_screen)
-				playsound(src, 'modular_chomp/sound/effects/comp_alert_clear.ogg', 50, 1)  // CHOMPEdit: Alarm notifications
+				playsound(src, 'sound/effects/comp_alert_clear.ogg', 50, 1)  // CHOMPEdit: Alarm notifications
 	..()
 
 /obj/machinery/computer/atmos_alert/tgui_act(action, params)

@@ -1,8 +1,6 @@
-/* eslint react/no-danger: "off" */
-import { BooleanLike } from 'common/react';
-
-import { resolveAsset } from '../assets';
-import { useBackend } from '../backend';
+import { resolveAsset } from 'tgui/assets';
+import { useBackend } from 'tgui/backend';
+import { NtosWindow } from 'tgui/layouts';
 import {
   Button,
   Image,
@@ -10,8 +8,9 @@ import {
   NoticeBox,
   ProgressBar,
   Section,
-} from '../components';
-import { NtosWindow } from '../layouts';
+  Stack,
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   message: string;
@@ -71,22 +70,25 @@ const SelectedArticle = (props) => {
 
   return (
     <Section
-      title={'Viewing: ' + title}
+      title={`Viewing: ${title}`}
       buttons={
-        <>
-          <Button icon="save" onClick={() => act('PRG_savearticle')}>
-            Save
-          </Button>
-          <Button icon="times" onClick={() => act('PRG_reset')}>
-            Close
-          </Button>
-        </>
+        <Stack>
+          <Stack.Item>
+            <Button icon="save" onClick={() => act('PRG_savearticle')}>
+              Save
+            </Button>
+          </Stack.Item>
+          <Stack.Item>
+            <Button icon="times" onClick={() => act('PRG_reset')}>
+              Close
+            </Button>
+          </Stack.Item>
+        </Stack>
       }
     >
       {!!cover && <Image src={resolveAsset(cover)} />}
-      {/* News articles are written in premade .html files and cannot be edited by players, so it should be
-       * safe enough to use dangerouslySetInnerHTML here.
-       */}
+      {/** biome-ignore lint/security/noDangerouslySetInnerHtml: News articles are written in premade .html files and cannot be edited by players, so it should be
+       * safe enough to use dangerouslySetInnerHTML here. */}
       <div dangerouslySetInnerHTML={{ __html: content }} />
     </Section>
   );

@@ -9,7 +9,7 @@
 	var/obj/effect/overmap/bluespace_rift/partner
 	var/paused
 
-/obj/effect/overmap/bluespace_rift/Initialize(var/mapload, var/new_partner)
+/obj/effect/overmap/bluespace_rift/Initialize(mapload, var/new_partner)
 	. = ..()
 	if(new_partner)
 		pair(new_partner)
@@ -31,7 +31,7 @@
 		return ..()
 
 /obj/effect/overmap/bluespace_rift/attack_ghost(var/mob/observer/dead/user)
-	if(!partner && user?.client?.holder)
+	if(!partner && check_rights_for(user?.client, R_HOLDER))
 		var/response = tgui_alert(user, "You appear to be staff. This rift has no exit point. If you want to make one, move to where you want it to go, and click 'Make Here', otherwise click 'Cancel'", "Bluespace Rift", list("Cancel","Make Here"))
 		if(response == "Make Here")
 			new type(get_turf(user), src)

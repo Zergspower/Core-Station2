@@ -1,11 +1,13 @@
-import { decodeHtmlEntities } from 'common/string';
+import { useBackend } from 'tgui/backend';
+import { Button, Input, LabeledList, Section } from 'tgui-core/components';
+import { decodeHtmlEntities } from 'tgui-core/string';
 
-import { useBackend } from '../../backend';
-import { Button, Input, LabeledList, Section } from '../../components';
 import { NEWSCASTER_SCREEN_MAIN } from './constants';
-import { Data } from './types';
+import type { Data } from './types';
 
-export const NewscasterNewChannel = (props: { setScreen: Function }) => {
+export const NewscasterNewChannel = (props: {
+  setScreen: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   const { act, data } = useBackend<Data>();
 
   const { channel_name, c_locked, user } = data;
@@ -26,7 +28,7 @@ export const NewscasterNewChannel = (props: { setScreen: Function }) => {
           <Input
             fluid
             value={decodeHtmlEntities(channel_name)}
-            onInput={(e, val: string) => act('set_channel_name', { val: val })}
+            onBlur={(val: string) => act('set_channel_name', { val: val })}
           />
         </LabeledList.Item>
         <LabeledList.Item label="Channel Author" color="good">

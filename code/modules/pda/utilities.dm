@@ -50,14 +50,14 @@
 	user.show_message(span_notice("Analyzing Results for [C]:"))
 	user.show_message(span_notice("    Overall Status: [C.stat > 1 ? "dead" : "[C.health - C.halloss]% healthy"]"), 1)
 	user.show_message(span_notice("    Damage Specifics:") + " [(C.getOxyLoss() > 50) ? span_warning(C.getOxyLoss()) : C.getOxyLoss()]-\
-									[(C.getToxLoss() > 50) ? span_warning(C.getToxLoss()) : C.getToxLoss()]-\
-									[(C.getFireLoss() > 50) ? span_warning(C.getFireLoss()) : C.getFireLoss()]-\
-									[(C.getBruteLoss() > 50) ? span_warning(C.getBruteLoss()) : C.getBruteLoss()]", 1)
+									[(C.getToxLoss() > 50) ? span_warning("[C.getToxLoss()]") : C.getToxLoss()]-\
+									[(C.getFireLoss() > 50) ? span_warning("[C.getFireLoss()]") : C.getFireLoss()]-\
+									[(C.getBruteLoss() > 50) ? span_warning("[C.getBruteLoss()]") : C.getBruteLoss()]", 1)
 	user.show_message(span_notice("    Key: Suffocation/Toxin/Burns/Brute"), 1)
 	user.show_message(span_notice("    Body Temperature: [C.bodytemperature-T0C]&deg;C ([C.bodytemperature*1.8-459.67]&deg;F)"), 1)
 	if(C.tod && (C.stat == DEAD || (C.status_flags & FAKEDEATH)))
 		user.show_message(span_notice("    Time of Death: [C.tod]"))
-	if(istype(C, /mob/living/carbon/human))
+	if(ishuman(C))
 		var/mob/living/carbon/human/H = C
 		var/list/damaged = H.get_damaged_organs(1,1)
 		user.show_message(span_notice("Localized Damage, Brute/Burn:"),1)
@@ -73,7 +73,7 @@
 	icon = "link"
 
 /datum/data/pda/utility/scanmode/dna/scan_mob(mob/living/C as mob, mob/living/user as mob)
-	if(istype(C, /mob/living/carbon/human))
+	if(ishuman(C))
 		var/mob/living/carbon/human/H = C
 		if(!istype(H.dna, /datum/dna))
 			to_chat(user, span_notice("No fingerprints found on [H]"))
@@ -85,15 +85,14 @@
 	scan_blood(A, user)
 
 /datum/data/pda/utility/scanmode/dna/proc/scan_blood(atom/A, mob/user)
-	if(!A.blood_DNA)
+	var/list/blood_dna = A.forensic_data?.get_blooddna()
+	if(!blood_dna)
 		to_chat(user, span_notice("No blood found on [A]"))
-		if(A.blood_DNA)
-			qdel(A.blood_DNA)
 	else
 		to_chat(user, span_notice("Blood found on [A]. Analysing..."))
 		spawn(15)
-			for(var/blood in A.blood_DNA)
-				to_chat(user, span_notice("Blood type: [A.blood_DNA[blood]]\nDNA: [blood]"))
+			for(var/blood in blood_dna)
+				to_chat(user, span_notice("Blood type: [blood_dna[blood]]\nDNA: [blood]"))
 
 /datum/data/pda/utility/scanmode/halogen
 	base_name = "Halogen Counter"
@@ -187,7 +186,7 @@
 		var/scannedtitle = "Paper"
 		if(!isnull(notes.notetitle) && notes.notetitle != "")
 			scannedtitle = "'[notes.notetitle]'"
-		to_chat(user, span_notice("[scannedtitle] scanned to Notekeeper in note [alphabet_uppercase[notes.currentnote]]."))//concept of scanning paper copyright brainoblivion 2009
+		to_chat(user, span_notice("[scannedtitle] scanned to Notekeeper in note [GLOB.alphabet_upper[notes.currentnote]]."))//concept of scanning paper copyright brainoblivion 2009
 
 	else
 		to_chat(user, span_warning("Error scanning [A]."))

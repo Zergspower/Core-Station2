@@ -15,18 +15,22 @@
 	var/datum/material/girder_material
 	var/datum/material/reinf_material
 	var/reinforcing = 0
+	var/upgrading = FALSE
 	var/applies_material_colour = 1
 	var/wall_type = /turf/simulated/wall
 
-/obj/structure/girder/New(var/newloc, var/material_key)
-	..(newloc)
+/obj/structure/girder/Initialize(mapload, var/material_key)
+	. = ..()
 	if(!material_key)
 		material_key = default_material
-	set_material(material_key)
+	var/our_material = get_material_by_name(material_key)
+	if(!our_material)
+		return INITIALIZE_HINT_QDEL
+	set_material(our_material)
 	update_icon()
 
 /obj/structure/girder/Destroy()
-	if(girder_material.products_need_process())
+	if(girder_material && girder_material.products_need_process())
 		STOP_PROCESSING(SSobj, src)
 	. = ..()
 
@@ -44,10 +48,8 @@
 	return total_radiation
 
 
-/obj/structure/girder/proc/set_material(var/new_material)
-	girder_material = get_material_by_name(new_material)
-	if(!girder_material)
-		qdel(src)
+/obj/structure/girder/proc/set_material(var/datum/material/new_material)
+	girder_material = new_material
 	name = "[girder_material.display_name] [initial(name)]"
 	max_health = round(girder_material.integrity) //Should be 150 with default integrity (steel). Weaker than ye-olden Girders now.
 	health = max_health
@@ -74,8 +76,8 @@
 	health = 50
 	cover = 25
 
-/obj/structure/girder/displaced/New(var/newloc, var/material_key)
-	..(newloc, material_key)
+/obj/structure/girder/displaced/Initialize(mapload, material_key)
+	. = ..()
 	displace()
 
 /obj/structure/girder/proc/displace()
@@ -208,8 +210,13 @@
 			if(!reinforce_with_material(W, user))
 				return ..()
 		else
+			if(upgrading)
+				return
+			upgrading = TRUE
 			if(!construct_wall(W, user))
+				upgrading = FALSE
 				return ..()
+			upgrading = FALSE
 
 	else
 		return ..()
@@ -224,25 +231,28 @@
 
 /obj/structure/girder/proc/construct_wall(obj/item/stack/material/S, mob/user)
 	var/amount_to_use = reinf_material ? 1 : 2
+	var/time_to_reinforce = 4 SECONDS
+	if(isrobot(user)) //Robots get a speed boost.
+		time_to_reinforce = 1.5 SECONDS
 	if(S.get_amount() < amount_to_use)
 		to_chat(user, span_notice("There isn't enough material here to construct a wall."))
-		return 0
+		return FALSE
 
 	var/datum/material/M = name_to_material[S.default_type]
 	if(!istype(M))
-		return 0
+		return FALSE
 
 	var/wall_fake
 	add_hiddenprint(user)
 
 	if(M.integrity < 50)
 		to_chat(user, span_notice("This material is too soft for use in wall construction."))
-		return 0
+		return FALSE
 
 	to_chat(user, span_notice("You begin adding the plating..."))
 
-	if(!do_after(user,40) || !S.use(amount_to_use))
-		return 1 //once we've gotten this far don't call parent attackby()
+	if(!do_after(user,time_to_reinforce) || !S.use(amount_to_use))
+		return TRUE //once we've gotten this far don't call parent attackby()
 
 	if(anchored)
 		to_chat(user, span_notice("You added the plating!"))
@@ -258,7 +268,7 @@
 		T.can_open = 1
 	T.add_hiddenprint(user)
 	qdel(src)
-	return 1
+	return TRUE
 
 /obj/structure/girder/proc/reinforce_with_material(obj/item/stack/material/S, mob/user) //if the verb is removed this can be renamed.
 	if(reinf_material)
@@ -315,7 +325,6 @@
 			if (prob(5))
 				dismantle()
 			return
-		else
 	return
 
 /obj/structure/girder/cult

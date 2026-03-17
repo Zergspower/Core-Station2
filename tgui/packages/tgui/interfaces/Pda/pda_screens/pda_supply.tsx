@@ -1,5 +1,5 @@
 import { useBackend } from 'tgui/backend';
-import { Box, LabeledList, Section } from 'tgui/components';
+import { Box, LabeledList, Section } from 'tgui-core/components';
 
 type Data = {
   supply: {
@@ -31,8 +31,8 @@ export const pda_supply = (props) => {
       <LabeledList>
         <LabeledList.Item label="Location">
           {supply.shuttle_moving
-            ? 'Moving to station ' + supply.shuttle_eta
-            : 'Shuttle at ' + supply.shuttle_loc}
+            ? `Moving to station ${supply.shuttle_eta}`
+            : `Shuttle at ${supply.shuttle_loc}`}
         </LabeledList.Item>
       </LabeledList>
       <Section>

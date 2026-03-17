@@ -20,9 +20,11 @@
 
 	var/list/scrubbing_gas = list(GAS_PHORON, GAS_CO2, GAS_N2O, GAS_VOLATILE_FUEL)
 
-/obj/machinery/portable_atmospherics/powered/scrubber/New()
-	..()
-	cell = new/obj/item/cell/apc(src)
+/obj/machinery/portable_atmospherics/powered/scrubber/Initialize(mapload, skip_cell)
+	. = ..()
+	if(!skip_cell)
+		cell = new/obj/item/cell/apc(src)
+	AddElement(/datum/element/climbable)
 
 /obj/machinery/portable_atmospherics/powered/scrubber/emp_act(severity)
 	if(stat & (BROKEN|NOPOWER))
@@ -164,14 +166,16 @@
 	var/global/gid = 1
 	var/id = 0
 
-/obj/machinery/portable_atmospherics/powered/scrubber/huge/New()
-	..()
-	cell = null
+/obj/machinery/portable_atmospherics/powered/scrubber/huge/Initialize(mapload)
+	. = ..(mapload, TRUE)
 
 	id = gid
 	gid++
 
 	name = "[name] (ID [id])"
+
+	// Not climbable!
+	RemoveElement(/datum/element/climbable)
 
 /obj/machinery/portable_atmospherics/powered/scrubber/huge/attack_hand(var/mob/user as mob)
 		to_chat(user, span_notice("You can't directly interact with this machine. Use the scrubber control console."))
@@ -245,7 +249,7 @@
 /obj/machinery/portable_atmospherics/powered/scrubber/huge/stationary
 	name = "Stationary Air Scrubber"
 
-/obj/machinery/portable_atmospherics/powered/scrubber/huge/stationary/Initialize()
+/obj/machinery/portable_atmospherics/powered/scrubber/huge/stationary/Initialize(mapload)
 	. = ..()
 	desc += "This one seems to be tightly secured with large bolts."
 

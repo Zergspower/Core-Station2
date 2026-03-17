@@ -1,8 +1,9 @@
-import { useBackend } from '../../backend';
-import { Box, Button, Section } from '../../components';
+import { useBackend } from 'tgui/backend';
+import { Box, Button, Section } from 'tgui-core/components';
+
 import { StandardControls, StatusDisplay } from './EmbeddedControllerHelpers';
 import { PanelOpen } from './PanelOpen';
-import { AirlockConsoleAdvancedData } from './types';
+import type { AirlockConsoleAdvancedData } from './types';
 
 /**
  * Advanced airlock consoles display the external pressure,
@@ -41,7 +42,7 @@ export const AirlockConsoleAdvanced = (props) => {
       maxValue: 202,
       value: external_pressure,
       label: 'External Pressure',
-      textValue: external_pressure + ' kPa',
+      textValue: `${external_pressure} kPa`,
       color: color,
     },
     {
@@ -49,7 +50,7 @@ export const AirlockConsoleAdvanced = (props) => {
       maxValue: 202,
       value: chamber_pressure,
       label: 'Chamber Pressure',
-      textValue: chamber_pressure + ' kPa',
+      textValue: `${chamber_pressure} kPa`,
       color: color,
     },
     {
@@ -57,7 +58,7 @@ export const AirlockConsoleAdvanced = (props) => {
       maxValue: 202,
       value: internal_pressure,
       label: 'Internal Pressure',
-      textValue: internal_pressure + ' kPa',
+      textValue: `${internal_pressure} kPa`,
       color: color,
     },
   ];

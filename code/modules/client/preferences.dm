@@ -13,77 +13,36 @@ var/list/preferences_datums = list()
 	var/muted = 0
 	var/last_ip
 	var/last_id
+	var/saved_notification = FALSE
 
 	//game-preferences
-	var/lastchangelog = ""				//Saved changlog filesize to detect if there was a change
-	var/ooccolor = "#010000"			//Whatever this is set to acts as 'reset' color and is thus unusable as an actual custom color
+	var/lastchangelog = ""				//Saved changlog filesize to detect if there was a change // CHOMPAdd
 	var/be_special = 0					//Special role selection
-	var/UI_style = "Midnight"
-	var/UI_style_color = "#ffffff"
-	var/UI_style_alpha = 255
-	var/tooltipstyle = "Midnight"		//Style for popup tooltips
-	var/client_fps = 40
-	var/ambience_freq = 5				// How often we're playing repeating ambience to a client.
-	var/ambience_chance = 35			// What's the % chance we'll play ambience (in conjunction with the above frequency)
-
-	var/tgui_fancy = TRUE
-	var/tgui_lock = FALSE
-	var/tgui_input_mode = FALSE			// All the Input Boxes (Text,Number,List,Alert)
-	var/tgui_large_buttons = TRUE
-	var/tgui_swapped_buttons = FALSE
-	var/obfuscate_key = FALSE
-	var/obfuscate_job = FALSE
-	var/chat_timestamp = FALSE
 
 	//character preferences
 	var/real_name						//our character's name
-	var/be_random_name = 0				//whether we are a random name every round
 	var/nickname						//our character's nickname
-	var/age = 30						//age of character
-	var/bday_month = 0					//Birthday month
-	var/bday_day = 0					//Birthday day
-	var/last_birthday_notification = 0	//The last year we were notified about our birthday
-	var/bday_announce = FALSE			//Public announcement for birthdays
-	var/spawnpoint = "Arrivals Shuttle" //where this character will spawn (0-2).
-	var/b_type = "A+"					//blood type (not-chooseable)
+	var/b_type = DEFAULT_BLOOD_TYPE		//blood type (not-chooseable)
 	var/blood_reagents = "default"		//blood restoration reagents
 	var/headset = 1						//headset type
 	var/backbag = 2						//backpack type
 	var/pdachoice = 1					//PDA type
-	//var/shoe_hater = FALSE				//RS ADD - if true, will spawn with no shoes //CHOMPRemove, remove RS No shoes
+	//var/shoe_hater = FALSE				//If true, will spawn with no shoes //CHOMPRemove, remove RS No shoes
+	var/no_jacket = FALSE				//if true, will not spawn with outfit's jacket/outer layer
 	var/h_style = "Bald"				//Hair type
-	var/r_hair = 0						//Hair color
-	var/g_hair = 0						//Hair color
-	var/b_hair = 0						//Hair color
 	var/grad_style = "none"				//Gradient style
-	var/r_grad = 0						//Gradient color
-	var/g_grad = 0						//Gradient color
-	var/b_grad = 0						//Gradient color
 	var/f_style = "Shaved"				//Face hair type
-	var/r_facial = 0					//Face hair color
-	var/g_facial = 0					//Face hair color
-	var/b_facial = 0					//Face hair color
 	var/s_tone = -75						//Skin tone
-	var/r_skin = 238					//Skin color // Vorestation edit, so color multi sprites can aren't BLACK AS THE VOID by default.
-	var/g_skin = 206					//Skin color // Vorestation edit, so color multi sprites can aren't BLACK AS THE VOID by default.
-	var/b_skin = 179					//Skin color // Vorestation edit, so color multi sprites can aren't BLACK AS THE VOID by default.
-	var/r_eyes = 0						//Eye color
-	var/g_eyes = 0						//Eye color
-	var/b_eyes = 0						//Eye color
 	var/species = SPECIES_HUMAN         //Species datum to use.
 	var/species_preview                 //Used for the species selection window.
 	var/list/alternate_languages = list() //Secondary language(s)
 	var/list/language_prefixes = list() //Language prefix keys
 	var/list/language_custom_keys = list() //Language custom call keys
-	var/list/gear						//Left in for Legacy reasons, will no longer save.
 	var/list/gear_list = list()			//Custom/fluff item loadouts.
 	var/gear_slot = 1					//The current gear save slot
 	var/list/traits						//Traits which modifier characters for better or worse (mostly worse).
 	var/synth_color	= 0					//Lets normally uncolorable synth parts be colorable.
-	var/r_synth							//Used with synth_color to color synth parts that normaly can't be colored.
-	var/g_synth							//Same as above
-	var/b_synth							//Same as above
-	var/synth_markings = 1				//Enable/disable markings on synth parts. //VOREStation Edit - 1 by default
+	var/synth_markings = 1				//Enable/disable markings on synth parts.
 	var/digitigrade = 0
 
 		//Some faction information.
@@ -103,7 +62,8 @@ var/list/preferences_datums = list()
 		"4"  = "character_preview_map:2,3",
 		"8"  = "character_preview_map:2,1",
 		"BG" = "character_preview_map:1,1 to 3,8",
-		"PMH" = "character_preview_map:2,7"
+		"PMH" = "character_preview_map:2,7",
+		"PMHjiggle" = "character_preview_map:102,7:107",
 	)
 
 		//Jobs, uses bitflags
@@ -122,6 +82,11 @@ var/list/preferences_datums = list()
 	//Keeps track of preferrence for not getting any wanted jobs
 	var/alternate_option = 1
 
+	//character preferences
+	var/slot_randomized //keeps track of round-to-round randomization of the character slot, prevents overwriting
+
+	var/list/randomise = list()
+
 	// maps each organ to either null(intact), "cyborg" or "amputated"
 	// will probably not be able to do this for head and torso ;)
 	var/list/organ_data = list()
@@ -134,23 +99,12 @@ var/list/preferences_datums = list()
 	var/list/flavour_texts_robot = list()
 	var/custom_link = null
 
-	var/list/body_descriptors = list()
-
 	var/med_record = ""
 	var/sec_record = ""
 	var/gen_record = ""
 	var/exploit_record = ""
-	var/disabilities = 0
 
 	var/economic_status = "Average"
-
-	var/uplinklocation = "PDA"
-
-	// OOC Metadata:
-	var/metadata = ""
-	var/metadata_likes = ""
-	var/metadata_dislikes = ""
-	var/list/ignored_players = list()
 
 	var/client/client = null
 	var/client_ckey = null
@@ -167,14 +121,9 @@ var/list/preferences_datums = list()
 	var/lastnews // Hash of last seen lobby news content.
 	var/lastlorenews //ID of last seen lore news article.
 
-	var/examine_text_mode = 0 // Just examine text, include usage (description_info), switch to examine panel.
-	var/multilingual_mode = 0 // Default behaviour, delimiter-key-space, delimiter-key-delimiter, off
-
 	// THIS IS NOT SAVED
 	// WE JUST HAVE NOWHERE ELSE TO STORE IT
 	var/list/action_button_screen_locs
-
-	var/list/volume_channels = list()
 
 	///If they are currently in the process of swapping slots, don't let them open 999 windows for it and get confused
 	var/selecting_slots = FALSE
@@ -199,7 +148,6 @@ var/list/preferences_datums = list()
 	load_savefile()
 
 	// Legacy code
-	gear = list()
 	gear_list = list()
 	gear_slot = 1
 	// End legacy code
@@ -240,31 +188,9 @@ var/list/preferences_datums = list()
 		update_preview_icon()
 	show_character_previews()
 
-	var/dat = "<html><body><center>"
-
-	if(path)
-		dat += "Slot - "
-		dat += "<a href='byond://?src=\ref[src];load=1'>Load slot</a> - "
-		dat += "<a href='byond://?src=\ref[src];save=1'>Save slot</a> - "
-		dat += "<a href='byond://?src=\ref[src];reload=1'>Reload slot</a> - "
-		dat += "<a href='byond://?src=\ref[src];resetslot=1'>Reset slot</a> - "
-		dat += "<a href='byond://?src=\ref[src];copy=1'>Copy slot</a>"
-
-	else
-		dat += "Please create an account to save your preferences."
-
-	dat += "<br>"
-	dat += player_setup.header()
-	dat += "<br><HR></center>"
-	dat += player_setup.content(user)
-
-	dat += "</html></body>"
-	//user << browse(dat, "window=preferences;size=635x736")
-	winshow(user, "preferences_window", TRUE)
-	var/datum/browser/popup = new(user, "preferences_browser", "Character Setup", 800, 800)
-	popup.set_content(dat)
-	popup.open(FALSE) // Skip registring onclose on the browser pane
-	onclose(user, "preferences_window", src) // We want to register on the window itself
+	current_window = PREFERENCE_TAB_CHARACTER_PREFERENCES
+	update_tgui_static_data(user)
+	tgui_interact(user)
 
 /datum/preferences/proc/update_character_previews(var/mob/living/carbon/human/mannequin)
 	if(!client)
@@ -288,7 +214,7 @@ var/list/preferences_datums = list()
 	BG.icon_state = bgstate
 	BG.screen_loc = preview_screen_locs["BG"]
 
-	for(var/D in global.cardinal)
+	for(var/D in GLOB.cardinal)
 		var/obj/screen/setup_preview/O = LAZYACCESS(char_render_holders, "[D]")
 		if(!O)
 			O = new
@@ -318,7 +244,7 @@ var/list/preferences_datums = list()
 /datum/preferences/proc/process_link(mob/user, list/href_list)
 	if(!user)	return
 
-	if(!istype(user, /mob/new_player))	return
+	if(!isnewplayer(user))	return
 
 	if(href_list["preference"] == "open_whitelist_forum")
 		if(CONFIG_GET(string/forumurl))
@@ -326,7 +252,7 @@ var/list/preferences_datums = list()
 		else
 			to_chat(user, span_danger("The forum URL is not set in the server configuration."))
 			return
-	ShowChoices(user) //ChompEDIT - usr removal
+	ShowChoices(user)
 	return 1
 
 /datum/preferences/Topic(href, list/href_list)
@@ -334,12 +260,13 @@ var/list/preferences_datums = list()
 		return 1
 
 	if(href_list["save"])
-		save_character()
+		if(save_character())
+			to_chat(usr,span_notice("Character [player_setup?.preferences?.real_name] saved!"))
 		save_preferences()
 	else if(href_list["reload"])
-		load_preferences()
+		load_preferences(TRUE)
 		load_character()
-		attempt_vr(client.prefs_vr,"load_vore","") //VOREStation Edit
+		attempt_vr(client.prefs_vr,"load_vore","")
 		sanitize_preferences()
 	else if(href_list["load"])
 		if(!IsGuestKey(usr.key))
@@ -359,6 +286,7 @@ var/list/preferences_datums = list()
 	else if(href_list["close"])
 		// User closed preferences window, cleanup anything we need to.
 		clear_character_previews()
+		//Mannequin removal code needed here...For the far future once harddels are solved.
 		return 1
 	else
 		return 0
@@ -373,7 +301,7 @@ var/list/preferences_datums = list()
 	// This needs to happen before anything else becuase it sets some variables.
 	character.set_species(species)
 	// Special Case: This references variables owned by two different datums, so do it here.
-	if(be_random_name)
+	if(read_preference(/datum/preference/toggle/human/name_is_always_random))
 		real_name = random_name(identifying_gender,species)
 
 	// Ask the preferences datums to apply their own settings to the new mob
@@ -383,9 +311,9 @@ var/list/preferences_datums = list()
 		if(preference.savefile_identifier != PREFERENCE_CHARACTER)
 			continue
 
-		preference.apply_to_human(character, read_preference(preference.type))
+		preference.apply_pref_to(character, read_preference(preference.type))
 
-	// VOREStation Edit - Sync up all their organs and species one final time
+	// Sync up all their organs and species one final time
 	character.force_update_organs()
 
 	if(icon_updates)
@@ -394,10 +322,6 @@ var/list/preferences_datums = list()
 		character.update_mutations()
 		character.update_underwear()
 		character.update_hair()
-
-	if(LAZYLEN(character.descriptors))
-		for(var/entry in body_descriptors)
-			character.descriptors[entry] = body_descriptors[entry]
 
 /datum/preferences/proc/open_load_dialog(mob/user)
 	if(selecting_slots)
@@ -434,9 +358,9 @@ var/list/preferences_datums = list()
 		error("Player picked [choice] slot to load, but that wasn't one we sent.")
 		return
 
-	load_preferences()
+	load_preferences(TRUE)
 	load_character(slotnum)
-	attempt_vr(user.client?.prefs_vr,"load_vore","") //VOREStation Edit
+	attempt_vr(user.client?.prefs_vr,"load_vore","")
 	sanitize_preferences()
 	save_preferences()
 	ShowChoices(user)
@@ -477,13 +401,14 @@ var/list/preferences_datums = list()
 
 	if(tgui_alert(user, "Are you sure you want to override slot [slotnum], [choice]'s savedata?", "Confirm Override", list("No", "Yes")) == "Yes")
 		overwrite_character(slotnum)
-		sanitize_preferences()
 		save_character()
 		save_preferences()
+		load_preferences(TRUE)
+		load_character()
 		attempt_vr(user.client?.prefs_vr,"load_vore","")
 		ShowChoices(user)
 
-/datum/preferences/proc/vanity_copy_to(var/mob/living/carbon/human/character, var/copy_name, var/copy_flavour = TRUE, var/copy_ooc_notes = FALSE, var/convert_to_prosthetics = FALSE)
+/datum/preferences/proc/vanity_copy_to(var/mob/living/carbon/human/character, var/copy_name, var/copy_flavour = TRUE, var/copy_ooc_notes = FALSE, var/convert_to_prosthetics = FALSE, var/apply_bloodtype = TRUE)
 	//snowflake copy_to, does not copy anything but the vanity things
 	//does not check if the name is the same, do that in any proc that calls this proc
 	/*
@@ -515,73 +440,73 @@ var/list/preferences_datums = list()
 	character.gender = biological_gender
 	character.identifying_gender = identifying_gender
 
-	character.r_eyes	= r_eyes
-	character.g_eyes	= g_eyes
-	character.b_eyes	= b_eyes
 	character.h_style	= h_style
-	character.r_hair	= r_hair
-	character.g_hair	= g_hair
-	character.b_hair	= b_hair
-	character.r_grad	= r_grad
-	character.g_grad	= g_grad
-	character.b_grad	= b_grad
+
+	var/datum/preference/color/hair_color = GLOB.preference_entries[/datum/preference/color/human/hair_color]
+	hair_color.apply_pref_to(character, read_preference(/datum/preference/color/human/hair_color))
+
+	var/datum/preference/color/grad_color = GLOB.preference_entries[/datum/preference/color/human/grad_color]
+	grad_color.apply_pref_to(character, read_preference(/datum/preference/color/human/grad_color))
+
 	character.f_style	= f_style
-	character.r_facial	= r_facial
-	character.g_facial	= g_facial
-	character.b_facial	= b_facial
-	character.r_skin	= r_skin
-	character.g_skin	= g_skin
-	character.b_skin	= b_skin
 	character.s_tone	= s_tone
 	character.h_style	= h_style
 	character.grad_style= grad_style
 	character.f_style	= f_style
 	character.grad_style= grad_style
-	character.b_type	= b_type
+	if(apply_bloodtype)
+		character.dna.b_type= b_type //This actually just straight up kills whoever uses it if the blood types aren't compatible in TF
 	character.synth_color = synth_color
-	character.r_synth	= r_synth
-	character.g_synth	= g_synth
-	character.b_synth	= b_synth
+
+	var/datum/preference/color/synth_color_color = GLOB.preference_entries[/datum/preference/color/human/synth_color]
+	synth_color_color.apply_pref_to(character, read_preference(/datum/preference/color/human/synth_color))
+
 	character.synth_markings = synth_markings
 
-	var/list/ear_styles = get_available_styles(global.ear_styles_list)
+	var/list/ear_styles = get_available_styles(GLOB.ear_styles_list)
 	character.ear_style =  ear_styles[ear_style]
-	character.r_ears =     r_ears
-	character.b_ears =     b_ears
-	character.g_ears =     g_ears
-	character.r_ears2 =    r_ears2
-	character.b_ears2 =    b_ears2
-	character.g_ears2 =    g_ears2
-	character.r_ears3 =    r_ears3
-	character.b_ears3 =    b_ears3
-	character.g_ears3 =    g_ears3
+
+	var/datum/preference/color/ears_color1 = GLOB.preference_entries[/datum/preference/color/human/ears_color1]
+	ears_color1.apply_pref_to(character, read_preference(/datum/preference/color/human/ears_color1))
+
+	var/datum/preference/color/ears_color2 = GLOB.preference_entries[/datum/preference/color/human/ears_color2]
+	ears_color2.apply_pref_to(character, read_preference(/datum/preference/color/human/ears_color2))
+
+	var/datum/preference/color/ears_color3 = GLOB.preference_entries[/datum/preference/color/human/ears_color3]
+	ears_color3.apply_pref_to(character, read_preference(/datum/preference/color/human/ears_color3))
 
 	character.ear_secondary_style = ear_styles[ear_secondary_style]
 	character.ear_secondary_colors = SANITIZE_LIST(ear_secondary_colors)
 
-	var/list/tail_styles = get_available_styles(global.tail_styles_list)
+	var/list/tail_styles = get_available_styles(GLOB.tail_styles_list)
 	character.tail_style = tail_styles[tail_style]
-	character.r_tail =     r_tail
-	character.b_tail =     b_tail
-	character.g_tail =     g_tail
-	character.r_tail2 =    r_tail2
-	character.b_tail2 =    b_tail2
-	character.g_tail2 =    g_tail2
-	character.r_tail3 =    r_tail3
-	character.b_tail3 =    b_tail3
-	character.g_tail3 =    g_tail3
 
-	var/list/wing_styles = get_available_styles(global.wing_styles_list)
+	var/datum/preference/color/tail_color1 = GLOB.preference_entries[/datum/preference/color/human/tail_color1]
+	tail_color1.apply_pref_to(character, read_preference(/datum/preference/color/human/tail_color1))
+
+	var/datum/preference/color/tail_color2 = GLOB.preference_entries[/datum/preference/color/human/tail_color2]
+	tail_color2.apply_pref_to(character, read_preference(/datum/preference/color/human/tail_color2))
+
+	var/datum/preference/color/tail_color3 = GLOB.preference_entries[/datum/preference/color/human/tail_color3]
+	tail_color3.apply_pref_to(character, read_preference(/datum/preference/color/human/tail_color3))
+
+	var/list/wing_styles = get_available_styles(GLOB.wing_styles_list)
 	character.wing_style = wing_styles[wing_style]
-	character.r_wing =     r_wing
-	character.b_wing =     b_wing
-	character.g_wing =     g_wing
-	character.r_wing2 =    r_wing2
-	character.b_wing2 =    b_wing2
-	character.g_wing2 =    g_wing2
-	character.r_wing3 =    r_wing3
-	character.b_wing3 =    b_wing3
-	character.g_wing3 =    g_wing3
+
+	var/datum/preference/color/wing_color1 = GLOB.preference_entries[/datum/preference/color/human/wing_color1]
+	wing_color1.apply_pref_to(character, read_preference(/datum/preference/color/human/wing_color1))
+
+	var/datum/preference/color/wing_color2 = GLOB.preference_entries[/datum/preference/color/human/wing_color2]
+	wing_color2.apply_pref_to(character, read_preference(/datum/preference/color/human/wing_color2))
+
+	var/datum/preference/color/wing_color3 = GLOB.preference_entries[/datum/preference/color/human/wing_color3]
+	wing_color3.apply_pref_to(character, read_preference(/datum/preference/color/human/wing_color3))
+
+	var/datum/preference/numeric/wing_alpha = GLOB.preference_entries[/datum/preference/numeric/human/wing_alpha]
+	wing_alpha.apply_pref_to(character,read_preference(/datum/preference/numeric/human/wing_alpha))
+
+	var/datum/preference/numeric/skin_color = GLOB.preference_entries[/datum/preference/color/human/skin_color]
+	skin_color.apply_pref_to(character,read_preference(/datum/preference/color/human/skin_color))
 
 	character.set_gender(biological_gender)
 
@@ -607,7 +532,7 @@ var/list/preferences_datums = list()
 				else
 					var/bodytype
 					var/datum/species/selected_species = GLOB.all_species[species]
-					if(selected_species.selects_bodytype)
+					if(selected_species.selects_bodytype && custom_base) //Everyone technically has custom_base set to HUMAN, but only some species actually select it.
 						bodytype = custom_base
 					else
 						bodytype = selected_species.get_bodytype()
@@ -618,34 +543,20 @@ var/list/preferences_datums = list()
 
 	for(var/N in character.organs_by_name)
 		var/obj/item/organ/external/O = character.organs_by_name[N]
-		O.markings.Cut()
+		if(O)
+			O.markings.Cut()
 
 	var/priority = 0
 	for(var/M in body_markings)
 		priority += 1
-		var/datum/sprite_accessory/marking/mark_datum = body_marking_styles_list[M]
+		var/datum/sprite_accessory/marking/mark_datum = GLOB.body_marking_styles_list[M]
 
 		for(var/BP in mark_datum.body_parts)
 			var/obj/item/organ/external/O = character.organs_by_name[BP]
 			if(O)
+				if(!islist(body_markings[M][BP])) continue
 				O.markings[M] = list("color" = body_markings[M][BP]["color"], "datum" = mark_datum, "priority" = priority, "on" = body_markings[M][BP]["on"])
 	character.markings_len = priority
-
-	var/list/last_descriptors = list()
-	if(islist(body_descriptors))
-		last_descriptors = body_descriptors.Copy()
-	body_descriptors = list()
-
-	var/datum/species/mob_species = GLOB.all_species[species]
-	if(LAZYLEN(mob_species.descriptors))
-		for(var/entry in mob_species.descriptors)
-			var/datum/mob_descriptor/descriptor = mob_species.descriptors[entry]
-			if(istype(descriptor))
-				if(isnull(last_descriptors[entry]))
-					body_descriptors[entry] = descriptor.default_value // Species datums have initial default value.
-				else
-					body_descriptors[entry] = CLAMP(last_descriptors[entry], 1, LAZYLEN(descriptor.standalone_value_descriptors))
-	character.descriptors = body_descriptors
 
 	if (copy_flavour)
 		character.flavor_texts["general"]	= flavor_texts["general"]
@@ -658,14 +569,12 @@ var/list/preferences_datums = list()
 		character.flavor_texts["legs"]		= flavor_texts["legs"]
 		character.flavor_texts["feet"]		= flavor_texts["feet"]
 	if (copy_ooc_notes)
-		character.ooc_notes 				= metadata
-		character.ooc_notes_dislikes 		= metadata_dislikes
-		character.ooc_notes_likes 			= metadata_likes
-		// CHOMPAdd Start
-		character.ooc_notes_favs 			= metadata_favs
-		character.ooc_notes_maybes 			= metadata_maybes
-		character.ooc_notes_style 			= matadata_ooc_style
-		// CHOMPAdd End
+		character.ooc_notes 				= read_preference(/datum/preference/text/living/ooc_notes)
+		character.ooc_notes_dislikes 		= read_preference(/datum/preference/text/living/ooc_notes_dislikes)
+		character.ooc_notes_likes 			= read_preference(/datum/preference/text/living/ooc_notes_likes)
+		character.ooc_notes_favs 			= read_preference(/datum/preference/text/living/ooc_notes_favs)
+		character.ooc_notes_maybes 			= read_preference(/datum/preference/text/living/ooc_notes_maybes)
+		character.ooc_notes_style 			= read_preference(/datum/preference/toggle/living/ooc_notes_style)
 
 	character.weight			= weight_vr
 	character.weight_gain		= weight_gain
@@ -692,14 +601,14 @@ var/list/preferences_datums = list()
 		character.species.icon_scale_y = 1
 		for (var/trait in neu_traits)
 			if (trait in traits_to_copy)
-				var/datum/trait/instance = all_traits[trait]
+				var/datum/trait/instance = GLOB.all_traits[trait]
 				if (!instance)
 					continue
 				for (var/to_edit in instance.var_changes)
 					character.species.vars[to_edit] = instance.var_changes[to_edit]
 	character.update_transform()
 	if(!voice_sound)
-		character.voice_sounds_list = talk_sound
+		character.voice_sounds_list = DEFAULT_TALK_SOUNDS
 	else
 		character.voice_sounds_list = get_talk_sound(voice_sound)
 
@@ -707,15 +616,16 @@ var/list/preferences_datums = list()
 
 	var/datum/species/selected_species = GLOB.all_species[species]
 	var/bodytype_selected
-	if(selected_species.selects_bodytype)
+	if(selected_species.selects_bodytype && custom_base)
 		bodytype_selected = custom_base
 	else
 		bodytype_selected = selected_species.get_bodytype(character)
-
 	character.dna.base_species = bodytype_selected
 	character.species.base_species = bodytype_selected
+	character.species.icobase = character.species.get_icobase()
+	character.species.deform = character.species.get_icobase(get_deform = TRUE)
 	character.species.vanity_base_fit = bodytype_selected
-	if (istype(character.species, /datum/species/shapeshifter))
+	if(istype(character.species, /datum/species/shapeshifter))
 		wrapped_species_by_ref["\ref[character]"] = bodytype_selected
 
 	character.custom_species	= custom_species
@@ -724,7 +634,7 @@ var/list/preferences_datums = list()
 	character.custom_whisper	= lowertext(trim(custom_whisper))
 	character.custom_exclaim	= lowertext(trim(custom_exclaim))
 
-	character.digitigrade = selected_species.digi_allowed ? digitigrade : 0
+	character.digitigrade = digitigrade
 
 	for(var/obj/item/clothing/O in character.contents)
 		O.handle_digitigrade(character)

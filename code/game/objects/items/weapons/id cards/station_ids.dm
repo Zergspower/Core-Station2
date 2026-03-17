@@ -58,6 +58,12 @@
 	var/icon/F = getFlatIcon(M, defdir = SOUTH, no_anim = TRUE)
 	front = "'data:image/png;base64,[icon2base64(F)]'"
 
+/obj/item/card/id/proc/adjust_mining_points(var/points)
+	if(mining_points + points < 0)
+		return FALSE
+	mining_points += points
+	return TRUE
+
 /mob/proc/set_id_info(var/obj/item/card/id/id_card)
 	id_card.age = 0
 	id_card.registered_name		= real_name
@@ -79,6 +85,9 @@
 	else
 		id_card.species = "[custom_species ? "[custom_species] ([species.name])" : species.name]"
 	id_card.sex = capitalize(name_gender())
+
+	// Save time by reusing our ID card photo instead of generating it for the char directory specifically
+	set_chardirectory_photo(id_card.front)
 
 /obj/item/card/id/tgui_data(mob/user)
 	var/list/data = list()
@@ -125,7 +134,7 @@
 
 	return ..()
 
-/obj/item/card/id/Initialize()
+/obj/item/card/id/Initialize(mapload)
 	. = ..()
 	var/datum/job/J = job_master.GetJob(rank)
 	if(J)
@@ -164,7 +173,7 @@
 	item_state = "idgreen"
 	assignment = "Synthetic"
 
-/obj/item/card/id/synthetic/Initialize()
+/obj/item/card/id/synthetic/Initialize(mapload)
 	. = ..()
 	access = get_all_station_access().Copy() + access_synth
 
@@ -174,7 +183,7 @@
 	icon_state = "id-robot-n"
 	assignment = "Lost"
 
-/obj/item/card/id/lost/Initialize()
+/obj/item/card/id/lost/Initialize(mapload)
 	. = ..()
 	access += access_lost
 
@@ -197,11 +206,11 @@
 	registered_name = "Central Command"
 	assignment = "General"
 
-/obj/item/card/id/centcom/Initialize()
+/obj/item/card/id/centcom/Initialize(mapload)
 	. = ..()
 	access = get_all_centcom_access().Copy()
 
-/obj/item/card/id/centcom/station/Initialize()
+/obj/item/card/id/centcom/station/Initialize(mapload)
 	. = ..()
 	access |= get_all_station_access()
 
@@ -211,7 +220,7 @@
 	icon_state = "ert-id"
 	rank = JOB_EMERGENCY_RESPONSE_TEAM
 
-/obj/item/card/id/centcom/ERT/Initialize()
+/obj/item/card/id/centcom/ERT/Initialize(mapload)
 	. = ..()
 	access |= get_all_station_access()
 
@@ -358,12 +367,14 @@
 	configured = 1
 	to_chat(user, span_notice("Card settings set."))
 
-/obj/item/card/id/event/attackby(obj/item/I as obj, var/mob/user)
+/obj/item/card/id/event/attackby(obj/item/I, var/mob/user)
 	if(istype(I, /obj/item/card/id) && !accessset)
 		var/obj/item/card/id/O = I
 		access |= O.GetAccess()
 		desc = I.desc
 		rank = O.rank
+		mining_points = O.mining_points
+		survey_points = O.survey_points
 		to_chat(user, span_notice("You copy the access from \the [I] to \the [src]."))
 		user.drop_from_inventory(I)
 		qdel(I)

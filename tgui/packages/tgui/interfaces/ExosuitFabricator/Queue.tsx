@@ -1,9 +1,10 @@
-import { useBackend } from '../../backend';
-import { Box, Button, Flex, ProgressBar, Section } from '../../components';
-import { formatMoney } from '../../format';
+import { useBackend } from 'tgui/backend';
+import { Box, Button, ProgressBar, Section, Stack } from 'tgui-core/components';
+import { formatMoney } from 'tgui-core/format';
+
 import { COLOR_KEYS } from './constants';
 import { MaterialAmount } from './Material';
-import { Data } from './types';
+import type { Data } from './types';
 
 export const Queue = (props: {
   queueMaterials: Record<string, number>;
@@ -19,63 +20,69 @@ export const Queue = (props: {
   const disabled: boolean = !queue || !queue.length;
 
   return (
-    <Flex height="100%" width="100%" direction="column">
-      <Flex.Item height={0} grow={1}>
+    <Stack height="100%" width="100%" vertical>
+      <Stack.Item height={0} grow>
         <Section
           height="100%"
           title="Queue"
           overflowY="auto"
           buttons={
-            <>
-              <Button.Confirm
-                disabled={disabled}
-                color="bad"
-                icon="minus-circle"
-                onClick={() => act('clear_queue')}
-              >
-                Clear Queue
-              </Button.Confirm>
+            <Stack>
+              <Stack.Item>
+                <Button.Confirm
+                  disabled={disabled}
+                  color="bad"
+                  icon="minus-circle"
+                  onClick={() => act('clear_queue')}
+                >
+                  Clear Queue
+                </Button.Confirm>
+              </Stack.Item>
               {(!!isProcessingQueue && (
-                <Button
-                  disabled={disabled}
-                  icon="stop"
-                  onClick={() => act('stop_queue')}
-                >
-                  Stop
-                </Button>
+                <Stack.Item>
+                  <Button
+                    disabled={disabled}
+                    icon="stop"
+                    onClick={() => act('stop_queue')}
+                  >
+                    Stop
+                  </Button>
+                </Stack.Item>
               )) || (
-                <Button
-                  disabled={disabled}
-                  icon="play"
-                  onClick={() => act('build_queue')}
-                >
-                  Build Queue
-                </Button>
+                <Stack.Item>
+                  <Button
+                    disabled={disabled}
+                    icon="play"
+                    onClick={() => act('build_queue')}
+                  >
+                    Build Queue
+                  </Button>
+                </Stack.Item>
               )}
-            </>
+            </Stack>
           }
         >
-          <Flex direction="column" height="100%">
-            <Flex.Item>
+          <Stack vertical height="100%">
+            <Stack.Item>
               <BeingBuilt />
-            </Flex.Item>
-            <Flex.Item>
+            </Stack.Item>
+            <Stack.Item>
               <QueueList textColors={textColors} />
-            </Flex.Item>
-          </Flex>
+            </Stack.Item>
+          </Stack>
         </Section>
-      </Flex.Item>
+      </Stack.Item>
       {!disabled && (
-        <Flex.Item mt={1}>
+        <Stack.Item mt={1}>
           <Section title="Material Cost">
             <QueueMaterials
               queueMaterials={queueMaterials}
               missingMaterials={missingMaterials}
             />
           </Section>
-        </Flex.Item>
+        </Stack.Item>
       )}
-    </Flex>
+    </Stack>
   );
 };
 
@@ -86,9 +93,9 @@ const QueueMaterials = (props: {
   const { queueMaterials, missingMaterials } = props;
 
   return (
-    <Flex wrap="wrap">
+    <Stack wrap="wrap">
       {Object.keys(queueMaterials).map((material) => (
-        <Flex.Item width="12%" key={material}>
+        <Stack.Item width="12%" key={material}>
           <MaterialAmount
             formatmoney
             name={material}
@@ -99,9 +106,9 @@ const QueueMaterials = (props: {
               {formatMoney(missingMaterials[material])}
             </Box>
           )}
-        </Flex.Item>
+        </Stack.Item>
       ))}
-    </Flex>
+    </Stack>
   );
 };
 
@@ -113,20 +120,13 @@ const QueueList = (props: { textColors: Record<number, number> }) => {
   const { queue = [] } = data;
 
   if (!queue || !queue.length) {
-    return <>No parts in queue.</>;
+    return 'No parts in queue.';
   }
 
   return queue.map((part, index) => (
     <Box key={index}>
-      <Flex
-        mb={0.5}
-        direction="column"
-        justify="center"
-        wrap="wrap"
-        height="20px"
-        inline
-      >
-        <Flex.Item basis="content">
+      <Stack mb={0.5} vertical justify="center" wrap="wrap" height="20px">
+        <Stack.Item basis="content">
           <Button
             height="20px"
             mr={1}
@@ -134,13 +134,13 @@ const QueueList = (props: { textColors: Record<number, number> }) => {
             color="bad"
             onClick={() => act('del_queue_part', { index: index + 1 })}
           />
-        </Flex.Item>
-        <Flex.Item>
+        </Stack.Item>
+        <Stack.Item>
           <Box inline textColor={COLOR_KEYS[textColors[index]]}>
             {part.name}
           </Box>
-        </Flex.Item>
-      </Flex>
+        </Stack.Item>
+      </Stack>
     </Box>
   ));
 };
@@ -154,11 +154,11 @@ const BeingBuilt = (props) => {
     return (
       <Box>
         <ProgressBar minValue={0} maxValue={1} value={1} color="average">
-          <Flex>
-            <Flex.Item>{storedPart}</Flex.Item>
-            <Flex.Item grow={1} />
-            <Flex.Item>{'Fabricator outlet obstructed...'}</Flex.Item>
-          </Flex>
+          <Stack>
+            <Stack.Item>{storedPart}</Stack.Item>
+            <Stack.Item grow />
+            <Stack.Item>{'Fabricator outlet obstructed...'}</Stack.Item>
+          </Stack>
         </ProgressBar>
       </Box>
     );
@@ -172,13 +172,13 @@ const BeingBuilt = (props) => {
     return (
       <Box>
         <ProgressBar minValue={0} maxValue={printTime} value={duration}>
-          <Flex>
-            <Flex.Item>{name}</Flex.Item>
-            <Flex.Item grow={1} />
-            <Flex.Item>
-              {(timeLeft >= 0 && timeLeft + 's') || 'Dispensing...'}
-            </Flex.Item>
-          </Flex>
+          <Stack>
+            <Stack.Item>{name}</Stack.Item>
+            <Stack.Item grow />
+            <Stack.Item>
+              {(timeLeft >= 0 && `${timeLeft}s`) || 'Dispensing...'}
+            </Stack.Item>
+          </Stack>
         </ProgressBar>
       </Box>
     );

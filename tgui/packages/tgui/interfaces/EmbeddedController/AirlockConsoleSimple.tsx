@@ -1,8 +1,9 @@
-import { useBackend } from '../../backend';
-import { Box, Button, Section } from '../../components';
+import { useBackend } from 'tgui/backend';
+import { Box, Button, Section } from 'tgui-core/components';
+
 import { StandardControls, StatusDisplay } from './EmbeddedControllerHelpers';
 import { PanelOpen } from './PanelOpen';
-import { AirlockConsoleSimpleData } from './types';
+import type { AirlockConsoleSimpleData } from './types';
 
 /**
  * Simple airlock consoles are the least complicated airlock controller.
@@ -29,7 +30,7 @@ export const AirlockConsoleSimple = (props) => {
       maxValue: 202,
       value: chamber_pressure,
       label: 'Chamber Pressure',
-      textValue: chamber_pressure + ' kPa',
+      textValue: `${chamber_pressure} kPa`,
       color: (value: number) => {
         return value < 80 || value > 120
           ? 'bad'

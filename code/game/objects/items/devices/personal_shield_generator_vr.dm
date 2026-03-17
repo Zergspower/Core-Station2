@@ -29,7 +29,7 @@
 	actions_types = list(/datum/action/item_action/toggle_shield)
 	var/obj/item/gun/energy/gun/generator/active_weapon
 	var/obj/item/cell/device/bcell = null
-	var/upgraded = 0 										// If the PSG has been upgraded by some method or not. Only used for the mining belt ATM.
+	var/upgraded = FALSE 									// If the PSG has been upgraded by some method or not. Only used for the mining belt ATM.
 
 
 	var/generator_hit_cost = 100							// Power used when a special effect (such as a bullet being blocked) is performed! Could also be expanded to other things.
@@ -44,8 +44,8 @@
 /obj/item/personal_shield_generator/get_cell()
 	return bcell
 
-/obj/item/personal_shield_generator/New()
-	..()
+/obj/item/personal_shield_generator/Initialize(mapload)
+	. = ..()
 	if(ispath(bcell))
 		bcell = new bcell(src)
 
@@ -211,7 +211,7 @@
 				to_chat(user, span_notice("You remove the cell from \the [src]."))
 				update_icon()
 	else if(istype(W,/obj/item/multitool))
-		var/new_color = input(usr, "Choose a color to set the shield to!", "", effect_color) as color|null
+		var/new_color = tgui_color_picker(usr, "Choose a color to set the shield to!", "", effect_color)
 		if(new_color)
 			effect_color = new_color
 	else
@@ -300,7 +300,7 @@
 
 /obj/item/personal_shield_generator/process()
 	if(!bcell) //They removed the battery midway.
-		if(istype(loc, /mob/living/carbon/human)) //We on someone? Tell them it turned off.
+		if(ishuman(loc)) //We on someone? Tell them it turned off.
 			var/mob/living/carbon/human/user = loc
 			to_chat(user, span_warning("The shield deactivates! An error message pops up on screen: 'Cell missing. Cell replacement required.'"))
 			user.remove_modifiers_of_type(/datum/modifier/shield_projection)
@@ -312,7 +312,7 @@
 
 	if(shield_active)
 		if(bcell.rigged) //They turned it back on after it was rigged to go boom.
-			if(istype(loc, /mob/living/carbon/human)) //Deactivate the shield, first. You're not getting reduced damage...
+			if(ishuman(loc)) //Deactivate the shield, first. You're not getting reduced damage...
 				var/mob/living/carbon/human/user = loc
 				to_chat(user, span_warning("The shield deactivates, an error message popping up on screen: 'Cell Reactor Critically damaged. Cell replacement required.'"))
 				user.remove_modifiers_of_type(/datum/modifier/shield_projection)
@@ -333,7 +333,7 @@
 
 	if(bcell.charge < generator_hit_cost || bcell.charge < generator_active_cost) //Out of charge...
 		shield_active = 0
-		if(istype(loc, /mob/living/carbon/human)) //We on someone? Tell them it turned off.
+		if(ishuman(loc)) //We on someone? Tell them it turned off.
 			var/mob/living/carbon/human/user = loc
 			to_chat(user, span_warning("The shield deactivates, an error message popping up on screen: 'Cell out of charge.'"))
 			user.remove_modifiers_of_type(/datum/modifier/shield_projection)
@@ -393,7 +393,7 @@
 	modifystate = "egunstun"
 
 	firemodes = list(
-		list(mode_name="stun", projectile_type=/obj/item/projectile/beam/stun/med, modifystate="egunstun", fire_sound='sound/weapons/Taser.ogg', charge_cost = 240),
+		list(mode_name="stun", projectile_type=/obj/item/projectile/beam/stun/med, modifystate="egunstun", fire_sound='sound/weapons/taser.ogg', charge_cost = 240),
 		list(mode_name="lethal", projectile_type=/obj/item/projectile/beam, modifystate="egunkill", fire_sound='sound/weapons/Laser.ogg', charge_cost = 480),
 		)
 
@@ -402,8 +402,8 @@
 	var/cooldown = 0
 	var/busy = 0
 
-/obj/item/gun/energy/gun/generator/New(newloc, obj/item/personal_shield_generator/shield_gen)
-	..(newloc)
+/obj/item/gun/energy/gun/generator/Initialize(mapload, obj/item/personal_shield_generator/shield_gen)
+	. = ..()
 	shield_generator = shield_gen
 	power_supply = shield_generator.bcell
 
@@ -488,11 +488,19 @@
 
 // Mining belts
 /obj/item/personal_shield_generator/belt/mining
-	name = "mining PSG"
-	desc = "A personal shield generator designed for mining. It has a warning on the back: 'Do NOT expose the shield to stun-based weaponry.'"
+	name = "PSG Variant-M"
+	desc = "A personal shield generator designed for mining and combat with hostile creatures. \
+	It has a warning on the back: 'Do NOT expose the shield to stun-based weaponry.'"
 	modifier_type = /datum/modifier/shield_projection/mining
 
 /obj/item/personal_shield_generator/belt/mining/loaded
+	bcell = /obj/item/cell/device/shield_generator
+
+/obj/item/personal_shield_generator/belt/mining/upgraded
+	upgraded = TRUE
+	modifier_type = /datum/modifier/shield_projection/mining/strong
+
+/obj/item/personal_shield_generator/belt/mining/upgraded/loaded
 	bcell = /obj/item/cell/device/shield_generator
 
 /obj/item/personal_shield_generator/belt/mining/update_icon()
@@ -515,7 +523,7 @@
 			to_chat(user, span_warning("This shield generator is already upgraded!"))
 			return
 		modifier_type = /datum/modifier/shield_projection/mining/strong
-		upgraded = 1
+		upgraded = TRUE
 		to_chat(user, span_notice("You upgrade the [src] with the [W]!"))
 		user.drop_from_inventory(W)
 		qdel(W)
@@ -526,7 +534,7 @@
 //Security belts
 
 /obj/item/personal_shield_generator/belt/security
-	name = "security PSG"
+	name = "PSG Variant-S"
 	desc = "A personal shield generator designed for security."
 	modifier_type = /datum/modifier/shield_projection/security/weak
 
@@ -539,19 +547,34 @@
 	else
 		icon_state = "shieldpack_security"
 
-//Misc belts. Admin-spawn only atm.
+//PvE focused belt
+/obj/item/personal_shield_generator/belt/melee
+	name = "PSG Variant-B"
+	desc = "A personal shield generator that creates a field that prevents the functionality of firearms in exchange \
+	for enhanceing melee potential. The shield makes its user more resistant to brute and burn, \
+	makes them harder to hit, able to hit harder, able to hit faster, allows faster movement, and \
+	allows the user to get up from disabling strikes faster."
+	damage_cost = 5
 
-/obj/item/personal_shield_generator/belt/adminbus
-	desc = DEVELOPER_WARNING_NAME + " You REALLY should not see this. If you do, you have either been blessed or are about to be the target of some sick prank."
-	modifier_type = /datum/modifier/shield_projection/admin
-	generator_hit_cost = 0
-	generator_active_cost = 0
-	shield_active = 0
-	damage_cost = 0
+	modifier_type = /datum/modifier/shield_projection/melee_focus
+
+/obj/item/personal_shield_generator/belt/melee/loaded
+	bcell = /obj/item/cell/device/shield_generator
+
+//Misc belts.
+
+/obj/item/personal_shield_generator/belt/medical
+	name = "PSG Variant-BIO"
+	desc = "A personal shield generator that creates a field that helps against biohazards \
+	for enhanceing melee potential. The shield makes its user resistant to toxic attacks, suffocating attacks, and DNA attacks"
+
+	modifier_type = /datum/modifier/shield_projection/biohazard
+
+/obj/item/personal_shield_generator/belt/medical/loaded
 	bcell = /obj/item/cell/device/shield_generator
 
 /obj/item/personal_shield_generator/belt/parry 	//The 'provides one second of pure immunity to brute/burn/halloss' belt.
-	name = "PSG variant-P" 		//Not meant to be used in any serious capacity.
+	name = "PSG Variant-P" 		//Not meant to be used in any serious capacity.
 	desc = "A personal shield generator that sacrifices long-term usability in exchange for a strong, short-lived shield projection, enabling the user to be nigh \
 	impervious for a second."
 	modifier_type = /datum/modifier/shield_projection/parry
@@ -561,11 +584,21 @@
 	shield_active = 0
 	bcell = /obj/item/cell/device/shield_generator/parry
 
+//Badmin belt
+/obj/item/personal_shield_generator/belt/adminbus
+	desc = DEVELOPER_WARNING_NAME + " You REALLY should not see this. If you do, you have either been blessed or are about to be the target of some sick prank."
+	modifier_type = /datum/modifier/shield_projection/admin
+	generator_hit_cost = 0
+	generator_active_cost = 0
+	shield_active = 0
+	damage_cost = 0
+	bcell = /obj/item/cell/device/shield_generator
+
 // Backpacks. These are meant to be MUCH stronger in exchange for the fact that you are giving up a backpack slot.
 // HOWEVER, be careful with these. They come loaded with a gun in them, so they shouldn't be handed out willy-nilly.
 
 /obj/item/personal_shield_generator/security
-	name = "security PSG"
+	name = "Backpack PSG Variant-S"
 	desc = "A personal shield generator designed for security. Comes with a built in defense pistol."
 	modifier_type = /datum/modifier/shield_projection/security
 

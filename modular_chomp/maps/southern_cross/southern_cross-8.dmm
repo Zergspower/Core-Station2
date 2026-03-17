@@ -44,6 +44,14 @@
 	icon_state = "dark"
 	},
 /area/syndicate_station)
+"aaj" = (
+/obj/effect/landmark/darkspawn,
+/turf/simulated/floor/wood/sif,
+/area/shadekin)
+"aak" = (
+/obj/effect/landmark/darkspawn,
+/turf/simulated/floor/tiled/techmaint,
+/area/shadekin)
 "aal" = (
 /obj/machinery/vending/cigarette{
 	dir = 4
@@ -60,6 +68,10 @@
 	icon_state = "lino"
 	},
 /area/tdome/tdomeobserve)
+"aan" = (
+/obj/effect/landmark/darkspawn,
+/turf/simulated/floor,
+/area/shadekin)
 "aao" = (
 /obj/machinery/vending/coffee{
 	dir = 8
@@ -68,6 +80,11 @@
 	icon_state = "lino"
 	},
 /area/tdome/tdomeobserve)
+"aap" = (
+/obj/effect/floor_decal/milspec/monotile,
+/obj/effect/landmark/darkspawn,
+/turf/simulated/floor/tiled/steel_dirty,
+/area/shadekin)
 "aaq" = (
 /obj/machinery/vending/snack{
 	dir = 8
@@ -280,23 +297,14 @@
 	},
 /turf/simulated/shuttle/floor/black,
 /area/shuttle/merchant)
-"aaS" = (
-/obj/item/stool/padded,
-/turf/space,
-/turf/unsimulated/floor{
-	icon_state = "steel"
-	},
-/area/centcom/bar)
 "aaT" = (
 /obj/machinery/biogenerator,
-/turf/space,
 /turf/unsimulated/floor{
 	icon_state = "steel"
 	},
 /area/centcom/bar)
 "aaU" = (
 /obj/machinery/honey_extractor,
-/turf/space,
 /turf/unsimulated/floor{
 	icon_state = "steel"
 	},
@@ -305,7 +313,6 @@
 /obj/machinery/seed_storage/garden{
 	dir = 1
 	},
-/turf/space,
 /turf/unsimulated/floor{
 	icon_state = "steel"
 	},
@@ -314,7 +321,6 @@
 /obj/machinery/vending/hydronutrients{
 	dir = 1
 	},
-/turf/space,
 /turf/unsimulated/floor{
 	icon_state = "steel"
 	},
@@ -1201,7 +1207,7 @@
 /area/wizard_station)
 "aFI" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "escape_shuttle_hatch";
 	locked = 1;
@@ -1681,6 +1687,7 @@
 /area/shuttle/merchant)
 "bbP" = (
 /mob/living/simple_mob/animal/sif/glitterfly/rare,
+/obj/effect/landmark/darkspawn,
 /turf/simulated/floor/outdoors/grass/heavy,
 /area/shadekin)
 "bcb" = (
@@ -1898,7 +1905,7 @@
 /area/shuttle/trade)
 "bkF" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "trade_shuttle_bay";
 	name = "shuttle bay controller";
 	pixel_x = 25;
@@ -2299,8 +2306,7 @@
 /area/centcom/specops)
 "bCK" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /turf/simulated/floor/carpet,
 /area/shadekin)
@@ -2590,7 +2596,7 @@
 /area/shuttle/administration)
 "bPF" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "escape_pod_4_recovery_hatch";
 	locked = 1;
@@ -2823,7 +2829,7 @@
 	id = "QMLoad"
 	},
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "supply_shuttle_hatch";
 	locked = 1;
@@ -3024,7 +3030,7 @@
 /obj/item/target/alien,
 /turf/unsimulated/floor{
 	icon = 'icons/turf/flooring/wood.dmi';
-	icon_state = "wood_broken2"
+	icon_state = "wood-broken2"
 	},
 /area/ninja_dojo/dojo)
 "chd" = (
@@ -3112,12 +3118,9 @@
 /area/shadekin)
 "cmS" = (
 /obj/machinery/door/airlock/external{
-	frequency = null;
 	icon_state = "door_locked";
-	id_tag = null;
 	locked = 1;
-	name = "Ship Hatch";
-	req_access = null
+	name = "Ship Hatch"
 	},
 /obj/effect/map_helper/airlock/door/ext_door,
 /turf/simulated/shuttle/floor/black,
@@ -3280,7 +3283,7 @@
 /obj/machinery/embedded_controller/radio/docking_port_multi{
 	child_names_txt = "Airlock One;Airlock Two";
 	child_tags_txt = "arrivals_dock_north_airlock;arrivals_dock_south_airlock";
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "arrivals_dock";
 	pixel_y = -32
 	},
@@ -3565,7 +3568,6 @@
 "cIi" = (
 /obj/effect/floor_decal/milspec/color/orange,
 /obj/machinery/light{
-	dir = 2;
 	nightshift_enabled = 1
 	},
 /obj/effect/floor_decal/emblem/itgdauntless{
@@ -3762,8 +3764,7 @@
 /area/tdome/tdomeadmin)
 "cPT" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /turf/simulated/floor/carpet/blue2,
 /area/shadekin)
@@ -4378,7 +4379,7 @@
 /area/shuttle/response_ship)
 "dzR" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "centcom_dock_airlock";
 	locked = 1;
@@ -4469,19 +4470,10 @@
 /area/shadekin)
 "dBP" = (
 /obj/structure/bed/double/padded{
-	pixel_x = 10;
-	pixel_y = 25
-	},
-/obj/structure/bed/double/padded{
 	pixel_x = 10
 	},
 /obj/item/bedsheet/mimedouble{
-	pixel_x = 10;
-	pixel_y = 27
-	},
-/obj/item/bedsheet/mimedouble{
-	pixel_x = 10;
-	pixel_y = 0
+	pixel_x = 10
 	},
 /turf/simulated/floor/carpet/blue2,
 /area/shadekin)
@@ -4564,8 +4556,7 @@
 /area/shadekin)
 "dGf" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /obj/structure/table/marble{
 	color = "#2b2b2b"
@@ -4628,7 +4619,6 @@
 "dHk" = (
 /obj/effect/floor_decal/milspec/color/orange,
 /obj/machinery/light{
-	dir = 2;
 	nightshift_enabled = 1
 	},
 /turf/simulated/floor/tiled/steel_dirty,
@@ -4642,7 +4632,7 @@
 /area/shadekin)
 "dHC" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "escape_pod_8_recovery_hatch";
 	locked = 1;
@@ -4961,8 +4951,7 @@
 /area/shadekin)
 "dWG" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /obj/structure/table/hardwoodtable,
 /obj/item/flashlight/lamp/green,
@@ -5198,8 +5187,7 @@
 /obj/machinery/light/floortube{
 	dir = 4;
 	nightshift_enabled = 1;
-	pixel_x = -6;
-	pixel_y = 0
+	pixel_x = -6
 	},
 /turf/simulated/floor/wood/alt,
 /area/shadekin)
@@ -5292,7 +5280,6 @@
 "eoa" = (
 /obj/effect/floor_decal/milspec/color/silver,
 /obj/machinery/light{
-	dir = 2;
 	nightshift_enabled = 1
 	},
 /turf/simulated/floor/tiled/techmaint,
@@ -5435,7 +5422,7 @@
 /area/ninja_dojo/dojo)
 "evT" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "large_escape_pod_1_recovery_hatch";
 	locked = 1;
@@ -5457,8 +5444,7 @@
 	pixel_y = 1
 	},
 /obj/item/storage/rollingpapers{
-	pixel_x = 8;
-	pixel_y = 0
+	pixel_x = 8
 	},
 /obj/item/storage/rollingpapers/blunt{
 	pixel_x = -6;
@@ -5578,7 +5564,7 @@
 /area/shadekin)
 "eBX" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "admin_shuttle_bay_door";
 	locked = 1
@@ -5612,9 +5598,6 @@
 	},
 /turf/simulated/shuttle/floor/voidcraft/light,
 /area/shuttle/ninja)
-"eEJ" = (
-/turf/unsimulated/floor/dark,
-/area/space)
 "eEM" = (
 /turf/simulated/floor/carpet/gaycarpet,
 /area/shadekin)
@@ -5641,7 +5624,7 @@
 /area/shadekin)
 "eGl" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "escape_pod_7_recovery_hatch";
 	locked = 1;
@@ -5798,7 +5781,7 @@
 /obj/item/bedsheet/orange,
 /turf/unsimulated/floor{
 	icon = 'icons/turf/flooring/wood.dmi';
-	icon_state = "wood_broken1"
+	icon_state = "wood-broken1"
 	},
 /area/skipjack_station)
 "ePF" = (
@@ -5825,21 +5808,6 @@
 	icon_state = "wood"
 	},
 /area/skipjack_station)
-"eQB" = (
-/obj/structure/table/rack,
-/obj/item/ammo_magazine/hectate/ap,
-/obj/item/ammo_magazine/hectate/ap,
-/obj/item/ammo_magazine/hectate/ap,
-/obj/item/ammo_magazine/hectate/ap,
-/obj/item/ammo_magazine/hectate/ap,
-/obj/item/ammo_magazine/hectate/ap,
-/obj/item/ammo_magazine/hectate/ap,
-/obj/item/ammo_magazine/hectate/ap,
-/turf/unsimulated/floor{
-	dir = 5;
-	icon_state = "vault"
-	},
-/area/centcom/specops)
 "eQT" = (
 /obj/structure/closet/crate/medical,
 /obj/item/surgical/circular_saw,
@@ -5876,8 +5844,7 @@
 /area/centcom/specops)
 "eQU" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /obj/structure/table/hardwoodtable,
 /obj/item/flashlight/lamp/green,
@@ -5930,7 +5897,6 @@
 /obj/effect/floor_decal/milspec/color/orange,
 /obj/effect/floor_decal/techfloor,
 /obj/machinery/light{
-	dir = 2;
 	nightshift_enabled = 1
 	},
 /turf/simulated/floor/tiled/steel_dirty,
@@ -6033,9 +5999,6 @@
 /obj/machinery/vending/donksoft,
 /turf/simulated/floor/reinforced,
 /area/shadekin)
-"faJ" = (
-/turf/closed/indestructible/splashscreen,
-/area/space)
 "faN" = (
 /obj/structure/table/standard,
 /obj/effect/decal/cleanable/cobweb2,
@@ -6106,8 +6069,7 @@
 /area/shadekin)
 "ffK" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /obj/structure/table/marble{
 	color = "#2b2b2b"
@@ -6238,7 +6200,7 @@
 "fqC" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
 	dir = 4;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "trade_shuttle";
 	pixel_x = -25;
 	req_one_access = list(101);
@@ -6423,12 +6385,10 @@
 /area/wizard_station)
 "fBC" = (
 /obj/structure/bed/double{
-	pixel_x = 10;
-	pixel_y = 0
+	pixel_x = 10
 	},
 /obj/item/bedsheet/browndouble{
-	pixel_x = 10;
-	pixel_y = 0
+	pixel_x = 10
 	},
 /turf/simulated/floor/carpet/turcarpet,
 /area/shadekin)
@@ -6611,8 +6571,7 @@
 /area/centcom/specops)
 "fMY" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /obj/structure/table/hardwoodtable,
 /obj/item/flashlight/lamp/green,
@@ -6788,8 +6747,7 @@
 /area/shuttle/administration)
 "fXP" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /obj/structure/table/marble{
 	color = "#2b2b2b"
@@ -6921,8 +6879,7 @@
 /area/holodeck/source_beach)
 "geM" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /obj/structure/bed/chair/bay/chair/padded/red/bignest{
 	name = "large shadekin nest"
@@ -7027,7 +6984,6 @@
 /area/space)
 "gjN" = (
 /obj/machinery/airlock_sensor{
-	id_tag = null;
 	pixel_y = 27
 	},
 /obj/effect/shuttle_landmark{
@@ -7256,8 +7212,7 @@
 /area/centcom/bar)
 "gxa" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /turf/simulated/floor/carpet/retro_red,
 /area/shadekin)
@@ -7377,7 +7332,6 @@
 /obj/item/storage/box/donkpockets,
 /obj/item/storage/box/donkpockets,
 /obj/machinery/computer/security/telescreen/entertainment{
-	icon_state = "frame";
 	pixel_x = 30
 	},
 /obj/effect/floor_decal/corner/orange{
@@ -7390,19 +7344,14 @@
 "gDm" = (
 /obj/machinery/atmospherics/pipe/simple/visible,
 /obj/machinery/door/airlock/external{
-	frequency = null;
 	icon_state = "door_locked";
-	id_tag = null;
 	locked = 1;
-	name = "Ship Hatch";
-	req_access = null
+	name = "Ship Hatch"
 	},
 /obj/machinery/access_button{
 	dir = 1;
-	master_tag = null;
 	pixel_x = -27;
-	pixel_y = 7;
-	req_one_access = null
+	pixel_y = 7
 	},
 /obj/effect/map_helper/airlock/button/int_button,
 /obj/effect/map_helper/airlock/door/int_door,
@@ -7565,8 +7514,7 @@
 /obj/machinery/light/floortube{
 	dir = 4;
 	nightshift_enabled = 1;
-	pixel_x = -6;
-	pixel_y = 0
+	pixel_x = -6
 	},
 /turf/simulated/floor/wood/alt,
 /area/shadekin)
@@ -7575,7 +7523,6 @@
 /obj/effect/floor_decal/milspec/color/silver,
 /obj/machinery/light{
 	dir = 8;
-	icon_state = "tube1";
 	nightshift_enabled = 1
 	},
 /obj/structure/disposalpipe/segment{
@@ -7629,7 +7576,7 @@
 /area/centcom/main_hall)
 "gOa" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "admin_shuttle_hatch";
 	locked = 1;
@@ -7720,7 +7667,6 @@
 /area/centcom/evac)
 "gRf" = (
 /obj/effect/floor_decal/spline/fancy{
-	dir = 2;
 	icon_state = "spline_fancy_cee"
 	},
 /obj/structure/flora/lily3,
@@ -7733,8 +7679,7 @@
 /obj/machinery/light/floortube{
 	dir = 4;
 	nightshift_enabled = 1;
-	pixel_x = -6;
-	pixel_y = 0
+	pixel_x = -6
 	},
 /turf/simulated/floor/wood/sif,
 /area/shadekin)
@@ -7868,8 +7813,7 @@
 /area/shuttle/response_ship)
 "gWI" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /turf/simulated/floor/carpet/gaycarpet,
 /area/shadekin)
@@ -7978,15 +7922,7 @@
 	},
 /area/wizard_station)
 "hbJ" = (
-/obj/structure/bed/double/padded{
-	pixel_y = 25
-	},
-/obj/structure/bed/double/padded{
-	pixel_y = 0
-	},
-/obj/item/bedsheet/mimedouble{
-	pixel_y = 26
-	},
+/obj/structure/bed/double/padded,
 /obj/item/bedsheet/mimedouble,
 /turf/simulated/floor/carpet/blue2,
 /area/shadekin)
@@ -8015,18 +7951,13 @@
 /area/shuttle/syndicate_elite/mothership)
 "hdC" = (
 /obj/machinery/access_button{
-	master_tag = null;
 	pixel_x = 27;
-	pixel_y = -7;
-	req_one_access = null
+	pixel_y = -7
 	},
 /obj/machinery/door/airlock/external{
-	frequency = null;
 	icon_state = "door_locked";
-	id_tag = null;
 	locked = 1;
-	name = "Ship Hatch";
-	req_access = null
+	name = "Ship Hatch"
 	},
 /obj/effect/map_helper/airlock/button/ext_button,
 /obj/effect/map_helper/airlock/door/ext_door,
@@ -8038,8 +7969,7 @@
 /area/shadekin)
 "hem" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /obj/structure/bed/chair/bay/chair/padded/red/bignest{
 	name = "large shadekin nest"
@@ -8187,7 +8117,7 @@
 "hkz" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
 	dir = 4;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "admin_shuttle";
 	pixel_x = -25;
 	req_one_access = list(101);
@@ -8297,8 +8227,7 @@
 "hmy" = (
 /obj/machinery/chemical_dispenser/bar_alc/full{
 	dir = 8;
-	pixel_x = 14;
-	pixel_y = 0
+	pixel_x = 14
 	},
 /obj/structure/table/marble{
 	color = "#2b2b2b"
@@ -8327,8 +8256,7 @@
 	req_access = list(150)
 	},
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	dir = 4;
-	id_tag = null
+	dir = 4
 	},
 /obj/machinery/button/remote/blast_door{
 	id = "blastninja";
@@ -8362,8 +8290,7 @@
 /area/holodeck/source_emptycourt)
 "hol" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /obj/structure/table/marble{
 	color = "#2b2b2b"
@@ -8389,20 +8316,15 @@
 	dir = 4
 	},
 /obj/machinery/door/airlock/voidcraft/vertical{
-	frequency = null;
-	id_tag = null;
-	name = "Ship Internal Hatch";
-	req_access = null
+	name = "Ship Internal Hatch"
 	},
 /obj/effect/map_helper/airlock/door/int_door,
 /obj/effect/map_helper/airlock/button/int_button,
 /obj/machinery/access_button{
 	dir = 4;
-	master_tag = null;
 	name = "interior access button";
 	pixel_x = 7;
-	pixel_y = 27;
-	req_access = null
+	pixel_y = 27
 	},
 /turf/simulated/shuttle/floor/voidcraft/dark,
 /area/shuttle/ninja)
@@ -8417,12 +8339,6 @@
 /obj/machinery/chemical_dispenser/bar_alc/full,
 /turf/simulated/shuttle/floor/black,
 /area/shuttle/merchant)
-"hpw" = (
-/turf/space,
-/turf/unsimulated/floor{
-	icon_state = "steel"
-	},
-/area/centcom/bar)
 "hpU" = (
 /obj/machinery/portable_atmospherics/hydroponics,
 /turf/unsimulated/floor{
@@ -8453,7 +8369,7 @@
 "hrC" = (
 /turf/unsimulated/floor{
 	icon = 'icons/turf/flooring/wood.dmi';
-	icon_state = "wood_broken3"
+	icon_state = "wood-broken3"
 	},
 /area/skipjack_station)
 "hrS" = (
@@ -8926,7 +8842,7 @@
 /area/shuttle/administration)
 "hQH" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "escape_pod_1_recovery_hatch";
 	locked = 1;
@@ -8956,7 +8872,7 @@
 /area/ninja_dojo/dojo)
 "hRf" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	glass = 1380;
 	icon_state = "door_locked";
 	id_tag = "centcom_shuttle_bay_door";
@@ -8983,8 +8899,7 @@
 /area/centcom/evac)
 "hRE" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /obj/structure/bed/padded,
 /obj/item/bedsheet/captain,
@@ -9052,7 +8967,7 @@
 	},
 /turf/unsimulated/floor{
 	icon = 'icons/turf/flooring/wood.dmi';
-	icon_state = "wood_broken2"
+	icon_state = "wood-broken2"
 	},
 /area/skipjack_station)
 "hUU" = (
@@ -9817,7 +9732,7 @@
 "iCl" = (
 /turf/unsimulated/floor{
 	icon = 'icons/turf/flooring/wood.dmi';
-	icon_state = "wood_broken1"
+	icon_state = "wood-broken1"
 	},
 /area/ninja_dojo/dojo)
 "iCF" = (
@@ -9915,8 +9830,7 @@
 "iFK" = (
 /obj/machinery/chemical_dispenser/bar_coffee/full{
 	dir = 8;
-	pixel_x = 14;
-	pixel_y = 0
+	pixel_x = 14
 	},
 /obj/structure/table/marble{
 	color = "#2b2b2b"
@@ -10005,8 +9919,7 @@
 /obj/structure/table/marble,
 /obj/machinery/chemical_dispenser/bar_alc/full{
 	dir = 8;
-	pixel_x = 14;
-	pixel_y = 0
+	pixel_x = 14
 	},
 /obj/structure/window/reinforced/survival_pod{
 	opacity = 1
@@ -10117,7 +10030,7 @@
 "iSl" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "response_base";
 	name = "docking port controller";
 	pixel_y = -27;
@@ -10203,7 +10116,7 @@
 /area/shadekin)
 "iVs" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "large_escape_pod_1_recovery";
 	pixel_x = -25;
 	pixel_y = -25;
@@ -10319,12 +10232,10 @@
 	},
 /obj/machinery/airlock_sensor{
 	dir = 8;
-	id_tag = null;
 	pixel_x = 27
 	},
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	dir = 1;
-	id_tag = null
+	dir = 1
 	},
 /obj/effect/map_helper/airlock/atmos/chamber_pump,
 /obj/effect/map_helper/airlock/sensor/chamber_sensor,
@@ -10496,8 +10407,7 @@
 /obj/structure/table/marble,
 /obj/machinery/chemical_dispenser/bar_alc/full{
 	dir = 8;
-	pixel_x = 14;
-	pixel_y = 0
+	pixel_x = 14
 	},
 /obj/structure/window/reinforced/survival_pod{
 	opacity = 1
@@ -10727,7 +10637,7 @@
 /area/shuttle/merchant)
 "jvA" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "response_shuttle_door";
 	locked = 1;
@@ -11067,7 +10977,6 @@
 	color = "#2b2b2b"
 	},
 /obj/machinery/light{
-	dir = 2;
 	nightshift_enabled = 1
 	},
 /turf/simulated/floor/tiled/techmaint,
@@ -11436,8 +11345,7 @@
 /obj/structure/table/marble,
 /obj/machinery/chemical_dispenser/bar_alc/full{
 	dir = 8;
-	pixel_x = 14;
-	pixel_y = 0
+	pixel_x = 14
 	},
 /obj/effect/floor_decal/corner/black/diagonal,
 /obj/structure/window/reinforced/survival_pod{
@@ -11513,8 +11421,7 @@
 /area/shadekin)
 "ken" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /turf/simulated/floor/carpet/geo,
 /area/shadekin)
@@ -11549,8 +11456,7 @@
 /obj/structure/table/rack/shelf/steel,
 /obj/item/storage/box/condimentbottles,
 /obj/item/reagent_containers/food/condiment/sugar{
-	pixel_x = -5;
-	pixel_y = 0
+	pixel_x = -5
 	},
 /obj/item/storage/box/donkpockets{
 	pixel_x = 4;
@@ -12106,9 +12012,7 @@
 	},
 /area/ninja_dojo/dojo)
 "kwC" = (
-/turf/unsimulated/floor{
-	icon_state = "sandwater"
-	},
+/turf/unsimulated/floor,
 /area/beach)
 "kwM" = (
 /obj/structure/flora/ausbushes/reedbush,
@@ -12344,7 +12248,7 @@
 /area/syndicate_station)
 "kJS" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "escape_pod_8_recovery";
 	pixel_x = 26;
 	pixel_y = -26;
@@ -12463,8 +12367,7 @@
 /area/centcom/evac)
 "kOE" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /obj/structure/table/hardwoodtable,
 /obj/item/flashlight/lamp/clown{
@@ -12483,7 +12386,7 @@
 /area/syndicate_station)
 "kOV" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "trade_shuttle_bay_door";
 	locked = 1
@@ -12983,8 +12886,7 @@
 "lqC" = (
 /obj/machinery/shower{
 	dir = 8;
-	pixel_x = 7;
-	pixel_y = 0
+	pixel_x = 7
 	},
 /obj/structure/curtain/open/shower,
 /turf/simulated/floor/tiled/freezer,
@@ -13566,7 +13468,7 @@
 /area/centcom/terminal)
 "lTi" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "escape_pod_4_recovery";
 	pixel_x = -26;
 	pixel_y = 26;
@@ -13763,12 +13665,6 @@
 	icon_state = "steel"
 	},
 /area/centcom/living)
-"mcF" = (
-/turf/unsimulated/wall{
-	icon = 'icons/misc/title.dmi';
-	icon_state = "title"
-	},
-/area/space)
 "mcT" = (
 /obj/effect/floor_decal/corner/red/full,
 /turf/simulated/floor/holofloor/tiled,
@@ -13817,7 +13713,6 @@
 	},
 /obj/machinery/light{
 	dir = 8;
-	icon_state = "tube1";
 	nightshift_enabled = 1
 	},
 /turf/simulated/floor/tiled/steel_dirty,
@@ -14111,19 +14006,13 @@
 /turf/simulated/shuttle/floor,
 /area/centcom/evac)
 "mwb" = (
-/obj/machinery/door/airlock/hatch{
-	frequency = null;
-	id_tag = null;
-	req_access = null
-	},
+/obj/machinery/door/airlock/hatch,
 /obj/effect/map_helper/airlock/button/ext_button,
 /obj/effect/map_helper/airlock/door/ext_door,
 /obj/machinery/access_button{
 	dir = 1;
-	master_tag = null;
 	pixel_x = -27;
-	pixel_y = 7;
-	req_one_access = null
+	pixel_y = 7
 	},
 /turf/simulated/shuttle/plating,
 /area/shuttle/skipjack)
@@ -14170,19 +14059,13 @@
 /turf/simulated/floor/holofloor/carpet,
 /area/holodeck/source_theatre)
 "myh" = (
-/obj/machinery/door/airlock/hatch{
-	frequency = null;
-	id_tag = null;
-	req_access = null
-	},
+/obj/machinery/door/airlock/hatch,
 /obj/effect/map_helper/airlock/button/ext_button,
 /obj/effect/map_helper/airlock/door/ext_door,
 /obj/machinery/access_button{
 	dir = 1;
-	master_tag = null;
 	pixel_x = 27;
-	pixel_y = 7;
-	req_access = null
+	pixel_y = 7
 	},
 /turf/simulated/shuttle/plating,
 /area/shuttle/skipjack)
@@ -14194,11 +14077,7 @@
 	name = "Outer Airlock";
 	opacity = 0
 	},
-/obj/machinery/door/airlock/voidcraft{
-	frequency = null;
-	id_tag = null;
-	req_access = null
-	},
+/obj/machinery/door/airlock/voidcraft,
 /obj/structure/fans/tiny,
 /obj/effect/map_helper/airlock/door/ext_door,
 /turf/simulated/shuttle/plating,
@@ -14214,7 +14093,6 @@
 /obj/effect/floor_decal/milspec/color/white,
 /obj/effect/floor_decal/techfloor,
 /obj/machinery/light{
-	dir = 2;
 	nightshift_enabled = 1
 	},
 /turf/simulated/floor/tiled/freezer,
@@ -14370,7 +14248,7 @@
 /area/shuttle/merchant)
 "mHg" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "escape_pod_2_recovery";
 	pixel_x = -25;
 	pixel_y = 25;
@@ -14424,9 +14302,7 @@
 /turf/simulated/floor/holofloor/carpet,
 /area/holodeck/source_courtroom)
 "mKp" = (
-/obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	id_tag = null
-	},
+/obj/machinery/atmospherics/unary/vent_pump/high_volume,
 /obj/effect/map_helper/airlock/atmos/chamber_pump,
 /turf/simulated/shuttle/plating,
 /area/shuttle/skipjack)
@@ -14437,7 +14313,6 @@
 "mLa" = (
 /obj/machinery/airlock_sensor{
 	dir = 8;
-	id_tag = null;
 	pixel_x = 27
 	},
 /obj/effect/map_helper/airlock/sensor/chamber_sensor,
@@ -14625,9 +14500,6 @@
 /obj/effect/floor_decal/carpet,
 /turf/simulated/floor/holofloor/carpet,
 /area/holodeck/source_courtroom)
-"mSU" = (
-/turf/closed/indestructible/start_area,
-/area/space)
 "mTk" = (
 /obj/machinery/portable_atmospherics/canister/oxygen/prechilled,
 /obj/machinery/atmospherics/portables_connector,
@@ -14694,7 +14566,6 @@
 "mWp" = (
 /obj/machinery/airlock_sensor{
 	dir = 4;
-	id_tag = null;
 	pixel_x = -27
 	},
 /obj/effect/shuttle_landmark{
@@ -14721,10 +14592,7 @@
 /area/shadekin)
 "mYr" = (
 /obj/machinery/door/airlock/voidcraft/vertical{
-	frequency = null;
-	id_tag = null;
-	name = "Ship External Hatch";
-	req_access = null
+	name = "Ship External Hatch"
 	},
 /obj/machinery/door/blast/regular{
 	density = 0;
@@ -14820,8 +14688,7 @@
 /area/holodeck/source_thunderdomecourt)
 "neC" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	dir = 8;
-	id_tag = null
+	dir = 8
 	},
 /obj/machinery/button/remote/blast_door{
 	id = "smindicate";
@@ -14843,8 +14710,7 @@
 /area/shuttle/escape/centcom)
 "neI" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	dir = 4;
-	id_tag = null
+	dir = 4
 	},
 /obj/machinery/airlock_sensor{
 	dir = 8;
@@ -14910,7 +14776,6 @@
 /obj/effect/floor_decal/milspec/color/black,
 /obj/machinery/light{
 	dir = 8;
-	icon_state = "tube1";
 	nightshift_enabled = 1
 	},
 /turf/simulated/floor/tiled/steel_dirty,
@@ -15206,25 +15071,16 @@
 /obj/machinery/meter,
 /turf/simulated/shuttle/plating,
 /area/shuttle/skipjack)
-"nvE" = (
-/obj/effect/landmark/start/new_player,
-/turf/closed/indestructible/start_area,
-/area/space)
 "nvF" = (
 /obj/machinery/embedded_controller/radio/airlock/airlock_controller{
 	dir = 8;
 	frequency = 1331;
 	id_tag = "vox_west_control";
 	pixel_x = 27;
-	req_access = list(150);
-	tag_airpump = null;
-	tag_chamber_sensor = null;
-	tag_exterior_door = null;
-	tag_interior_door = null
+	req_access = list(150)
 	},
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	dir = 8;
-	id_tag = null
+	dir = 8
 	},
 /obj/machinery/light/small,
 /obj/effect/map_helper/airlock/atmos/chamber_pump,
@@ -15343,7 +15199,7 @@
 /area/shuttle/merchant)
 "nCN" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "escape_pod_5_recovery";
 	pixel_x = 26;
 	pixel_y = -26;
@@ -15388,15 +15244,10 @@
 	frequency = 1331;
 	id_tag = "skipjack_shuttle";
 	pixel_x = -27;
-	req_access = list(150);
-	tag_airpump = null;
-	tag_chamber_sensor = null;
-	tag_exterior_door = null;
-	tag_interior_door = null
+	req_access = list(150)
 	},
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	dir = 4;
-	id_tag = null
+	dir = 4
 	},
 /obj/machinery/light/small,
 /obj/effect/map_helper/airlock/atmos/chamber_pump,
@@ -15505,20 +15356,14 @@
 /obj/machinery/atmospherics/pipe/manifold/visible{
 	dir = 8
 	},
-/obj/machinery/door/airlock/voidcraft/vertical{
-	frequency = null;
-	id_tag = null;
-	req_access = null
-	},
+/obj/machinery/door/airlock/voidcraft/vertical,
 /obj/effect/map_helper/airlock/door/int_door,
 /obj/effect/map_helper/airlock/button/int_button,
 /obj/machinery/access_button{
 	dir = 8;
-	master_tag = null;
 	name = "interior access button";
 	pixel_x = -7;
-	pixel_y = 27;
-	req_access = null
+	pixel_y = 27
 	},
 /turf/simulated/shuttle/floor/voidcraft/dark,
 /area/shuttle/syndicate)
@@ -15533,8 +15378,7 @@
 /area/centcom/creed)
 "nMG" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	dir = 8;
-	id_tag = null
+	dir = 8
 	},
 /obj/machinery/light/small,
 /obj/effect/map_helper/airlock/atmos/chamber_pump,
@@ -15621,8 +15465,7 @@
 /area/shadekin)
 "nQF" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	dir = 4;
-	id_tag = null
+	dir = 4
 	},
 /obj/effect/map_helper/airlock/atmos/chamber_pump,
 /turf/simulated/shuttle/floor/voidcraft/dark,
@@ -15635,11 +15478,7 @@
 	},
 /area/centcom/specops)
 "nQU" = (
-/obj/machinery/door/airlock/voidcraft/vertical{
-	frequency = null;
-	id_tag = null;
-	req_access = null
-	},
+/obj/machinery/door/airlock/voidcraft/vertical,
 /obj/machinery/atmospherics/pipe/simple/visible{
 	dir = 4
 	},
@@ -15647,11 +15486,9 @@
 /obj/effect/map_helper/airlock/button/int_button,
 /obj/machinery/access_button{
 	dir = 4;
-	master_tag = null;
 	name = "interior access button";
 	pixel_x = 7;
-	pixel_y = 27;
-	req_access = null
+	pixel_y = 27
 	},
 /turf/simulated/shuttle/floor/voidcraft/dark,
 /area/shuttle/syndicate)
@@ -15670,7 +15507,7 @@
 /area/centcom/bar)
 "nSo" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "centcom_dock";
 	name = "docking port controller";
 	pixel_x = 25;
@@ -15771,8 +15608,7 @@
 /area/centcom/specops)
 "oal" = (
 /obj/item/material/knife{
-	pixel_x = 8;
-	pixel_y = 0
+	pixel_x = 8
 	},
 /obj/item/material/knife,
 /obj/structure/table/marble{
@@ -15825,8 +15661,7 @@
 /area/shadekin)
 "oba" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /turf/simulated/floor/carpet/tealcarpet,
 /area/shadekin)
@@ -15889,11 +15724,7 @@
 	},
 /area/tdome/tdomeobserve)
 "oeg" = (
-/obj/machinery/door/airlock/hatch{
-	frequency = null;
-	id_tag = null;
-	req_access = null
-	},
+/obj/machinery/door/airlock/hatch,
 /obj/machinery/atmospherics/pipe/simple/visible,
 /obj/effect/map_helper/airlock/door/int_door,
 /turf/simulated/shuttle/plating,
@@ -16180,7 +16011,7 @@
 /area/shadekin)
 "ouF" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "escape_pod_3_recovery_hatch";
 	locked = 1;
@@ -16277,9 +16108,7 @@
 /obj/structure/bed/double{
 	pixel_x = -1
 	},
-/obj/item/bedsheet/hopdouble{
-	pixel_y = 0
-	},
+/obj/item/bedsheet/hopdouble,
 /turf/simulated/floor/carpet/gaycarpet,
 /area/shadekin)
 "oBM" = (
@@ -16396,7 +16225,7 @@
 "oJA" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
 	dir = 8;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "centcom_shuttle_bay";
 	name = "shuttle bay controller";
 	pixel_x = 27;
@@ -16448,13 +16277,11 @@
 /area/ninja_dojo/dojo)
 "oMV" = (
 /obj/structure/bed/double{
-	pixel_x = 1;
-	pixel_y = 0
+	pixel_x = 1
 	},
 /obj/item/bedsheet/hopdouble,
 /obj/item/bedsheet/hopdouble{
-	pixel_x = 16;
-	pixel_y = 0
+	pixel_x = 16
 	},
 /turf/simulated/floor/carpet/gaycarpet,
 /area/shadekin)
@@ -16680,8 +16507,7 @@
 /obj/machinery/light/floortube{
 	dir = 4;
 	nightshift_enabled = 1;
-	pixel_x = -6;
-	pixel_y = 0
+	pixel_x = -6
 	},
 /turf/simulated/floor/wood/sif,
 /area/shadekin)
@@ -16764,10 +16590,8 @@
 /obj/machinery/atmospherics/pipe/simple/visible,
 /obj/machinery/access_button{
 	dir = 4;
-	master_tag = null;
 	pixel_x = -25;
-	pixel_y = 6;
-	req_one_access = null
+	pixel_y = 6
 	},
 /obj/effect/map_helper/airlock/button/int_button,
 /turf/simulated/shuttle/plating,
@@ -16831,7 +16655,7 @@
 "pnb" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "centcom_shuttle";
 	pixel_y = -27;
 	tag_door = "centcom_shuttle_hatch"
@@ -16849,7 +16673,7 @@
 	id = "QMLoad2"
 	},
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "supply_shuttle_hatch";
 	locked = 1;
@@ -16894,7 +16718,7 @@
 /area/shuttle/skipjack)
 "ppL" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "supply_shuttle_hatch";
 	locked = 1;
@@ -16937,10 +16761,8 @@
 /obj/machinery/atmospherics/pipe/simple/visible,
 /obj/machinery/access_button{
 	dir = 8;
-	master_tag = null;
 	pixel_x = 25;
-	pixel_y = 6;
-	req_access = null
+	pixel_y = 6
 	},
 /obj/effect/map_helper/airlock/button/int_button,
 /turf/simulated/shuttle/plating,
@@ -17096,7 +16918,7 @@
 /area/centcom/medical)
 "pAY" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "large_escape_pod_2_recovery_hatch";
 	locked = 1;
@@ -17222,7 +17044,7 @@
 /area/shuttle/syndicate)
 "pGT" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "response_base_door";
 	locked = 1
@@ -17364,7 +17186,7 @@
 /area/centcom/command)
 "pMJ" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "escape_pod_6_recovery";
 	pixel_x = 26;
 	pixel_y = -26;
@@ -17694,7 +17516,7 @@
 /area/shuttle/skipjack)
 "qiW" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "escape_pod_2_recovery_hatch";
 	locked = 1;
@@ -17792,7 +17614,7 @@
 /area/shadekin)
 "qoh" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "escape_shuttle";
 	pixel_y = -25;
 	req_one_access = list(13);
@@ -17814,10 +17636,6 @@
 "qoU" = (
 /turf/simulated/floor/carpet/blucarpet,
 /area/shadekin)
-"qoX" = (
-/turf/space,
-/turf/simulated/shuttle/wall/dark,
-/area/shuttle/merchant)
 "qoY" = (
 /obj/structure/table/woodentable/holotable,
 /obj/structure/window/reinforced/holowindow{
@@ -17997,7 +17815,6 @@
 	dir = 8
 	},
 /obj/machinery/computer/security/telescreen/entertainment{
-	icon_state = "frame";
 	pixel_x = 32
 	},
 /turf/simulated/floor/carpet,
@@ -18228,7 +18045,7 @@
 /area/centcom/evac)
 "qRp" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "escape_pod_3_recovery";
 	pixel_x = -26;
 	pixel_y = 26;
@@ -18331,8 +18148,7 @@
 /obj/structure/table/rack/shelf/steel,
 /obj/item/storage/box/condimentbottles,
 /obj/item/reagent_containers/food/condiment/sugar{
-	pixel_x = -5;
-	pixel_y = 0
+	pixel_x = -5
 	},
 /obj/item/storage/box/donkpockets{
 	pixel_x = 4;
@@ -18713,7 +18529,7 @@
 /area/shuttle/merchant)
 "rnQ" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "supply_shuttle";
 	pixel_x = 25;
 	req_one_access = list(13,31);
@@ -19169,7 +18985,7 @@
 "rIX" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "response_shuttle";
 	pixel_y = -27;
 	tag_door = "response_shuttle_door"
@@ -19373,7 +19189,6 @@
 /obj/machinery/appliance/cooker/grill,
 /obj/effect/floor_decal/techfloor,
 /obj/machinery/light{
-	dir = 2;
 	nightshift_enabled = 1
 	},
 /turf/simulated/floor/tiled/techmaint,
@@ -19381,7 +19196,6 @@
 "rSl" = (
 /obj/effect/floor_decal/milspec/color/black,
 /obj/machinery/light{
-	dir = 2;
 	nightshift_enabled = 1
 	},
 /turf/simulated/floor/tiled/steel_dirty,
@@ -19406,8 +19220,7 @@
 /area/shadekin)
 "rTw" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /turf/simulated/floor/bronze,
 /area/shadekin)
@@ -19503,7 +19316,7 @@
 /obj/machinery/embedded_controller/radio/docking_port_multi{
 	child_names_txt = "Airlock One;Airlock Two;Airlock Three;Airlock Four";
 	child_tags_txt = "escape_dock_north_airlock;escape_dock_south_airlock;escape_dock_snorth_airlock;escape_dock_ssouth_airlock";
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "escape_dock";
 	pixel_y = -32;
 	req_one_access = list(13)
@@ -19733,10 +19546,6 @@
 /area/ninja_dojo/dojo)
 "shL" = (
 /obj/structure/table/rack,
-/obj/item/gun/projectile/automatic/serdy/hectate,
-/obj/item/gun/projectile/automatic/serdy/hectate,
-/obj/item/gun/projectile/automatic/serdy/hectate,
-/obj/item/gun/projectile/automatic/serdy/hectate,
 /turf/unsimulated/floor{
 	dir = 5;
 	icon_state = "vault"
@@ -19859,7 +19668,7 @@
 /area/shadekin)
 "slD" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "escape_pod_6_recovery_hatch";
 	locked = 1;
@@ -19906,8 +19715,7 @@
 /area/shuttle/merchant)
 "sns" = (
 /obj/machinery/computer/security/telescreen/entertainment{
-	pixel_x = -32;
-	pixel_y = 0
+	pixel_x = -32
 	},
 /turf/simulated/floor/tiled/techfloor,
 /area/shadekin)
@@ -20109,7 +19917,7 @@
 "syY" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "admin_shuttle_bay";
 	name = "shuttle bay controller";
 	pixel_y = -27;
@@ -20277,8 +20085,7 @@
 /area/shadekin)
 "sFQ" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /obj/structure/table/hardwoodtable,
 /turf/simulated/floor/carpet/green,
@@ -20759,7 +20566,7 @@
 /area/shadekin)
 "tfp" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "escape_pod_7_recovery";
 	pixel_x = -26;
 	pixel_y = 26;
@@ -21311,7 +21118,7 @@
 /area/shuttle/skipjack)
 "tDo" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "trade_shuttle_hatch";
 	locked = 1;
@@ -21480,8 +21287,7 @@
 /area/centcom/command)
 "tLj" = (
 /obj/machinery/cash_register/civilian{
-	pixel_x = 6;
-	pixel_y = 0
+	pixel_x = 6
 	},
 /obj/structure/table/marble{
 	color = "#2b2b2b"
@@ -21610,10 +21416,6 @@
 	icon_state = "vault"
 	},
 /area/centcom/terminal)
-"tTm" = (
-/turf/space,
-/turf/simulated/shuttle/wall/dark/hard_corner,
-/area/shuttle/merchant)
 "tTO" = (
 /obj/structure/table/steel_reinforced,
 /obj/machinery/recharger,
@@ -21709,8 +21511,7 @@
 /obj/effect/catwalk_plated/techmaint,
 /obj/machinery/light/small{
 	dir = 4;
-	nightshift_enabled = 1;
-	pixel_y = 0
+	nightshift_enabled = 1
 	},
 /turf/simulated/floor,
 /area/shadekin)
@@ -22239,7 +22040,7 @@
 /obj/machinery/space_heater,
 /turf/unsimulated/floor{
 	icon = 'icons/turf/flooring/wood.dmi';
-	icon_state = "wood_broken3"
+	icon_state = "wood-broken3"
 	},
 /area/ninja_dojo/dojo)
 "uxc" = (
@@ -22269,8 +22070,7 @@
 /obj/effect/floor_decal/milspec/color/silver,
 /obj/structure/sink/kitchen{
 	dir = 8;
-	pixel_x = -13;
-	pixel_y = 0
+	pixel_x = -13
 	},
 /obj/structure/mirror{
 	dir = 4;
@@ -22279,10 +22079,6 @@
 	},
 /turf/simulated/floor/tiled/milspec/sterile,
 /area/shadekin)
-"uyi" = (
-/turf/space,
-/turf/space,
-/area/space)
 "uyy" = (
 /obj/machinery/atmospherics/unary/freezer{
 	icon_state = "freezer"
@@ -22408,7 +22204,7 @@
 /area/centcom/evac)
 "uIK" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "escape_pod_5_recovery_hatch";
 	locked = 1;
@@ -22496,7 +22292,7 @@
 	pixel_x = 15;
 	pixel_y = -4
 	},
-/obj/item/toy/plushie/squid/green{
+/obj/item/toy/plushie/squid{
 	pixel_x = -10;
 	pixel_y = 6
 	},
@@ -22839,7 +22635,7 @@
 /area/holodeck/source_meetinghall)
 "vcN" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "cryostorage_shuttle_recovery_hatch";
 	locked = 1;
@@ -22890,7 +22686,7 @@
 /area/shuttle/skipjack)
 "vej" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "large_escape_pod_2_recovery";
 	pixel_x = -25;
 	pixel_y = 25;
@@ -22921,8 +22717,7 @@
 /area/centcom/evac)
 "vfc" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /obj/structure/table/rack/shelf/steel,
 /turf/simulated/floor/carpet/blue2,
@@ -23084,11 +22879,6 @@
 /obj/item/clothing/head/pin/flower/blue,
 /obj/item/clothing/head/pin/flower/orange,
 /obj/item/clothing/head/pin/flower/pink,
-/obj/item/clothing/head/justice,
-/obj/item/clothing/head/justice/blue,
-/obj/item/clothing/head/justice/green,
-/obj/item/clothing/head/justice/pink,
-/obj/item/clothing/head/justice/yellow,
 /obj/item/clothing/head/philosopher_wig,
 /obj/item/clothing/head/plaguedoctorhat,
 /obj/item/clothing/head/xenos,
@@ -23501,8 +23291,7 @@
 /area/shuttle/skipjack)
 "vDC" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /turf/simulated/floor/carpet/retro,
 /area/shadekin)
@@ -23646,8 +23435,7 @@
 /area/shuttle/trade)
 "vPi" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /obj/structure/table/bench/wooden,
 /turf/simulated/floor/carpet,
@@ -23664,7 +23452,7 @@
 /area/shadekin)
 "vRu" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "centcom_shuttle_hatch";
 	locked = 1;
@@ -23984,8 +23772,7 @@
 /area/centcom/evac)
 "wfq" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /turf/simulated/floor/carpet/turcarpet,
 /area/shadekin)
@@ -24782,8 +24569,7 @@
 /obj/structure/table/rack/shelf/steel,
 /obj/item/storage/box/condimentbottles,
 /obj/item/reagent_containers/food/condiment/sugar{
-	pixel_x = -5;
-	pixel_y = 0
+	pixel_x = -5
 	},
 /obj/item/storage/box/donkpockets{
 	pixel_x = 4;
@@ -24947,7 +24733,7 @@
 /area/holodeck/source_chess)
 "xfd" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "escape_pod_1_recovery";
 	pixel_x = -25;
 	pixel_y = 25;
@@ -25414,8 +25200,7 @@
 /obj/machinery/light/floortube{
 	dir = 4;
 	nightshift_enabled = 1;
-	pixel_x = -6;
-	pixel_y = 0
+	pixel_x = -6
 	},
 /turf/simulated/floor/tiled/techmaint,
 /area/shadekin)
@@ -25622,20 +25407,6 @@
 	},
 /turf/simulated/shuttle/floor/voidcraft/light,
 /area/shuttle/syndicate)
-"xMU" = (
-/obj/structure/shuttle/engine/heater{
-	dir = 4
-	},
-/obj/machinery/turretid{
-	pixel_x = 32;
-	req_access = list(150)
-	},
-/obj/machinery/turretid{
-	pixel_x = 32;
-	req_access = list(150)
-	},
-/turf/simulated/floor/airless,
-/area/shuttle/syndicate)
 "xNh" = (
 /obj/structure/toilet{
 	dir = 4
@@ -25785,7 +25556,7 @@
 /area/shuttle/transport1/centcom)
 "xSX" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "cryostorage_shuttle_recovery";
 	pixel_x = -26;
 	pixel_y = 26;
@@ -25855,12 +25626,9 @@
 /area/centcom/specops)
 "xYj" = (
 /obj/machinery/door/airlock/external{
-	frequency = null;
 	icon_state = "door_locked";
-	id_tag = null;
 	locked = 1;
-	name = "Ship Hatch";
-	req_access = null
+	name = "Ship Hatch"
 	},
 /obj/machinery/atmospherics/pipe/simple/visible,
 /obj/effect/map_helper/airlock/door/int_door,
@@ -25935,8 +25703,7 @@
 /area/shadekin)
 "ydX" = (
 /obj/structure/window/reinforced/survival_pod{
-	dir = 1;
-	icon_state = "pwindow"
+	dir = 1
 	},
 /obj/structure/table/hardwoodtable,
 /turf/simulated/floor/carpet/tealcarpet,
@@ -26027,19 +25794,14 @@
 /area/shuttle/syndicate)
 "yhb" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	dir = 1;
-	id_tag = null
+	dir = 1
 	},
 /obj/machinery/embedded_controller/radio/airlock/airlock_controller{
 	dir = 4;
 	frequency = 1331;
 	id_tag = "trade2_control";
 	pixel_x = -25;
-	req_access = list(150);
-	tag_airpump = null;
-	tag_chamber_sensor = null;
-	tag_exterior_door = null;
-	tag_interior_door = null
+	req_access = list(150)
 	},
 /obj/effect/map_helper/airlock/atmos/chamber_pump,
 /turf/simulated/shuttle/floor/black,
@@ -26207,21 +25969,21 @@ vFi
 vFi
 vFi
 vFi
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-faJ
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
 vFi
 vFi
 vFi
@@ -26465,21 +26227,21 @@ vFi
 vFi
 vFi
 vFi
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
 vFi
 vFi
 vFi
@@ -26723,21 +26485,21 @@ vFi
 vFi
 vFi
 vFi
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
 vFi
 vFi
 vFi
@@ -26981,21 +26743,21 @@ vFi
 vFi
 vFi
 vFi
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
 vFi
 vFi
 vFi
@@ -27239,21 +27001,21 @@ vFi
 vFi
 vFi
 vFi
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
 vFi
 vFi
 vFi
@@ -27326,7 +27088,7 @@ dtV
 dtV
 dtV
 dtV
-mcF
+dtV
 vFi
 vFi
 vFi
@@ -27497,21 +27259,21 @@ vFi
 vFi
 vFi
 vFi
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
 vFi
 vFi
 vFi
@@ -27755,21 +27517,21 @@ vFi
 vFi
 vFi
 vFi
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
 vFi
 vFi
 vFi
@@ -28013,21 +27775,21 @@ vFi
 vFi
 vFi
 vFi
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-nvE
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
 vFi
 vFi
 vFi
@@ -28271,21 +28033,21 @@ vFi
 vFi
 vFi
 vFi
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
 vFi
 vFi
 vFi
@@ -28529,21 +28291,21 @@ vFi
 vFi
 vFi
 vFi
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
 vFi
 vFi
 vFi
@@ -28787,21 +28549,21 @@ vFi
 vFi
 vFi
 vFi
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
 vFi
 vFi
 vFi
@@ -29045,21 +28807,21 @@ vFi
 vFi
 vFi
 vFi
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
 vFi
 vFi
 vFi
@@ -29303,21 +29065,21 @@ vFi
 vFi
 vFi
 vFi
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
 vFi
 vFi
 vFi
@@ -29561,21 +29323,21 @@ vFi
 vFi
 vFi
 vFi
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
 vFi
 vFi
 vFi
@@ -29819,21 +29581,21 @@ vFi
 vFi
 vFi
 vFi
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
-mSU
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
+vFi
 vFi
 vFi
 vFi
@@ -35593,7 +35355,7 @@ usZ
 usZ
 vaR
 xUf
-aaS
+kTG
 klP
 usZ
 vFi
@@ -35851,7 +35613,7 @@ usZ
 oXR
 vaR
 vaR
-hpw
+vaR
 uUT
 usZ
 vFi
@@ -37399,7 +37161,7 @@ jgt
 vaR
 vaR
 vaR
-hpw
+vaR
 vaR
 btt
 uhi
@@ -46393,7 +46155,7 @@ vFi
 vFi
 vFi
 nZC
-eQB
+shL
 eos
 eos
 eos
@@ -49148,7 +48910,7 @@ vwH
 lnu
 ffE
 vfc
-xbZ
+dBP
 dBP
 bMy
 xom
@@ -49406,7 +49168,7 @@ aLm
 bOS
 ffE
 vfc
-xbZ
+hbJ
 hbJ
 bMy
 cWu
@@ -49915,7 +49677,7 @@ vDP
 vDP
 bMy
 kyg
-oTO
+aak
 fqz
 lRH
 avb
@@ -51017,8 +50779,8 @@ vFi
 vFi
 vFi
 vFi
-uyi
-uyi
+vFi
+vFi
 vFi
 vFi
 vFi
@@ -52031,7 +51793,7 @@ vFi
 vFi
 vFi
 vFi
-uyi
+vFi
 vFi
 vFi
 vFi
@@ -52289,7 +52051,7 @@ vFi
 vFi
 vFi
 vFi
-uyi
+vFi
 vFi
 vFi
 vFi
@@ -52547,7 +52309,7 @@ vFi
 vFi
 vFi
 vFi
-uyi
+vFi
 vFi
 vFi
 vFi
@@ -52805,7 +52567,7 @@ vFi
 vFi
 vFi
 vFi
-uyi
+vFi
 vFi
 vFi
 vFi
@@ -60213,7 +59975,7 @@ bMy
 tLx
 bAY
 bAY
-hel
+aap
 hel
 bAY
 bAY
@@ -61535,7 +61297,7 @@ oTO
 gSa
 awS
 omL
-omL
+aaj
 qzw
 pfy
 bMy
@@ -64098,7 +63860,7 @@ qqh
 dWy
 wKW
 bMy
-rVH
+aan
 rVH
 rVH
 rVH
@@ -70234,7 +69996,7 @@ wOF
 iYC
 iYC
 iYC
-tTm
+uvs
 eVq
 uvs
 vFi
@@ -70492,7 +70254,7 @@ uvs
 aga
 aga
 eVq
-qoX
+eVq
 eVq
 vFi
 vFi
@@ -88091,7 +87853,7 @@ mqj
 mDp
 mDp
 mDp
-xMU
+mDp
 mqj
 vFi
 vFi
@@ -90706,7 +90468,7 @@ vFi
 vFi
 vFi
 vFi
-eEJ
+vFi
 vFi
 vFi
 vFi
@@ -90964,7 +90726,7 @@ vFi
 vFi
 vFi
 vFi
-eEJ
+vFi
 vFi
 vFi
 vFi

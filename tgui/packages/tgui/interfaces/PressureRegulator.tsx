@@ -1,8 +1,13 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
-import { AnimatedNumber, Button, LabeledList, Section } from '../components';
-import { Window } from '../layouts';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+import {
+  AnimatedNumber,
+  Button,
+  LabeledList,
+  Section,
+  Stack,
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   on: BooleanLike;
@@ -61,54 +66,66 @@ export const PressureRegulator = (props) => {
             <LabeledList.Item
               label="Pressure Regulation"
               buttons={
-                <>
-                  <Button
-                    icon="power-off"
-                    selected={regulate_mode === 0}
-                    onClick={() => act('regulate_mode', { mode: 'off' })}
-                  >
-                    Off
-                  </Button>
-                  <Button
-                    icon="compress-arrows-alt"
-                    selected={regulate_mode === 1}
-                    onClick={() => act('regulate_mode', { mode: 'input' })}
-                  >
-                    Input
-                  </Button>
-                  <Button
-                    icon="expand-arrows-alt"
-                    selected={regulate_mode === 2}
-                    onClick={() => act('regulate_mode', { mode: 'output' })}
-                  >
-                    Output
-                  </Button>
-                </>
+                <Stack>
+                  <Stack.Item>
+                    <Button
+                      icon="power-off"
+                      selected={regulate_mode === 0}
+                      onClick={() => act('regulate_mode', { mode: 'off' })}
+                    >
+                      Off
+                    </Button>
+                  </Stack.Item>
+                  <Stack.Item>
+                    <Button
+                      icon="compress-arrows-alt"
+                      selected={regulate_mode === 1}
+                      onClick={() => act('regulate_mode', { mode: 'input' })}
+                    >
+                      Input
+                    </Button>
+                  </Stack.Item>
+                  <Stack.Item>
+                    <Button
+                      icon="expand-arrows-alt"
+                      selected={regulate_mode === 2}
+                      onClick={() => act('regulate_mode', { mode: 'output' })}
+                    >
+                      Output
+                    </Button>
+                  </Stack.Item>
+                </Stack>
               }
             />
             <LabeledList.Item
               label="Desired Output Pressure"
               buttons={
-                <>
-                  <Button
-                    icon="compress-arrows-alt"
-                    onClick={() => act('set_press', { press: 'min' })}
-                  >
-                    MIN
-                  </Button>
-                  <Button
-                    icon="expand-arrows-alt"
-                    onClick={() => act('set_press', { press: 'max' })}
-                  >
-                    MAX
-                  </Button>
-                  <Button
-                    icon="wrench"
-                    onClick={() => act('set_press', { press: 'set' })}
-                  >
-                    SET
-                  </Button>
-                </>
+                <Stack>
+                  <Stack.Item>
+                    <Button
+                      icon="compress-arrows-alt"
+                      onClick={() => act('set_press', { press: 'min' })}
+                    >
+                      MIN
+                    </Button>
+                  </Stack.Item>
+                  <Stack.Item>
+                    <Button
+                      icon="expand-arrows-alt"
+                      onClick={() => act('set_press', { press: 'max' })}
+                    >
+                      MAX
+                    </Button>
+                  </Stack.Item>
+                  <Stack.Item>
+                    <Button
+                      icon="wrench"
+                      onClick={() => act('set_press', { press: 'set' })}
+                    >
+                      SET
+                    </Button>
+                  </Stack.Item>
+                </Stack>
               }
             >
               {pressure_set / 100} kPa
@@ -116,26 +133,32 @@ export const PressureRegulator = (props) => {
             <LabeledList.Item
               label="Flow Rate Limit"
               buttons={
-                <>
-                  <Button
-                    icon="compress-arrows-alt"
-                    onClick={() => act('set_flow_rate', { press: 'min' })}
-                  >
-                    MIN
-                  </Button>
-                  <Button
-                    icon="expand-arrows-alt"
-                    onClick={() => act('set_flow_rate', { press: 'max' })}
-                  >
-                    MAX
-                  </Button>
-                  <Button
-                    icon="wrench"
-                    onClick={() => act('set_flow_rate', { press: 'set' })}
-                  >
-                    SET
-                  </Button>
-                </>
+                <Stack>
+                  <Stack.Item>
+                    <Button
+                      icon="compress-arrows-alt"
+                      onClick={() => act('set_flow_rate', { press: 'min' })}
+                    >
+                      MIN
+                    </Button>
+                  </Stack.Item>
+                  <Stack.Item>
+                    <Button
+                      icon="expand-arrows-alt"
+                      onClick={() => act('set_flow_rate', { press: 'max' })}
+                    >
+                      MAX
+                    </Button>
+                  </Stack.Item>
+                  <Stack.Item>
+                    <Button
+                      icon="wrench"
+                      onClick={() => act('set_flow_rate', { press: 'set' })}
+                    >
+                      SET
+                    </Button>
+                  </Stack.Item>
+                </Stack>
               }
             >
               {set_flow_rate / 10} L/s

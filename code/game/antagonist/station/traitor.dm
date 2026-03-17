@@ -102,10 +102,10 @@ var/datum/antagonist/traitor/traitors
 
 /datum/antagonist/traitor/proc/give_codewords(mob/living/traitor_mob)
 	to_chat(traitor_mob, span_underline(span_bold("Your employers provided you with the following information on how to identify possible allies:")))
-	to_chat(traitor_mob, span_bold("Code Phrase") + ": " + span_danger("[syndicate_code_phrase]"))
-	to_chat(traitor_mob, span_bold("Code Response") + ": " + span_danger("[syndicate_code_response]"))
-	traitor_mob.mind.store_memory(span_bold("Code Phrase") + ": [syndicate_code_phrase]")
-	traitor_mob.mind.store_memory(span_bold("Code Response") + ": [syndicate_code_response]")
+	to_chat(traitor_mob, span_bold("Code Phrase") + ": " + span_danger("[GLOB.syndicate_code_phrase]"))
+	to_chat(traitor_mob, span_bold("Code Response") + ": " + span_danger("[GLOB.syndicate_code_response]"))
+	traitor_mob.mind.store_memory(span_bold("Code Phrase") + ": [GLOB.syndicate_code_phrase]")
+	traitor_mob.mind.store_memory(span_bold("Code Response") + ": [GLOB.syndicate_code_response]")
 	to_chat(traitor_mob, "Use the code words, preferably in the order provided, during regular conversation, to identify other agents. Proceed with caution, however, as everyone is a potential foe.")
 
 /datum/antagonist/traitor/proc/spawn_uplink(var/mob/living/carbon/human/traitor_mob)
@@ -115,21 +115,23 @@ var/datum/antagonist/traitor/traitors
 	var/loc = ""
 	var/obj/item/R = locate() //Hide the uplink in a PDA if available, otherwise radio
 
-	if(traitor_mob.client.prefs.uplinklocation == "Headset")
+	var/uplinklocation = traitor_mob.read_preference(/datum/preference/choiced/uplinklocation)
+
+	if(uplinklocation == "Headset")
 		R = locate(/obj/item/radio) in traitor_mob.contents
 		if(!R)
 			R = locate(/obj/item/pda) in traitor_mob.contents
 			to_chat(traitor_mob, "Could not locate a Radio, installing in PDA instead!")
 		if (!R)
 			to_chat(traitor_mob, "Unfortunately, neither a radio or a PDA relay could be installed.")
-	else if(traitor_mob.client.prefs.uplinklocation == "PDA")
+	else if(uplinklocation == "PDA")
 		R = locate(/obj/item/pda) in traitor_mob.contents
 		if(!R)
 			R = locate(/obj/item/radio) in traitor_mob.contents
 			to_chat(traitor_mob, "Could not locate a PDA, installing into a Radio instead!")
 		if(!R)
 			to_chat(traitor_mob, "Unfortunately, neither a radio or a PDA relay could be installed.")
-	else if(traitor_mob.client.prefs.uplinklocation == "None")
+	else if(uplinklocation == "None")
 		to_chat(traitor_mob, "You have elected to not have an AntagCorp portable teleportation relay installed!")
 		R = null
 	else

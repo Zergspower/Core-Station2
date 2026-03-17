@@ -1,7 +1,5 @@
-import { round, toFixed } from 'common/math';
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import {
   AnimatedNumber,
   Box,
@@ -9,9 +7,10 @@ import {
   LabeledList,
   NumberInput,
   Section,
-} from '../components';
-import { formatPower, formatSiUnit } from '../format';
-import { Window } from '../layouts';
+} from 'tgui-core/components';
+import { formatPower, formatSiUnit } from 'tgui-core/format';
+import { round, toFixed } from 'tgui-core/math';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   active: BooleanLike;
@@ -64,7 +63,7 @@ export const ShieldCapacitor = (props) => {
               />
               <AnimatedNumber
                 value={100 * round(stored_charge / max_charge, 1)}
-                format={(value) => ' (' + toFixed(value, 1) + '%)'}
+                format={(value) => ` (${toFixed(value, 1)}%)`}
               />
             </LabeledList.Item>
             <LabeledList.Item label="Charge Rate">

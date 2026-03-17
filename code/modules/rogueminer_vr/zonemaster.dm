@@ -45,7 +45,7 @@
 
 /datum/rogue/zonemaster/proc/is_occupied()
 	var/humans = 0
-	for(var/mob/living/carbon/human/H in human_mob_list)
+	for(var/mob/living/carbon/human/H in GLOB.human_mob_list)
 		if(H.stat >= DEAD) //Conditions for exclusion here, like if disconnected people start blocking it.
 			continue
 		var/area/A = get_area(H)
@@ -176,9 +176,14 @@
 
 	if(!M.mineral && prob(rm_controller.diffstep_chances[rm_controller.diffstep])) //Difficulty translates directly into ore chance
 		rm_controller.dbg("ZM(par): Adding mineral to [M.x],[M.y].")
-		M.make_ore(rm_controller.diffstep >= 3 ? 1 : 0)
+		if(rm_controller.diffstep >= 3)
+			M.turf_resource_types |= TURF_HAS_RARE_ORE
+			M.make_ore(TRUE)
+		else
+			M.turf_resource_types |= TURF_HAS_ORE
+			M.make_ore()
 		mineral_rocks += M
-		//If above difficulty threshold make rare ore instead (M.make_ore(1))
+		//If above difficulty threshold make rare ore instead (M.turf_resource_types |= TURF_HAS_RARE_ORE)
 	//Increase with difficulty etc
 
 	if(!M.density)
@@ -244,8 +249,8 @@
 				archeo_turf.archaeo_overlay = "overlay_archaeo[rand(1,3)]"
 				archeo_turf.update_icon()
 
-		//have a chance for an artifact to spawn here, but not in animal or plant digsites
-		if(isnull(M.artifact_find) && digsite != DIGSITE_GARDEN && digsite != DIGSITE_ANIMAL)
+		//have a chance for an artifact to spawn here, but not in plant digsites
+		if(isnull(M.artifact_find) && digsite != DIGSITE_GARDEN)
 			SSxenoarch.artifact_spawning_turfs.Add(archeo_turf)
 
 	//create artifact machinery
@@ -396,6 +401,10 @@
 		if(I.type == /turf/space)
 			I.cut_overlays()
 			continue
+		if(isturf(I))
+			var/turf/T = I
+			T.ChangeTurf(/turf/space)
+			continue
 		else if(!I.simulated)
 			continue
 		else if(I.type in ignored)
@@ -407,6 +416,10 @@
 	for(var/atom/I in myarea.contents)
 		if(I.type == /turf/space)
 			I.cut_overlays()
+			continue
+		if(isturf(I))
+			var/turf/T = I
+			T.ChangeTurf(/turf/space)
 			continue
 		else if(!I.simulated)
 			continue

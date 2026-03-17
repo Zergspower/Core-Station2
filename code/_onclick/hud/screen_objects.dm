@@ -324,7 +324,7 @@
 			usr.m_int = "13,14"
 		if("Reset Machine")
 			usr.unset_machine()
-		if("internal")
+		if("internal") //dear god this entire thing needs to be rewritten this is literally assaulting my eyes with how awful it is. FUCK.
 			if(iscarbon(usr))
 				var/mob/living/carbon/C = usr
 				if(!C.stat && !C.stunned && !C.paralysis && !C.restrained())
@@ -367,6 +367,12 @@
 									from = "in"
 									nicename |= "hardsuit"
 									tankcheck |= Rig.air_supply
+
+							var/obj/item/clothing/suit/space/void/Void = C.get_voidsuit()
+							if(Void && Void.tank)
+								from = "in"
+								nicename |= "hardsuit"
+								tankcheck |= Void.tank
 
 							for(var/i=1, i<tankcheck.len+1, ++i)
 								if(istype(tankcheck[i], /obj/item/tank))
@@ -532,15 +538,15 @@
 					to_chat(R, "You haven't selected a module yet.")
 
 		if("module1")
-			if(istype(usr, /mob/living/silicon/robot))
+			if(isrobot(usr))
 				usr:toggle_module(1)
 
 		if("module2")
-			if(istype(usr, /mob/living/silicon/robot))
+			if(isrobot(usr))
 				usr:toggle_module(2)
 
 		if("module3")
-			if(istype(usr, /mob/living/silicon/robot))
+			if(isrobot(usr))
 				usr:toggle_module(3)
 
 		if("AI Core")
@@ -617,7 +623,7 @@
 				var/mob/living/silicon/ai/AI = usr
 				AI.view_images()
 		else
-			return attempt_vr(src,"Click_vr",list(location,control,params)) //VOREStation Add - Additional things.
+			return attempt_vr(src,"Click_vr",list(location,control,params))
 	return 1
 
 /obj/screen/inventory/Click()
@@ -700,48 +706,6 @@
 /obj/screen/setup_preview/bg/Click(params)
 	pref?.bgstate = next_in_list(pref.bgstate, pref.bgstate_options)
 	pref?.update_preview_icon()
-
-/obj/screen/splash
-	screen_loc = "1,1"
-	layer = LAYER_HUD_ABOVE
-	plane = PLANE_PLAYER_HUD_ABOVE
-	var/client/holder
-
-/obj/screen/splash/New(client/C, visible)
-	. = ..()
-
-	holder = C
-
-	if(!visible)
-		alpha = 0
-
-	if(!lobby_image)
-		qdel(src)
-		return
-
-	icon = lobby_image.icon
-	icon_state = lobby_image.icon_state
-
-	holder.screen += src
-
-/obj/screen/splash/proc/Fade(out, qdel_after = TRUE)
-	if(QDELETED(src))
-		return
-	if(out)
-		animate(src, alpha = 0, time = 30)
-	else
-		alpha = 0
-		animate(src, alpha = 255, time = 30)
-	if(qdel_after)
-		QDEL_IN(src, 30)
-
-/obj/screen/splash/Destroy()
-	if(holder)
-		holder.screen -= src
-		holder = null
-	return ..()
-
-
 /**
  * This object holds all the on-screen elements of the mapping unit.
  * It has a decorative frame and onscreen buttons. The map itself is drawn
@@ -776,6 +740,7 @@
 	var/obj/screen/mapper/extras_holder/extras_holder
 
 /obj/screen/movable/mapper_holder/Initialize(mapload, newowner)
+	. = ..()
 	owner = newowner
 
 	mask_full = new(src) // Full white square mask
@@ -863,8 +828,8 @@
 	mouse_opacity = 0
 	var/obj/screen/movable/mapper_holder/parent
 
-/obj/screen/mapper/New()
-	..()
+/obj/screen/mapper/Initialize(mapload)
+	. = ..()
 	parent = loc
 
 /obj/screen/mapper/Destroy()

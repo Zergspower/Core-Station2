@@ -21,7 +21,7 @@
 
 	var/swim_modifier = 1
 	var/climb_modifier = 1
-	if(istype(src,/mob/living/carbon/human))
+	if(ishuman(src))
 		var/mob/living/carbon/human/MS = src
 		swim_modifier = MS.species.swim_mult
 		climb_modifier = MS.species.climb_mult
@@ -254,6 +254,16 @@
 	for(var/turf/simulated/T in trange(1,src)) //Robots get "magboots"
 		if(T.density)
 			return TRUE
+
+/mob/living/silicon/pai/can_ztravel()
+	if(incapacitated())
+		return FALSE
+
+	if(Process_Spacemove())
+		return TRUE
+
+	if(!restrained())
+		return TRUE
 
 // TODO - Leshana Experimental
 
@@ -538,7 +548,7 @@
 /mob/living/fall_impact(var/atom/hit_atom, var/damage_min = 0, var/damage_max = 5, var/silent = FALSE, var/planetary = FALSE)
 	var/turf/landing = get_turf(hit_atom)
 	var/safe_fall = FALSE
-	if(src.softfall || (istype(src, /mob/living/simple_mob) && src.mob_size <= MOB_SMALL))
+	if(src.softfall || (isanimal(src) && src.mob_size <= MOB_SMALL))
 		safe_fall = TRUE
 	if(planetary && src.CanParachute())
 		if(!silent)

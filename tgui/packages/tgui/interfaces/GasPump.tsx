@@ -1,7 +1,5 @@
-import { toFixed } from 'common/math';
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import {
   AnimatedNumber,
   Button,
@@ -9,8 +7,9 @@ import {
   LabeledList,
   ProgressBar,
   Section,
-} from '../components';
-import { Window } from '../layouts';
+} from 'tgui-core/components';
+import { toFixed } from 'tgui-core/math';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   on: BooleanLike;
@@ -34,7 +33,7 @@ export const GasPump = (props) => {
             <LabeledList.Item label="Flow Rate">
               <AnimatedNumber
                 value={last_flow_rate / 10}
-                format={(value) => toFixed(value, 1) + ' L/s'}
+                format={(value) => `${toFixed(value, 1)} L/s`}
               />
             </LabeledList.Item>
             <LabeledList.Item label="Load">
@@ -46,7 +45,7 @@ export const GasPump = (props) => {
                   last_power_draw < max_power_draw - 5 ? 'good' : 'average'
                 }
               >
-                {last_power_draw + ' W'}
+                {`${last_power_draw} W`}
               </ProgressBar>
             </LabeledList.Item>
           </LabeledList>

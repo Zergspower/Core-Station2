@@ -78,15 +78,21 @@
 			var/obj/machinery/power/smes/buildable/SMES = GetSMESByTag(params["smes"])
 			if(SMES)
 				SMES.tgui_set_io(SMES_TGUI_INPUT, params["target"], text2num(params["adjust"]))
-				// var/inputset = (input(ui.user, "Enter new input level (0-[SMES.input_level_max/1000] kW)", "SMES Input Power Control", SMES.input_level/1000) as num) * 1000
-				// SMES.set_input(inputset)
+				/* var/inputset = (tgui_input_number(ui.user, "Enter new input level (0-[SMES.input_level_max/1000] kW)", "SMES Input Power Control", SMES.input_level/1000))
+				if(inputset)
+					inputset *= 1000
+					SMES.set_input(inputset)
+				*/
 			. = TRUE
 		if("smes_out_set")
 			var/obj/machinery/power/smes/buildable/SMES = GetSMESByTag(params["smes"])
 			if(SMES)
 				SMES.tgui_set_io(SMES_TGUI_OUTPUT, params["target"], text2num(params["adjust"]))
-				// var/outputset = (input(ui.user, "Enter new output level (0-[SMES.output_level_max/1000] kW)", "SMES Output Power Control", SMES.output_level/1000) as num) * 1000
-				// SMES.set_output(outputset)
+				/* var/outputset = (tgui_input_number(ui.user, "Enter new output level (0-[SMES.output_level_max/1000] kW)", "SMES Output Power Control", SMES.output_level/1000))
+				if(outputset)
+					outputset *= 1000
+					SMES.set_input(outputset)
+				SMES.set_output(outputset) */
 			. = TRUE
 		if("toggle_breaker")
 			var/obj/machinery/power/breakerbox/toggle = null
@@ -128,7 +134,7 @@
 			known_SMESs.Add(SMES)
 
 	known_breakers = new /list()
-	for(var/obj/machinery/power/breakerbox/breaker in machines)
+	for(var/obj/machinery/power/breakerbox/breaker in GLOB.machines)
 		if(!(breaker.z in map_levels))
 			continue
 		if(breaker.RCon_tag != "NO_TAG")

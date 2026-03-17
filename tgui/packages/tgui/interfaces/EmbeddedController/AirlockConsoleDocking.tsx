@@ -1,11 +1,12 @@
-import { useBackend } from '../../backend';
-import { Box, Button, Section } from '../../components';
+import { useBackend } from 'tgui/backend';
+import { Box, Button, Section } from 'tgui-core/components';
+
 import {
   DockStatus,
   StandardControls,
   StatusDisplay,
 } from './EmbeddedControllerHelpers';
-import { AirlockConsoleDockingData } from './types';
+import type { AirlockConsoleDockingData } from './types';
 
 /**
  * This is a mix airlock & docking console. It lets you control the dock status
@@ -33,7 +34,7 @@ export const AirlockConsoleDocking = (props) => {
       maxValue: 202,
       value: chamber_pressure,
       label: 'Chamber Pressure',
-      textValue: chamber_pressure + ' kPa',
+      textValue: `${chamber_pressure} kPa`,
       color: (value: number) => {
         return value < 80 || value > 120
           ? 'bad'

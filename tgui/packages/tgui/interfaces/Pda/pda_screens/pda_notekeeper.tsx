@@ -1,6 +1,5 @@
-/* eslint react/no-danger: "off" */
 import { useBackend } from 'tgui/backend';
-import { Box, Button, Section, Table } from 'tgui/components';
+import { Box, Button, Section, Table } from 'tgui-core/components';
 
 type Data = { note: string; notename: string };
 
@@ -92,9 +91,7 @@ export const pda_notekeeper = (props) => {
         </Button>
       </Section>
       <Section>
-        {/* As usual with dangerouslySetInnerHTML,
-            this notekeeper was designed to use HTML injection.
-            Fix when markdown is easier. */}
+        {/** biome-ignore lint/security/noDangerouslySetInnerHtml: Markdown in PDA notes */}
         <div dangerouslySetInnerHTML={{ __html: note }} />
       </Section>
     </Box>

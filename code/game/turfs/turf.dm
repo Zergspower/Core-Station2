@@ -41,13 +41,62 @@
 
 	var/movement_cost = 0       // How much the turf slows down movement, if any.
 
-	// var/list/footstep_sounds = null CHOMPEdit - Better footstep sounds
-	// var/list/vorefootstep_sounds = null	//CHOMPstation edit
-
 	var/block_tele = FALSE      // If true, most forms of teleporting to or from this turf tile will fail.
 	var/can_build_into_floor = FALSE // Used for things like RCDs (and maybe lattices/floor tiles in the future), to see if a floor should replace it.
 	var/list/dangerous_objects // List of 'dangerous' objs that the turf holds that can cause something bad to happen when stepped on, used for AI mobs.
 	var/tmp/changing_turf
+
+	var/blocks_nonghost_incorporeal = FALSE
+	var/footstep
+	var/barefootstep
+	var/heavyfootstep
+	var/clawfootstep
+
+/turf/simulated/floor
+	footstep = FOOTSTEP_FLOOR
+	barefootstep = FOOTSTEP_HARD_BAREFOOT
+	heavyfootstep = FOOTSTEP_GENERIC_HEAVY
+	clawfootstep = FOOTSTEP_HARD_CLAW
+
+/turf/simulated/floor/wood
+	footstep = FOOTSTEP_WOOD
+	barefootstep = FOOTSTEP_WOOD_BAREFOOT
+	clawfootstep = FOOTSTEP_WOOD_CLAW
+
+/turf/simulated/floor/carpet
+	footstep = FOOTSTEP_CARPET
+	barefootstep = FOOTSTEP_CARPET_BAREFOOT
+	clawfootstep = FOOTSTEP_CARPET_BAREFOOT
+
+/turf/simulated/floor/plating
+	footstep = FOOTSTEP_PLATING
+	barefootstep = FOOTSTEP_HARD_BAREFOOT
+	clawfootstep = FOOTSTEP_HARD_CLAW
+
+/turf/simulated/mineral
+	footstep = FOOTSTEP_SAND
+	barefootstep = FOOTSTEP_SAND
+	clawfootstep = FOOTSTEP_SAND
+
+/turf/simulated/floor/outdoors
+	footstep = FOOTSTEP_SAND
+	barefootstep = FOOTSTEP_SAND
+	clawfootstep = FOOTSTEP_SAND
+
+/turf/simulated/floor/outdoors/grass
+	footstep = FOOTSTEP_GRASS
+	barefootstep = FOOTSTEP_GRASS
+	clawfootstep = FOOTSTEP_GRASS
+
+/turf/simulated/floor/water
+	footstep = FOOTSTEP_WATER
+	barefootstep = FOOTSTEP_WATER
+	clawfootstep = FOOTSTEP_WATER
+
+/turf/simulated/floor/lava
+	footstep = FOOTSTEP_LAVA
+	barefootstep = FOOTSTEP_LAVA
+	clawfootstep = FOOTSTEP_LAVA
 
 /turf/Initialize(mapload)
 	. = ..()
@@ -75,7 +124,7 @@
 	if (!changing_turf)
 		stack_trace("Improper turf qdel. Do not qdel turfs directly.")
 	changing_turf = FALSE
-	cleanbot_reserved_turfs -= src
+	GLOB.cleanbot_reserved_turfs -= src
 	if(connections)
 		connections.erase_all()
 	..()
@@ -164,7 +213,7 @@
 		return
 	if(istype(O, /obj/screen))
 		return
-	if(user.restrained() || user.stat || user.stunned || user.paralysis || (!user.lying && !istype(user, /mob/living/silicon/robot)))
+	if(user.restrained() || user.stat || user.stunned || user.paralysis || (!user.lying && !isrobot(user)) || LAZYLEN(user.grabbed_by))
 		return
 	if((!(istype(O, /atom/movable)) || O.anchored || !Adjacent(user) || !Adjacent(O) || !user.Adjacent(O)))
 		return
@@ -292,20 +341,6 @@
 			return 1
 	return 0
 
-//expects an atom containing the reagents used to clean the turf
-/turf/proc/clean(atom/source, mob/user)
-	if(source.reagents.has_reagent(REAGENT_ID_WATER, 1) || source.reagents.has_reagent(REAGENT_ID_CLEANER, 1))
-		clean_blood()
-		if(istype(src, /turf/simulated))
-			var/turf/simulated/T = src
-			T.dirt = 0
-		for(var/obj/effect/O in src)
-			if(istype(O,/obj/effect/rune) || istype(O,/obj/effect/decal/cleanable) || istype(O,/obj/effect/overlay))
-				qdel(O)
-	else
-		to_chat(user, span_warning("\The [source] is too dry to wash that."))
-	source.reagents.trans_to_turf(src, 1, 10)	//10 is the multiplier for the reaction effect. probably needed to wet the floor properly.
-
 /turf/proc/update_blood_overlays()
 	return
 
@@ -325,7 +360,7 @@
 /turf/proc/can_engrave()
 	return FALSE
 
-/turf/proc/try_graffiti(var/mob/vandal, var/obj/item/tool, click_parameters) // CHOMPEdt - click_parameters
+/turf/proc/try_graffiti(var/mob/vandal, var/obj/item/tool, click_parameters)
 
 	if(!tool || !tool.sharp || !can_engrave()) //CHOMP Edit
 		return FALSE
@@ -358,7 +393,6 @@
 	graffiti.message = message
 	graffiti.author = vandal.ckey
 
-	// CHOMPAdd - Cooler graffitis
 	if(click_parameters)
 		var/list/mouse_control = params2list(click_parameters)
 		var/p_x = 0
@@ -370,7 +404,6 @@
 
 		graffiti.pixel_x = p_x
 		graffiti.pixel_y = p_y
-	// CHOMPAdd End
 
 	if(lowertext(message) == "elbereth")
 		to_chat(vandal, span_notice("You feel much safer."))
@@ -428,6 +461,11 @@
 	return FALSE
 */
 
+/turf/occult_act(mob/living/user)
+	to_chat(user, span_cult("You consecrate the floor."))
+	ChangeTurf(/turf/simulated/floor/cult, preserve_outdoors = TRUE)
+	return TRUE
+
 // We're about to be the A-side in a turf translation
 /turf/proc/pre_translate_A(var/turf/B)
 	return
@@ -440,3 +478,50 @@
 // We were the the B-side in a turf translation
 /turf/proc/post_translate_B(var/turf/A)
 	return
+
+/turf/proc/add_vomit_floor(mob/living/M, toxvomit = NONE, purge = TRUE)
+
+	var/obj/effect/decal/cleanable/vomit/V = new /obj/effect/decal/cleanable/vomit(src, M.GetSpreadableViruses())
+
+	if (QDELETED(V))
+		V = locate() in src
+	if(!V)
+		return
+	if(toxvomit == VOMIT_PURPLE)
+		V.icon_state = "vomitpurp_1"
+		V.random_icon_states = list("vomitpurp_1", "vomitpurp_2", "vomitpurp_3", "vomitpurp_4")
+	else if (toxvomit == VOMIT_TOXIC)
+		V.icon_state = "vomittox_1"
+		V.random_icon_states = list("vomittox_1", "vomittox_2", "vomittox_3", "vomittox_4")
+	else if (toxvomit == VOMIT_NANITE)
+		V.name = "metallic slurry"
+		V.desc = "A puddle of metallic slury that looks vaguely like very fine sand. It almost seems like it's moving..."
+		V.icon_state = "vomitnanite_1"
+		V.random_icon_states = list("vomitnanite_1", "vomitnanite_2", "vomitnanite_3", "vomitnanite_4")
+	if(purge && ishuman(M))
+		var/mob/living/carbon/human/H = M
+		if(H.ingested)
+			clear_reagents_to_vomit_pool(H, V)
+
+/proc/clear_reagents_to_vomit_pool(mob/living/carbon/human/H, obj/effect/decal/cleanable/vomit/V)
+	H.ingested.trans_to(V, H.ingested.total_volume / 10)
+	for(var/datum/reagent/R in H.ingested.reagent_list)
+		H.ingested.remove_reagent(R, min(R.volume, 10))
+
+/**
+* 	Called when this turf is being washed. Washing a turf will also wash any mopable floor decals
+*/
+/turf/wash(clean_types)
+	. = ..()
+
+	if(istype(src, /turf/simulated))
+		var/turf/simulated/T = src
+		T.dirt = 0
+
+	for(var/am in src)
+		if(am == src)
+			continue
+		var/atom/movable/movable_content = am
+		if(!ismopable(movable_content))
+			continue
+		movable_content.wash(clean_types)

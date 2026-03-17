@@ -1,7 +1,8 @@
-import { useBackend } from '../../backend';
-import { Box, Button, Section } from '../../components';
+import { useBackend } from 'tgui/backend';
+import { Box, Button, Section } from 'tgui-core/components';
+
 import { StandardControls, StatusDisplay } from './EmbeddedControllerHelpers';
-import { AirlockConsolePhoronData } from './types';
+import type { AirlockConsolePhoronData } from './types';
 
 /**
  * Phoron airlock consoles don't actually cycle *pressure*, they cycle
@@ -28,7 +29,7 @@ export const AirlockConsolePhoron = (props) => {
       maxValue: 202,
       value: chamber_pressure,
       label: 'Chamber Pressure',
-      textValue: chamber_pressure + ' kPa',
+      textValue: `${chamber_pressure} kPa`,
       color: (value: number) => {
         return value < 80 || value > 120
           ? 'bad'
@@ -42,7 +43,7 @@ export const AirlockConsolePhoron = (props) => {
       maxValue: 100,
       value: chamber_phoron,
       label: 'Chamber Phoron',
-      textValue: chamber_phoron + ' mol',
+      textValue: `${chamber_phoron} mol`,
       color: (value: number) => {
         return value > 5 ? 'bad' : value > 0.5 ? 'average' : 'good';
       },

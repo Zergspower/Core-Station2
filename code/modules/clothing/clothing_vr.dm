@@ -9,7 +9,7 @@
 		SPECIES_VOX = 'icons/inventory/feet/mob_vox.dmi',
 		SPECIES_WEREBEAST = 'icons/inventory/feet/mob_vr_werebeast.dmi')
 
-/obj/item/clothing/shoes/New()
+/obj/item/clothing/shoes/Initialize(mapload)
 	inside_emotes = list(
 		span_red("You feel weightless for a moment as \the [name] moves upwards."),
 		span_red("\The [name] are a ride you've got no choice but to participate in as the wearer moves."),
@@ -17,7 +17,7 @@
 		span_red("More motion while \the [name] move, feet pressing down against you.")
 	)
 
-	..()
+	. = ..()
 /* //Must be handled in clothing.dm
 /obj/item/clothing/shoes/proc/handle_movement(var/turf/walking, var/running)
 	if(prob(1) && !recent_squish)
@@ -35,7 +35,7 @@
 	if(istype(I,/obj/item/holder/micro))
 		var/full = 0
 		for(var/mob/M in src)
-			if(istype(M,/mob/living/voice)) //Don't count voices as people!
+			if(isvoice(M)) //Don't count voices as people!
 				continue
 			full++
 		if(full >= 2)
@@ -53,7 +53,7 @@
 
 /obj/item/clothing/shoes/attack_self(var/mob/user)
 	for(var/mob/M in src)
-		if(istype(M,/mob/living/voice)) //Don't knock voices out!
+		if(isvoice(M)) //Don't knock voices out!
 			continue
 		M.forceMove(get_turf(user))
 		to_chat(M, span_warning("[user] shakes you out of \the [src]!"))
@@ -63,7 +63,7 @@
 
 /obj/item/clothing/shoes/container_resist(mob/living/micro)
 	var/mob/living/carbon/human/macro = loc
-	if(istype(micro,/mob/living/voice)) //Voices shouldn't be able to resist but we have this here just in case.
+	if(isvoice(micro)) //Voices shouldn't be able to resist but we have this here just in case.
 		return
 	if(!istype(macro))
 		to_chat(micro, span_notice("You start to climb out of [src]!"))
@@ -115,7 +115,7 @@
 
 	if(ishuman(src.loc)) //Is this on a person?
 		var/mob/living/carbon/human/H = src.loc
-		if(istype(user,/mob/living/voice)) //Is this a possessed item? Spooky. It can move on it's own!
+		if(isvoice(user)) //Is this a possessed item? Spooky. It can move on it's own!
 			to_chat(H, span_red("The [src] shifts about, almost as if squirming!"))
 			to_chat(user, span_red("You cause the [src] to shift against [H]'s form! Well, what little you can get to, given your current state!"))
 		else if(H.shoes == src)
@@ -124,7 +124,7 @@
 		else
 			to_chat(H, span_red("[user]'s form shifts around in the \the [src], squirming!"))
 			to_chat(user, span_red("You move around inside the [src], to no avail."))
-	else if(istype(user,/mob/living/voice)) //Possessed!
+	else if(isvoice(user)) //Possessed!
 		src.visible_message(span_red("The [src] shifts about!"))
 		to_chat(user, span_red("You cause the [src] to shift about!"))
 	else
@@ -139,9 +139,8 @@
 		slot_l_hand_str = 'icons/mob/items/lefthand_masks.dmi',
 		slot_r_hand_str = 'icons/mob/items/righthand_masks.dmi',
 		)
-	body_parts_covered = HEAD
+	body_parts_covered = HEAD|FACE|EYES
 	slot_flags = SLOT_MASK
-	body_parts_covered = FACE|EYES
 	//Chompedit Start: Moving over to the modularity folder because virgo changed the name of upstream icons in their modular files. Epic.
 	item_icons = list(
 		slot_wear_mask_str = 'modular_chomp/icons/inventory/face/mob.dmi'
@@ -164,13 +163,6 @@
 
 //"Spider" 		= 'icons/inventory/mask/mob_spider.dmi' Add this later when they have custom mask sprites and everything.
 
-//Switch to taur sprites if a taur equips
-/obj/item/clothing/suit
-	sprite_sheets = list(
-		SPECIES_TESHARI = 'icons/inventory/suit/mob_teshari.dmi',
-		SPECIES_VOX = 'icons/inventory/suit/mob_vox.dmi',
-		SPECIES_WEREBEAST = 'icons/inventory/suit/mob_vr_werebeast.dmi')
-
 /obj/item/clothing/under
 	sensor_mode = 3
 	var/sensorpref = 5
@@ -179,8 +171,12 @@
 		SPECIES_VOX = 'icons/inventory/uniform/mob_vox.dmi',
 		SPECIES_WEREBEAST = 'icons/inventory/uniform/mob_vr_werebeast.dmi')
 
-/obj/item/clothing/under/New(var/mob/living/carbon/human/H)
-	..()
+/obj/item/clothing/under/Initialize(mapload)
+	. = ..()
+	if(!ishuman(loc))
+		return
+
+	var/mob/living/carbon/human/H = loc
 	sensorpref = isnull(H) ? 1 : (ishuman(H) ? H.sensorpref : 1)
 	switch(sensorpref)
 		if(1) sensor_mode = 0				//Sensors off

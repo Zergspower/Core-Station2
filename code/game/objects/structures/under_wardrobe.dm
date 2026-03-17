@@ -5,6 +5,10 @@
 	icon_state = "wardrobe"
 	density = TRUE
 
+/obj/structure/undies_wardrobe/Initialize(mapload)
+	. = ..()
+	AddElement(/datum/element/climbable)
+
 /obj/structure/undies_wardrobe/attack_hand(var/mob/user)
 	if(!human_who_can_use_underwear(user))
 		to_chat(user, span_warning("Sadly there's nothing in here for you to wear."))
@@ -24,7 +28,7 @@
 		dat += " <a href='byond://?src=\ref[src];remove_underwear=[UWC.name]'>(Remove)</a><br>"
 
 	dat = jointext(dat,null)
-	H << browse(dat, "window=wardrobe;size=400x200")
+	H << browse("<html>[dat]</html>", "window=wardrobe;size=400x200")
 
 /obj/structure/undies_wardrobe/proc/get_metadata(var/mob/living/carbon/human/H, var/underwear_category, var/datum/gear_tweak/gt)
 	var/metadata = H.all_underwear_metadata[underwear_category]

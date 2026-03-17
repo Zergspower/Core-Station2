@@ -13,6 +13,10 @@
 	//max_integrity = 60
 	var/obj/item/canvas/painting = null
 
+/obj/structure/easel/Initialize(mapload)
+	. = ..()
+	AddElement(/datum/element/climbable)
+
 //Adding canvases
 /obj/structure/easel/attackby(obj/item/I, mob/user, params)
 	if(istype(I, /obj/item/canvas))
@@ -68,9 +72,10 @@
 	pixel_x = 10
 	pixel_y = 9
 
-/obj/item/canvas/Initialize()
+/obj/item/canvas/Initialize(mapload)
 	. = ..()
 	reset_grid()
+	desc += " (Canvas size is [width]x[height].)"
 
 /obj/item/canvas/proc/reset_grid()
 	grid = new/list(width,height)
@@ -105,7 +110,7 @@
 		var/choice = tgui_alert(user, "Adjusting the base color of this canvas will replace ALL pixels with the selected color. Are you sure?", "Confirm Color Fill", list("Yes", "No"))
 		if(choice != "Yes")
 			return
-		var/basecolor = input(user, "Select a base color for the canvas:", "Base Color", canvas_color) as null|color
+		var/basecolor = tgui_color_picker(user, "Select a base color for the canvas:", "Base Color", canvas_color)
 		if(basecolor && Adjacent(user) && user.get_active_hand() == I)
 			canvas_color = basecolor
 			reset_grid()
@@ -215,7 +220,7 @@
 		return canvas_color
 
 /obj/item/canvas/proc/try_rename(mob/user)
-	var/new_name = stripped_input(user,"What do you want to name the painting?", max_length = 250)
+	var/new_name = tgui_input_text(user,"What do you want to name the painting?", max_length = 250, encode=TRUE)
 	if(new_name != painting_name && new_name && CanUseTopic(user, GLOB.tgui_physical_state))
 		painting_name = new_name
 		SStgui.update_uis(src)
@@ -270,7 +275,7 @@
 	var/image/color_drop
 	var/hud_level = FALSE
 
-/obj/item/paint_brush/Initialize()
+/obj/item/paint_brush/Initialize(mapload)
 	. = ..()
 	color_drop = image(icon, null, "brush_color")
 	color_drop.color = selected_color
@@ -306,7 +311,7 @@
 /obj/item/paint_palette/attackby(obj/item/W, mob/user)
 	if(istype(W, /obj/item/paint_brush))
 		var/obj/item/paint_brush/P = W
-		var/newcolor = input(user, "Select a new paint color:", "Paint Palette", P.selected_color) as null|color
+		var/newcolor = tgui_color_picker(user, "Select a new paint color:", "Paint Palette", P.selected_color)
 		if(newcolor && Adjacent(user, P) && Adjacent(user, src))
 			P.update_paint(newcolor)
 	else
@@ -536,7 +541,7 @@
  * For now, we do it this way because calling this on a canvas itself might cause issues due to the whole dimension thing.
 */
 /obj/structure/sign/painting/proc/admin_lateload_painting(var/spawn_specific = 0, var/which_painting = 0)
-	if(!usr.client.holder)
+	if(!check_rights_for(usr.client, R_HOLDER))
 		return 0
 	if(spawn_specific && isnum(which_painting))
 		var/list/painting = SSpersistence.all_paintings[which_painting]

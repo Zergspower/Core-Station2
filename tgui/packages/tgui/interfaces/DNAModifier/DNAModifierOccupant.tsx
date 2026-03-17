@@ -1,6 +1,4 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../../backend';
+import { useBackend } from 'tgui/backend';
 import {
   Box,
   Button,
@@ -8,9 +6,12 @@ import {
   LabeledList,
   ProgressBar,
   Section,
-} from '../../components';
+  Stack,
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
+
 import { stats } from './constants';
-import { Data } from './types';
+import type { Data } from './types';
 
 export const DNAModifierOccupant = (props: { isDNAInvalid: BooleanLike }) => {
   const { act, data } = useBackend<Data>();
@@ -21,26 +22,32 @@ export const DNAModifierOccupant = (props: { isDNAInvalid: BooleanLike }) => {
     <Section
       title="Occupant"
       buttons={
-        <>
-          <Box color="label" inline mr="0.5rem">
-            Door Lock:
-          </Box>
-          <Button
-            disabled={!hasOccupant}
-            selected={locked}
-            icon={locked ? 'toggle-on' : 'toggle-off'}
-            onClick={() => act('toggleLock')}
-          >
-            {locked ? 'Engaged' : 'Disengaged'}
-          </Button>
-          <Button
-            disabled={!hasOccupant || locked}
-            icon="user-slash"
-            onClick={() => act('ejectOccupant')}
-          >
-            Eject
-          </Button>
-        </>
+        <Stack>
+          <Stack.Item>
+            <Box color="label" inline mr="0.5rem">
+              Door Lock:
+            </Box>
+          </Stack.Item>
+          <Stack.Item>
+            <Button
+              disabled={!hasOccupant}
+              selected={locked}
+              icon={locked ? 'toggle-on' : 'toggle-off'}
+              onClick={() => act('toggleLock')}
+            >
+              {locked ? 'Engaged' : 'Disengaged'}
+            </Button>
+          </Stack.Item>
+          <Stack.Item>
+            <Button
+              disabled={!hasOccupant || locked}
+              icon="user-slash"
+              onClick={() => act('ejectOccupant')}
+            >
+              Eject
+            </Button>
+          </Stack.Item>
+        </Stack>
       }
     >
       {hasOccupant ? (

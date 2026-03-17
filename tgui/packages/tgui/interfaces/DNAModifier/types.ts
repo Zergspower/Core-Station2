@@ -1,4 +1,4 @@
-import { BooleanLike } from 'common/react';
+import type { BooleanLike } from 'tgui-core/react';
 
 export type Data = {
   selectedMenuKey: string;
@@ -42,11 +42,19 @@ type modalData = {
   args: {
     id: string;
   };
-  modal_type: string;
+  type: string;
 };
 
 export type buffData = {
-  data: number[] | null;
+  data: {
+    data: number[];
+    owner: string;
+    label: string;
+    type: string;
+    ue: string;
+    ui: string;
+    se: string;
+  } | null; // Traitgenes Fixed data structure
   owner: string | null;
   label: string | null;
   type: string | null;

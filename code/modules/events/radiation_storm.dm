@@ -33,7 +33,7 @@
 	for(var/z in using_map.station_levels)
 		SSradiation.z_radiate(locate(1, 1, z), radiation_level, 1)
 
-	for(var/mob/living/carbon/C in living_mob_list)
+	for(var/mob/living/carbon/C in GLOB.living_mob_list)
 		if(!(C.z in using_map.station_levels) || C.isSynthetic() || isbelly(C.loc))
 			continue
 		var/area/A = get_area(C)
@@ -41,7 +41,7 @@
 			continue
 		if(A.flag_check(RAD_SHIELDED))
 			continue
-		if(istype(C,/mob/living/carbon/human))
+		if(ishuman(C))
 			var/mob/living/carbon/human/H = C
 			var/chance = 5.0
 			chance -= (chance / 100) * C.getarmor(null, "rad")
@@ -60,6 +60,7 @@
 				else
 					randmutg(H) // Applies good mutation
 					domutcheck(H,null,MUTCHK_FORCED)
+				H.UpdateAppearance()
 
 /datum/event/radiation_storm/end()
 	revoke_maint_all_access()

@@ -19,27 +19,9 @@
 	var/burn_damage = 0                     // Specifically burn damage.
 	var/base_name                           // Used to keep the original name safe while we apply modifiers.
 
-/obj/item/clothing/suit/space/New()
-	..()
+/obj/item/clothing/suit/space/Initialize(mapload)
+	. = ..()
 	base_name = "[name]"
-
-//Some simple descriptors for breaches. Global because lazy, TODO: work out a better way to do this.
-
-var/global/list/breach_brute_descriptors = list(
-	"tiny puncture",
-	"ragged tear",
-	"large split",
-	"huge tear",
-	"gaping wound"
-	)
-
-var/global/list/breach_burn_descriptors = list(
-	"small burn",
-	"melted patch",
-	"sizable burn",
-	"large scorched area",
-	"huge scorched area"
-	)
 
 /datum/breach/proc/update_descriptor()
 
@@ -47,9 +29,9 @@ var/global/list/breach_burn_descriptors = list(
 	class = between(1, round(class), 5)
 	//Apply the correct descriptor.
 	if(damtype == BURN)
-		descriptor = breach_burn_descriptors[class]
+		descriptor = GLOB.breach_burn_descriptors[class]
 	else if(damtype == BRUTE)
-		descriptor = breach_brute_descriptors[class]
+		descriptor = GLOB.breach_brute_descriptors[class]
 
 //Repair a certain amount of brute or burn damage to the suit.
 /obj/item/clothing/suit/space/proc/repair_breaches(var/damtype, var/amount, var/mob/user)
@@ -189,7 +171,7 @@ var/global/list/breach_burn_descriptors = list(
 		if(!repair_power)
 			return
 
-		if(istype(src.loc,/mob/living))
+		if(isliving(src.loc))
 			to_chat(user, span_warning("How do you intend to patch a hardsuit while someone is wearing it?"))
 			return
 
@@ -205,7 +187,7 @@ var/global/list/breach_burn_descriptors = list(
 
 	else if(W.has_tool_quality(TOOL_WELDER))
 
-		if(istype(src.loc,/mob/living))
+		if(isliving(src.loc))
 			to_chat(user, span_red("How do you intend to patch a hardsuit while someone is wearing it?"))
 			return
 

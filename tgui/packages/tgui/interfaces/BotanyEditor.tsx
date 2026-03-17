@@ -1,8 +1,13 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
-import { Box, Button, LabeledList, NoticeBox, Section } from '../components';
-import { Window } from '../layouts';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+import {
+  Box,
+  Button,
+  LabeledList,
+  NoticeBox,
+  Section,
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   activity: BooleanLike;
@@ -45,7 +50,7 @@ export const BotanyEditor = (props) => {
                 Eject Loaded Disk
               </Button>
             </Box>
-          )) || <NoticeBox warning>No disk loaded.</NoticeBox>}
+          )) || <NoticeBox>No disk loaded.</NoticeBox>}
         </Section>
         <Section title="Loaded Material">
           {(loaded && (
@@ -60,7 +65,7 @@ export const BotanyEditor = (props) => {
                 Eject Target
               </Button>
             </Box>
-          )) || <NoticeBox warning>No target seed packet loaded.</NoticeBox>}
+          )) || <NoticeBox>No target seed packet loaded.</NoticeBox>}
         </Section>
       </Window.Content>
     </Window>

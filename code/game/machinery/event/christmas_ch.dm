@@ -8,12 +8,11 @@
 	anchored = 1.0
 	density = 0
 
-/obj/structure/event/present/New()
-	..()
+/obj/structure/event/present/Initialize(mapload)
+	. = ..()
 	pixel_x = rand(-10,10)
 	pixel_y = rand(-10,10)
 	icon_state = "gift[pick("1", "2", "3")]_[pick("g", "r", "b", "y", "p")]"
-	return
 
 /obj/structure/event/santa_sack
 
@@ -46,7 +45,7 @@
 		to_chat(usr, span_warning("Only Santa can bind and unbind his sack!"))
 	return
 
-/obj/structure/event/santa_sack/attack_hand(mob/user as mob)
+/obj/structure/event/santa_sack/attack_hand(mob/user)
 	. = ..()
 	if(usr.ckey != santa_ckey)
 		to_chat(usr, span_warning("Only Santa can give presents! (Be nice or you might end up in Santa's sack!)"))
@@ -56,7 +55,7 @@
 	for(var/mob/living/R in oview(user.loc,1))
 		receivers += R
 
-	var/mob/living/T = input("Choose who to give a present to.") as null| mob in view(user.loc,1)
+	var/mob/living/T = tgui_input_list(user, "Choose who to give a present to.", "Give Present", mobs_in_view(1, user))
 	if(!T || !T.ckey)
 		return
 

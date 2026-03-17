@@ -26,16 +26,17 @@
 	dat += span_bold("Four uses use them wisely:") + "<BR>"
 	dat += "<A href='byond://?src=\ref[src];spell_teleport=1'>Teleport</A><BR>"
 	dat += "Kind regards,<br>Wizards Federation<br><br>P.S. Don't forget to bring your gear, you'll need it to cast most spells.<HR>"
-	user << browse(dat, "window=scroll")
-	onclose(user, "scroll")
-	return
+
+	var/datum/browser/popup = new(user, "scroll", "Scroll")
+	popup.set_content(dat)
+	popup.open()
 
 /obj/item/teleportation_scroll/Topic(href, href_list)
 	..()
 	if (usr.stat || usr.restrained() || src.loc != usr)
 		return
 	var/mob/living/carbon/human/H = usr
-	if (!( istype(H, /mob/living/carbon/human)))
+	if (!ishuman(H))
 		return 1
 	if ((usr == src.loc || (in_range(src, usr) && istype(src.loc, /turf))))
 		usr.set_machine(src)
@@ -46,10 +47,10 @@
 	return
 
 /obj/item/teleportation_scroll/proc/teleportscroll(var/mob/user)
-	var/A = tgui_input_list(user, "Area to jump to:", "Teleportation Scroll", teleportlocs)
+	var/A = tgui_input_list(user, "Area to jump to:", "Teleportation Scroll", GLOB.teleportlocs)
 	if(!A)
 		return
-	var/area/thearea = teleportlocs[A]
+	var/area/thearea = GLOB.teleportlocs[A]
 
 	if (user.stat || user.restrained())
 		return

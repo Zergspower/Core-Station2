@@ -1,4 +1,3 @@
-import { round } from 'common/math';
 import { useBackend } from 'tgui/backend';
 import { Window } from 'tgui/layouts';
 import {
@@ -7,6 +6,7 @@ import {
   NumberInput,
   Tooltip,
 } from 'tgui-core/components';
+import { round } from 'tgui-core/math';
 
 export type ShockCollarData = {
   on: boolean;
@@ -102,7 +102,7 @@ export const SizeInput = (props: {
           maxValue={max! * 100}
           step={1}
           value={size * 100}
-          format={(val) => round(val, 0) + '%'}
+          format={(val) => `${round(val, 0)}%`}
           onChange={(val) => act('size', { size: val })}
         />
       </LabeledList.Item>

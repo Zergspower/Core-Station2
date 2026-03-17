@@ -31,7 +31,7 @@ var/global/mob/living/carbon/human/dummy/mannequin/sleevemate_mob
 	pickup_sound = 'sound/items/pickup/device.ogg'
 	drop_sound = 'sound/items/drop/device.ogg'
 
-/obj/item/sleevemate/Initialize()
+/obj/item/sleevemate/Initialize(mapload)
 	. = ..()
 	our_db = SStranscore.db_by_key(db_key)
 
@@ -53,11 +53,9 @@ var/global/mob/living/carbon/human/dummy/mannequin/sleevemate_mob
 	ooc_notes = M.ooc_notes
 	ooc_notes_likes = M.ooc_notes_likes
 	ooc_notes_dislikes = M.ooc_notes_dislikes
-	//CHOMPEdit Start
 	ooc_notes_favs = M.ooc_notes_favs
 	ooc_notes_maybes = M.ooc_notes_maybes
 	ooc_notes_style = M.ooc_notes_style
-	//CHOMPEdit End
 	stored_mind = M.mind
 	M.ghostize()
 	stored_mind.current = null
@@ -69,11 +67,9 @@ var/global/mob/living/carbon/human/dummy/mannequin/sleevemate_mob
 	M.ooc_notes = ooc_notes
 	M.ooc_notes_likes = ooc_notes_likes
 	M.ooc_notes_dislikes = ooc_notes_dislikes
-	//CHOMPEdit Start
 	M.ooc_notes_favs = ooc_notes_favs
 	M.ooc_notes_maybes = ooc_notes_maybes
 	M.ooc_notes_style = ooc_notes_style
-	//CHOMPEdit End
 	clear_mind()
 
 
@@ -201,7 +197,7 @@ var/global/mob/living/carbon/human/dummy/mannequin/sleevemate_mob
 		return
 
 	var/target_ref = href_list["target"]
-	var/mob/living/target = locate(target_ref) in mob_list
+	var/mob/living/target = locate(target_ref) in GLOB.mob_list
 	if(!target)
 		to_chat(usr,span_warning("Unable to operate on that target."))
 		return
@@ -212,7 +208,7 @@ var/global/mob/living/carbon/human/dummy/mannequin/sleevemate_mob
 
 	//The actual options
 	if(href_list["mindscan"])
-		if(!target.mind || (target.mind.name in prevent_respawns))
+		if(!target.mind || (target.mind.name in GLOB.prevent_respawns))
 			to_chat(usr,span_warning("Target seems totally braindead."))
 			return
 
@@ -249,7 +245,7 @@ var/global/mob/living/carbon/human/dummy/mannequin/sleevemate_mob
 		return
 
 	if(href_list["mindsteal"])
-		if(!target.mind || (target.mind.name in prevent_respawns))
+		if(!target.mind || (target.mind.name in GLOB.prevent_respawns))
 			to_chat(usr,span_warning("Target seems totally braindead."))
 			return
 
@@ -301,10 +297,14 @@ var/global/mob/living/carbon/human/dummy/mannequin/sleevemate_mob
 		if(!istype(target))
 			return
 
-		if(istype(target, /mob/living/carbon/human))
+		if(ishuman(target))
 			var/mob/living/carbon/human/H = target
 			if(H.resleeve_lock && stored_mind.loaded_from_ckey != H.resleeve_lock)
 				to_chat(usr,span_warning("\The [H] is protected from impersonation!"))
+				return
+			//Changeling bodies. Only changelings can be put in them.
+			if(H.changeling_locked && !is_changeling(stored_mind))
+				to_chat(usr,span_warning("\The [H] is too complex to put this mind into!"))
 				return
 
 		usr.visible_message(span_warning("[usr] begins uploading someone's mind into [target]!"),span_notice("You begin uploading a mind into [target]!"))
@@ -348,7 +348,7 @@ var/global/mob/living/carbon/human/dummy/mannequin/sleevemate_mob
 	spark_system.set_up(5, 0, src.loc)
 	spark_system.start()
 	playsound(src, "sparks", 50, 1)
-	if(istype(src.loc,/mob/living))
+	if(isliving(src.loc))
 		var/mob/living/L = src.loc
 		L.unEquip(src)
 	src.forceMove(get_turf(src))

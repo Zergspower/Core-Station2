@@ -9,16 +9,6 @@
 	obj_path = /obj/item/spell/gambit
 	category = UTILITY_SPELLS
 
-/var/global/list/all_technomancer_gambit_spells = typesof(/obj/item/spell) - list(
-	/obj/item/spell,
-	/obj/item/spell/gambit,
-	/obj/item/spell/projectile,
-	/obj/item/spell/aura,
-//	/obj/item/spell/insert,
-	/obj/item/spell/spawner,
-	/obj/item/spell/summon,
-	/obj/item/spell/modifier)
-
 /obj/item/spell/gambit
 	name = "gambit"
 	desc = "Do you feel lucky?"
@@ -75,7 +65,7 @@
 
 	for(var/mob/living/L in view(owner))
 		// Spiders, carp... bears.
-		if(istype(L, /mob/living/simple_mob))
+		if(isanimal(L))
 			var/mob/living/simple_mob/SM = L
 			if(!is_ally(SM) && SM.has_AI() && SM.ai_holder.hostile)
 				hostile_mobs++
@@ -83,13 +73,13 @@
 					potential_spells |= /obj/item/spell/abjuration
 
 		// Always assume borgs are hostile.
-		if(istype(L, /mob/living/silicon/robot))
+		if(isrobot(L))
 			if(!istype(L, /mob/living/silicon/robot/drone)) // Drones are okay, however.
 				hostile_mobs++
 				potential_spells |= /obj/item/spell/projectile/ionic_bolt
 
 		// Finally we get to humanoids.
-		if(istype(L, /mob/living/carbon/human))
+		if(ishuman(L))
 			var/mob/living/carbon/human/H = L
 			if(is_ally(H)) // Don't get scared by our apprentice.
 				continue

@@ -14,7 +14,7 @@
 
 	var/apply_tape = FALSE
 
-/obj/item/taperoll/Initialize()
+/obj/item/taperoll/Initialize(mapload)
 	. = ..()
 	if(apply_tape)
 		var/turf/T = get_turf(src)
@@ -32,6 +32,7 @@ var/list/tape_roll_applications = list()
 /obj/item/tape
 	name = "tape"
 	icon = 'icons/policetape.dmi'
+	icon_state = "tape"
 	anchored = TRUE
 	layer = WINDOW_LAYER
 	var/lifted = 0
@@ -52,8 +53,8 @@ var/list/tape_roll_applications = list()
 			icon_state = "[icon_base]_dir_[crumpled]"
 			dir = tape_dir
 
-/obj/item/tape/New()
-	..()
+/obj/item/tape/Initialize(mapload)
+	. = ..()
 	if(!hazard_overlays)
 		hazard_overlays = list()
 		hazard_overlays["[NORTH]"]	= new/image('icons/effects/warning_stripes.dmi', icon_state = "N")
@@ -154,13 +155,13 @@ var/list/tape_roll_applications = list()
 			// spread tape in all directions, provided there is a wall/window
 			var/turf/T
 			var/possible_dirs = 0
-			for(var/dir in cardinal)
+			for(var/dir in GLOB.cardinal)
 				T = get_step(start, dir)
 				if(T && T.density)
 					possible_dirs |= dir
 				else
 					for(var/obj/structure/window/W in T)
-						if(W.is_fulltile() || W.dir == reverse_dir[dir])
+						if(W.is_fulltile() || W.dir == GLOB.reverse_dir[dir])
 							possible_dirs |= dir
 			for(var/obj/structure/window/window in start)
 				if(istype(window) && !window.is_fulltile())
@@ -214,12 +215,12 @@ var/list/tape_roll_applications = list()
 							else
 								continue
 						else if(cur == end)
-							if(window.dir == reverse_dir[orientation])
+							if(window.dir == GLOB.reverse_dir[orientation])
 								can_place = 0
 								break
 							else
 								continue
-						else if (window.dir == reverse_dir[orientation] || window.dir == orientation)
+						else if (window.dir == GLOB.reverse_dir[orientation] || window.dir == orientation)
 							can_place = 0
 							break
 						else
@@ -243,21 +244,21 @@ var/list/tape_roll_applications = list()
 			tapetest = 0
 			tape_dir = dir
 			if(cur == start)
-				var/turf/T = get_step(start, reverse_dir[orientation])
+				var/turf/T = get_step(start, GLOB.reverse_dir[orientation])
 				if(T && !T.density)
 					tape_dir = orientation
 					for(var/obj/structure/window/W in T)
 						if(W.is_fulltile() || W.dir == orientation)
 							tape_dir = dir
 				for(var/obj/structure/window/window in cur)
-					if(istype(window) && !window.is_fulltile() && window.dir == reverse_dir[orientation])
+					if(istype(window) && !window.is_fulltile() && window.dir == GLOB.reverse_dir[orientation])
 						tape_dir = dir
 			else if(cur == end)
 				var/turf/T = get_step(end, orientation)
 				if(T && !T.density)
-					tape_dir = reverse_dir[orientation]
+					tape_dir = GLOB.reverse_dir[orientation]
 					for(var/obj/structure/window/W in T)
-						if(W.is_fulltile() || W.dir == reverse_dir[orientation])
+						if(W.is_fulltile() || W.dir == GLOB.reverse_dir[orientation])
 							tape_dir = dir
 				for(var/obj/structure/window/window in cur)
 					if(istype(window) && !window.is_fulltile() && window.dir == orientation)
@@ -323,7 +324,7 @@ var/list/tape_roll_applications = list()
 		add_fingerprint(M)
 		if(!allowed(M))	//only select few learn art of not crumpling the tape
 			to_chat(M, span_warning("You are not supposed to go past \the [src]..."))
-			if(M.a_intent == I_HELP && !(istype(M, /mob/living/simple_mob)))
+			if(M.a_intent == I_HELP && !(isanimal(M)))
 				return FALSE
 			crumple()
 	return ..()
@@ -377,7 +378,7 @@ var/list/tape_roll_applications = list()
 	if(user.a_intent == I_HELP)
 		to_chat(user, span_warning("You refrain from breaking \the [src]."))
 		return
-	user.visible_message(span_bold("\The [user]") + "breaks \the [src]!",span_notice("You break \the [src]."))
+	user.visible_message(span_bold("\The [user]") + " breaks \the [src]!",span_notice("You break \the [src]."))
 
 	for (var/obj/item/tape/T in gettapeline())
 		if(T == src)

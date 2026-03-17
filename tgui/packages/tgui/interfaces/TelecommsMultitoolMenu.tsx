@@ -1,8 +1,14 @@
-import { BooleanLike } from 'common/react';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+import {
+  Box,
+  Button,
+  LabeledList,
+  NumberInput,
+  Section,
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
-import { useBackend } from '../backend';
-import { Box, Button, LabeledList, NumberInput, Section } from '../components';
-import { Window } from '../layouts';
 import { TemporaryNotice } from './common/TemporaryNotice';
 
 type Data = {
@@ -112,7 +118,7 @@ const TelecommsMultitoolMenuStatus = (props) => {
               }
             >
               {multitool_buffer
-                ? 'Link (' + multitool_buffer.id + ')'
+                ? `Link (${multitool_buffer.id})`
                 : 'Add Machine'}
             </Button>
             {multitool_buffer ? (
@@ -132,7 +138,7 @@ const TelecommsMultitoolMenuStatus = (props) => {
           {linked.map((link) => (
             <LabeledList.Item
               key={link.ref}
-              label={link.ref + ' ' + link.name + ' (' + link.id + ')'}
+              label={`${link.ref} ${link.name} (${link.id})`}
               buttons={
                 <Button.Confirm
                   color="red"
@@ -161,7 +167,7 @@ const TelecommsMultitoolMenuStatus = (props) => {
             confirmIcon="trash"
             onClick={() => act('delete', { delete: f.freq })}
           >
-            {f.name + ' GHz'}
+            {`${f.name} GHz`}
           </Button.Confirm>
         ))}
         {!filter || filter.length === 0 ? (
@@ -258,7 +264,7 @@ const TelecommsMultitoolMenuPolymorphicOptions = (props: {
               selected={!!change_freq}
               onClick={() => act('change_freq')}
             >
-              {change_freq ? 'Yes (' + change_freq + ')' : 'No'}
+              {change_freq ? `Yes (${change_freq})` : 'No'}
             </Button>
           </LabeledList.Item>
         ) : (
@@ -266,7 +272,7 @@ const TelecommsMultitoolMenuPolymorphicOptions = (props: {
         )}
         {use_broadcast_range || use_receive_range ? (
           <LabeledList.Item
-            label={(use_broadcast_range ? 'Broadcast' : 'Receive') + ' Range'}
+            label={`${use_broadcast_range ? 'Broadcast' : 'Receive'} Range`}
           >
             <NumberInput
               step={1}

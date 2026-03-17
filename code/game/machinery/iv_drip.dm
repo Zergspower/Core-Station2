@@ -88,7 +88,7 @@
 
 		if(!(get_dist(src, attached) <= 1 && isturf(attached.loc)))
 			visible_message("The needle is ripped out of [attached], doesn't that hurt?")
-			attached:apply_damage(3, BRUTE, pick("r_arm", "l_arm"))
+			attached:apply_damage(3, BRUTE, pick(BP_R_ARM, BP_L_ARM))
 			attached = null
 			update_icon()
 			return
@@ -153,7 +153,7 @@
 	set name = "Toggle Mode"
 	set src in view(1)
 
-	if(!istype(usr, /mob/living))
+	if(!isliving(usr))
 		to_chat(usr, span_warning("You can't do that."))
 		return
 

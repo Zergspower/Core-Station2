@@ -1,10 +1,9 @@
-import { BooleanLike } from 'common/react';
-import { decodeHtmlEntities } from 'common/string';
-
-import { useBackend } from '../backend';
-import { Box, Button, Flex, LabeledList, Section } from '../components';
-import { formatPower } from '../format';
-import { Window } from '../layouts';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+import { Box, Button, LabeledList, Section, Stack } from 'tgui-core/components';
+import { formatPower } from 'tgui-core/format';
+import type { BooleanLike } from 'tgui-core/react';
+import { decodeHtmlEntities } from 'tgui-core/string';
 
 type Data = {
   name: string;
@@ -63,11 +62,17 @@ export const ICCircuit = (props) => {
         <Section
           title="Stats"
           buttons={
-            <>
-              <Button onClick={() => act('rename')}>Rename</Button>
-              <Button onClick={() => act('scan')}>Scan with Device</Button>
-              <Button onClick={() => act('remove')}>Remove</Button>
-            </>
+            <Stack>
+              <Stack.Item>
+                <Button onClick={() => act('rename')}>Rename</Button>
+              </Stack.Item>
+              <Stack.Item>
+                <Button onClick={() => act('scan')}>Scan with Device</Button>
+              </Stack.Item>
+              <Stack.Item>
+                <Button onClick={() => act('remove')}>Remove</Button>
+              </Stack.Item>
+            </Stack>
           }
         >
           <LabeledList>
@@ -88,16 +93,16 @@ export const ICCircuit = (props) => {
           {extended_desc}
         </Section>
         <Section title="Circuit">
-          <Flex textAlign="center" spacing={1}>
+          <Stack textAlign="center">
             {(inputs.length && (
-              <Flex.Item grow={1}>
+              <Stack.Item grow>
                 <Section title="Inputs">
                   <ICIODisplay list={inputs} />
                 </Section>
-              </Flex.Item>
+              </Stack.Item>
             )) ||
               null}
-            <Flex.Item
+            <Stack.Item
               basis={
                 inputs.length && outputs.length
                   ? '33%'
@@ -109,16 +114,16 @@ export const ICCircuit = (props) => {
               <Section title={displayed_name} mb={1}>
                 <Box>{desc}</Box>
               </Section>
-            </Flex.Item>
+            </Stack.Item>
             {(outputs.length && (
-              <Flex.Item grow={1}>
+              <Stack.Item grow>
                 <Section title="Outputs">
                   <ICIODisplay list={outputs} />
                 </Section>
-              </Flex.Item>
+              </Stack.Item>
             )) ||
               null}
-          </Flex>
+          </Stack>
           <Section title="Triggers">
             {activators.map((activator) => (
               <LabeledList.Item key={activator.name} label={activator.name}>

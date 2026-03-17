@@ -2,7 +2,7 @@
 /datum/gear/gloves
 	display_name = "gloves, black"
 	path = /obj/item/clothing/gloves/black
-	cost = 1
+	cost = 0
 	slot = slot_gloves
 	sort_category = "Gloves and Handwear"
 
@@ -31,12 +31,12 @@
 /datum/gear/gloves/latex
 	display_name = "gloves, latex"
 	path = /obj/item/clothing/gloves/sterile/latex
-	cost = 2
+	cost = 0
 
 /datum/gear/gloves/nitrile
 	display_name = "gloves, nitrile"
 	path = /obj/item/clothing/gloves/sterile/nitrile
-	cost = 2
+	cost = 0
 
 /datum/gear/gloves/evening
 	display_name = "evening gloves"
@@ -49,7 +49,7 @@
 /datum/gear/gloves/duty
 	display_name = "gloves, work"
 	path = /obj/item/clothing/gloves/duty
-	cost = 3
+	cost = 0
 
 /datum/gear/gloves/forensic
 	display_name = "gloves, forensic"
@@ -76,7 +76,7 @@
 	display_name = "ring selection"
 	description = "Choose from a number of rings."
 	path = /obj/item/clothing/accessory/ring
-	cost = 1
+	cost = 0
 
 /datum/gear/gloves/ring/New()
 	..()
@@ -117,3 +117,35 @@
 		"survival"=/obj/item/clothing/accessory/watch/survival
 	)
 	gear_tweaks += new/datum/gear_tweak/path(sortAssoc(selector_watches))
+
+/datum/gear/gloves/goldring
+	display_name = "wedding ring, gold"
+	path = /obj/item/clothing/accessory/ring/wedding
+
+/datum/gear/gloves/silverring
+	display_name = "wedding ring, silver"
+	path = /obj/item/clothing/accessory/ring/wedding/silver
+
+/datum/gear/gloves/colored
+	display_name = "gloves, colorable"
+	path = /obj/item/clothing/gloves/color
+
+/datum/gear/gloves/colored/New()
+	..()
+	gear_tweaks += gear_tweak_free_color_choice
+
+/datum/gear/gloves/latex/colorable
+	display_name = "gloves, latex, colorable"
+	path = /obj/item/clothing/gloves/sterile/latex
+
+/datum/gear/gloves/latex/colorable/New()
+	..()
+	gear_tweaks += gear_tweak_free_color_choice
+
+/datum/gear/gloves/siren
+	display_name = "gloves, Siren"
+	path = /obj/item/clothing/gloves/fluff/siren
+
+/datum/gear/gloves/maid_arms
+	display_name = "maid arm covers"
+	path = /obj/item/clothing/accessory/maid_arms

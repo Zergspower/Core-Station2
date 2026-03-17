@@ -1,6 +1,7 @@
-import { useBackend } from '../../backend';
-import { Box, Button, LabeledList, Section } from '../../components';
-import { modalData } from './types';
+import { useBackend } from 'tgui/backend';
+import { Box, Button, LabeledList, Section } from 'tgui-core/components';
+
+import type { modalData } from './types';
 
 export const virusModalBodyOverride = (modal: modalData) => {
   const { act } = useBackend();
@@ -33,7 +34,7 @@ export const virusModalBodyOverride = (modal: modalData) => {
           <LabeledList.Item label="Symptoms">
             <LabeledList>
               {virus.symptoms.map((s) => (
-                <LabeledList.Item key={s.stage} label={s.stage + '. ' + s.name}>
+                <LabeledList.Item key={s.stage} label={`${s.stage}. ${s.name}`}>
                   <Box inline color="label">
                     Strength:
                   </Box>{' '}

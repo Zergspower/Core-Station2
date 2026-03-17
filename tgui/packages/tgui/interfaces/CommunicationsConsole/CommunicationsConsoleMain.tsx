@@ -1,6 +1,7 @@
-import { useBackend } from '../../backend';
-import { Button, LabeledList, Section } from '../../components';
-import { Data } from './types';
+import { useBackend } from 'tgui/backend';
+import { Button, LabeledList, Section } from 'tgui-core/components';
+
+import type { Data } from './types';
 
 export const CommunicationsConsoleMain = (props) => {
   const { act, data } = useBackend<Data>();
@@ -20,14 +21,14 @@ export const CommunicationsConsoleMain = (props) => {
     boss_short,
   } = data;
 
-  const reportText = 'View (' + messages.length + ')';
+  const reportText = `View (${messages.length})`;
   let announceText = 'Make Priority Announcement';
   if (msg_cooldown > 0) {
-    announceText += ' (' + msg_cooldown + 's)';
+    announceText += ` (${msg_cooldown}s)`;
   }
-  let ccMessageText = emagged ? 'Message [UNKNOWN]' : 'Message ' + boss_short;
+  let ccMessageText = emagged ? 'Message [UNKNOWN]' : `Message ${boss_short}`;
   if (cc_cooldown > 0) {
-    ccMessageText += ' (' + cc_cooldown + 's)';
+    ccMessageText += ` (${cc_cooldown}s)`;
   }
 
   const alertLevelText = str_security_level;

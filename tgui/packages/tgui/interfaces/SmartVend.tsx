@@ -1,19 +1,18 @@
-import { BooleanLike } from 'common/react';
-import { createSearch } from 'common/string';
 import { useState } from 'react';
-
-import { useBackend } from '../backend';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import {
   Box,
   Button,
   Dropdown,
-  Flex,
   Input,
   NoticeBox,
   Section,
+  Stack,
   Table,
-} from '../components';
-import { Window } from '../layouts';
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
+import { createSearch } from 'tgui-core/string';
 
 type Data = {
   contents: content[];
@@ -35,18 +34,6 @@ export const SmartVend = (props) => {
   const [sortOrder, setSortOrder] = useState('Alphabetical');
   const [descending, setDescending] = useState(false);
 
-  function handleSearchText(value: string) {
-    setSearchText(value);
-  }
-
-  function handleSortOrder(value: string) {
-    setSortOrder(value);
-  }
-
-  function handleDescending(value: boolean) {
-    setDescending(value);
-  }
-
   const { secure, locked, contents } = data;
 
   return (
@@ -56,7 +43,7 @@ export const SmartVend = (props) => {
           {(secure && locked === -1 && (
             <NoticeBox danger>
               <Box>
-                Sec.re ACC_** //):securi_nt.diag=&gt;##&apos;or 1=1&apos;%($...
+                {`Sec.re ACC_** //):securi_nt.diag=&gt;##&apos;or 1=1&apos;%($...`}
               </Box>
             </NoticeBox>
           )) ||
@@ -74,9 +61,9 @@ export const SmartVend = (props) => {
                 searchText={searchText}
                 sortOrder={sortOrder}
                 descending={descending}
-                onSearchText={handleSearchText}
-                onSortOrder={handleSortOrder}
-                onDescending={handleDescending}
+                onSearchText={setSearchText}
+                onSortOrder={setSortOrder}
+                onDescending={setDescending}
               />
               <SheetItems
                 searchText={searchText}
@@ -96,9 +83,9 @@ const SheetSearch = (props: {
   searchText: string;
   sortOrder: string;
   descending: boolean;
-  onSearchText: Function;
-  onSortOrder: Function;
-  onDescending: Function;
+  onSearchText: React.Dispatch<React.SetStateAction<string>>;
+  onSortOrder: React.Dispatch<React.SetStateAction<string>>;
+  onDescending: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const {
     searchText,
@@ -110,16 +97,16 @@ const SheetSearch = (props: {
   } = props;
   return (
     <Box mb="0.5rem">
-      <Flex width="100%">
-        <Flex.Item grow="1" mr="0.5rem">
+      <Stack width="100%">
+        <Stack.Item grow mr="0.5rem">
           <Input
             placeholder="Search by item name.."
             value={searchText}
             width="100%"
-            onInput={(_e, value) => onSearchText(value)}
+            onChange={(value) => onSearchText(value)}
           />
-        </Flex.Item>
-        <Flex.Item basis="30%">
+        </Stack.Item>
+        <Stack.Item basis="30%">
           <Dropdown
             autoScroll={false}
             selected={sortOrder}
@@ -128,8 +115,8 @@ const SheetSearch = (props: {
             lineHeight="19px"
             onSelected={(v) => onSortOrder(v)}
           />
-        </Flex.Item>
-        <Flex.Item>
+        </Stack.Item>
+        <Stack.Item>
           <Button
             icon={descending ? 'arrow-down' : 'arrow-up'}
             height="19px"
@@ -138,8 +125,8 @@ const SheetSearch = (props: {
             ml="0.5rem"
             onClick={() => onDescending(!descending)}
           />
-        </Flex.Item>
-      </Flex>
+        </Stack.Item>
+      </Stack>
     </Box>
   );
 };

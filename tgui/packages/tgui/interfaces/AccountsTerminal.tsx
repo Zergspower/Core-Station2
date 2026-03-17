@@ -1,6 +1,5 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend, useSharedState } from '../backend';
+import { useBackend, useSharedState } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import {
   Box,
   Button,
@@ -9,8 +8,8 @@ import {
   Section,
   Table,
   Tabs,
-} from '../components';
-import { Window } from '../layouts';
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   id_inserted: BooleanLike;
@@ -116,10 +115,10 @@ const NewAccountView = (props) => {
     <Section title="Create Account">
       <LabeledList>
         <LabeledList.Item label="Account Holder">
-          <Input value={holder} fluid onInput={(e, val) => setHolder(val)} />
+          <Input value={holder} fluid onChange={(val) => setHolder(val)} />
         </LabeledList.Item>
         <LabeledList.Item label="Initial Deposit">
-          <Input value={newMoney} fluid onInput={(e, val) => setMoney(val)} />
+          <Input value={newMoney} fluid onChange={(val) => setMoney(val)} />
         </LabeledList.Item>
       </LabeledList>
       <Button
@@ -252,7 +251,7 @@ const ListView = (props) => {
                   })
                 }
               >
-                {'#' + acc.account_number}
+                {`#${acc.account_number}`}
               </Button>
             </LabeledList.Item>
           ))}

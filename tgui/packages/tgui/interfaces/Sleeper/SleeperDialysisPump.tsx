@@ -1,14 +1,15 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../../backend';
+import { useBackend } from 'tgui/backend';
 import {
   Box,
   Button,
   LabeledList,
   ProgressBar,
   Section,
-} from '../../components';
-import { Data } from './types';
+  Stack,
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
+
+import type { Data } from './types';
 
 export const SleeperDialysisPump = (props: {
   active: BooleanLike;
@@ -26,23 +27,27 @@ export const SleeperDialysisPump = (props: {
     <Section
       title={title}
       buttons={
-        <>
-          <Button
-            disabled={!isBeakerLoaded || beakerFreeSpace <= 0}
-            selected={canDialysis}
-            icon={canDialysis ? 'toggle-on' : 'toggle-off'}
-            onClick={() => act(actToDo)}
-          >
-            {canDialysis ? 'Active' : 'Inactive'}
-          </Button>
-          <Button
-            disabled={!isBeakerLoaded}
-            icon="eject"
-            onClick={() => act('removebeaker')}
-          >
-            Eject
-          </Button>
-        </>
+        <Stack>
+          <Stack.Item>
+            <Button
+              disabled={!isBeakerLoaded || beakerFreeSpace <= 0}
+              selected={canDialysis}
+              icon={canDialysis ? 'toggle-on' : 'toggle-off'}
+              onClick={() => act(actToDo)}
+            >
+              {canDialysis ? 'Active' : 'Inactive'}
+            </Button>
+          </Stack.Item>
+          <Stack.Item>
+            <Button
+              disabled={!isBeakerLoaded}
+              icon="eject"
+              onClick={() => act('removebeaker')}
+            >
+              Eject
+            </Button>
+          </Stack.Item>
+        </Stack>
       }
     >
       {isBeakerLoaded ? (

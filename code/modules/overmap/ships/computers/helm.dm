@@ -27,7 +27,7 @@ GLOBAL_LIST_EMPTY(all_waypoints)
 	var/dy		//coordinates
 	var/speedlimit = 1/(20 SECONDS) //top speed for autopilot, 5
 	var/accellimit = 0.001 //manual limiter for acceleration
-	req_one_access = list(access_pilot) //VOREStation Edit
+	//req_one_access = list(access_pilot) //VOREStation Edit //CHOMPstation edit, removed hard access locks.
 	ai_control = FALSE	//VOREStation Edit - AI/Borgs shouldn't really be flying off in ships without crew help // Chompstation Edit - Not an issue on this server, use of shuttles is extremely rare also . //Chompeditedit - No
 
 // fancy sprite
@@ -37,7 +37,7 @@ GLOBAL_LIST_EMPTY(all_waypoints)
 	icon_screen = "adv_helm_screen"
 	light_color = "#70ffa0"
 
-/obj/machinery/computer/ship/helm/Initialize()
+/obj/machinery/computer/ship/helm/Initialize(mapload)
 	. = ..()
 	get_known_sectors()
 
@@ -115,8 +115,8 @@ GLOBAL_LIST_EMPTY(all_waypoints)
 
 	var/turf/T = get_turf(linked)
 	var/obj/effect/overmap/visitable/sector/current_sector = locate() in T
-
-	data["mapRef"] = linked?.map_name
+	if(linked)
+		data["mapRef"] = linked.map_name
 	data["sector"] = current_sector ? current_sector.name : "Deep Space"
 	data["sector_info"] = current_sector ? current_sector.desc : "Not Available"
 	data["landed"] = linked.get_landed_info()
@@ -251,7 +251,7 @@ GLOBAL_LIST_EMPTY(all_waypoints)
 
 		if("move")
 			var/ndir = text2num(params["dir"])
-			linked.relaymove(usr, ndir, accellimit)
+			linked.relaymove(ui.user, ndir, accellimit)
 			. = TRUE
 
 		if("brake")
@@ -286,7 +286,7 @@ GLOBAL_LIST_EMPTY(all_waypoints)
 	circuit = /obj/item/circuitboard/nav
 	var/datum/tgui_module/ship/nav/nav_tgui
 
-/obj/machinery/computer/ship/navigation/Initialize()
+/obj/machinery/computer/ship/navigation/Initialize(mapload)
 	. = ..()
 	nav_tgui = new(src)
 

@@ -1,5 +1,6 @@
-import { classes } from '../../.././common/react';
-import { Box, Button, LabeledList } from '../../components';
+import { Box, Button, LabeledList } from 'tgui-core/components';
+import { classes } from 'tgui-core/react';
+
 import { modalOpen } from '../common/ComplexModal';
 
 export const ChemMasterProductionChemical = (props: {
@@ -38,7 +39,7 @@ export const ChemMasterProductionChemical = (props: {
             }}
           >
             <Box
-              className={classes(['chem_master32x32', 'pill' + pillsprite])}
+              className={classes(['chem_master32x32', `pill${pillsprite}`])}
               style={{
                 bottom: '10px',
                 right: '10px',
@@ -100,7 +101,7 @@ export const ChemMasterProductionChemical = (props: {
             <Box
               className={classes([
                 'chem_master32x32',
-                'bottle-' + bottlesprite,
+                `bottle-${bottlesprite}`,
               ])}
               style={{
                 bottom: '10px',

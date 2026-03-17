@@ -14,12 +14,16 @@
 /mob/living/carbon/human
 	holder_type = /obj/item/holder/micro
 
+// Let the robots have some fun too
+/mob/living/silicon/robot
+	holder_type = /obj/item/holder/micro
+
 // The reverse lookup of player_sizes_list, number to name.
 /proc/player_size_name(var/size_multiplier)
 	// (This assumes list is sorted big->small)
-	for(var/N in player_sizes_list)
+	for(var/N in GLOB.player_sizes_list)
 		. = N // So we return the smallest if we get to the end
-		if(size_multiplier >= player_sizes_list[N])
+		if(size_multiplier >= GLOB.player_sizes_list[N])
 			return N
 
 /**
@@ -88,7 +92,15 @@
  */
 /mob/living/proc/resize(var/new_size, var/animate = TRUE, var/uncapped = FALSE, var/ignore_prefs = FALSE, var/aura_animation = FALSE) //CHOMPEdit - Disable aura_animation. Too expensive for something you can't even see.
 	if(!uncapped)
-		new_size = clamp(new_size, RESIZE_MINIMUM, RESIZE_MAXIMUM)
+		if((z in using_map.station_levels) && CONFIG_GET(flag/pixel_size_limit))
+			var/size_diff = ((runechat_y_offset() / size_multiplier) * new_size) // This returns 32 multiplied with the new size
+			var/size_cap = world.icon_size * RESIZE_MAXIMUM //Grace for non-humanoids so they don't get forcibly shrunk.
+			if(size_diff - size_cap  > 0)
+				var/real_diff = size_cap / size_diff // Returns our diff based on the offset to world size
+				new_size *= real_diff // Applies our diff to the new size
+				new_size = clamp(new_size, RESIZE_MINIMUM, RESIZE_MAXIMUM) //If the sprite is below 32, we clamp it to only go to the resize max.
+		else
+			new_size = clamp(new_size, RESIZE_MINIMUM, RESIZE_MAXIMUM)
 		var/datum/component/resize_guard/guard = GetComponent(/datum/component/resize_guard)
 		if(guard)
 			qdel(guard)
@@ -164,7 +176,7 @@
 
 	var/nagmessage = "Adjust your mass to be a size between 25 to 200% (or 1% to 600% in dormitories). (DO NOT ABUSE)"
 	var/default = size_multiplier * 100
-	var/new_size = tgui_input_number(usr, nagmessage, "Pick a Size", default, 600, 1)
+	var/new_size = tgui_input_number(src, nagmessage, "Pick a Size", default, 600, 1)
 	if(size_range_check(new_size))
 		resize(new_size/100, uncapped = has_large_resize_bounds(), ignore_prefs = TRUE)
 		if(temporary_form)	//CHOMPEdit - resizing both our forms
@@ -172,18 +184,13 @@
 			L.resize(new_size/100, uncapped = has_large_resize_bounds(), ignore_prefs = TRUE)
 		//CHOMPEDIT - I don't need to be informed every time a prommie changes sizes
 
-/*
-//Add the set_size() proc to usable verbs. By commenting this out, we can leave the proc and hand it to species that need it.
-/hook/living_new/proc/resize_setup(mob/living/H)
-	add_verb(H, /mob/living/proc/set_size)
-	return 1
-*/
-
 /**
- * Attempt to scoop up this mob up into H's hands, if the size difference is large enough.
+ * Attempt to scoop up this mob up into M's hands, if the size difference is large enough.
  * @return false if normal code should continue, 1 to prevent normal code.
  */
 /mob/living/proc/attempt_to_scoop(mob/living/M, mob/living/G, ignore_size = FALSE) //second one is for the Grabber, only exists for animals to self-grab
+	if(src == M)
+		return 0
 	if(!(pickup_pref && M.pickup_pref && M.pickup_active))
 		return 0
 	if(!(M.a_intent == I_HELP))
@@ -199,7 +206,7 @@
 			return 0
 	if(size_diff >= 0.50 || mob_size < MOB_SMALL || size_diff >= get_effective_size() || ignore_size)
 		if(buckled)
-			to_chat(usr,span_notice("You have to unbuckle \the [src] before you pick them up."))
+			to_chat(src,span_notice("You have to unbuckle \the [src] before you pick them up."))
 			return 0
 		holder_type = /obj/item/holder/micro
 		var/obj/item/holder/m_holder = get_scooped(M, G)
@@ -217,7 +224,6 @@
  * @return false if normal code should continue, true to prevent normal code.
  */
 /mob/living/proc/handle_micro_bump_helping(mob/living/tmob)
-	// CHOMPAdd - Phased
 	if(is_incorporeal() || tmob.is_incorporeal())
 		return FALSE
 	//Riding and being moved to us or something similar
@@ -279,7 +285,6 @@
 	//We can't be stepping on anyone
 	if(!canmove || buckled)
 		return
-	// CHOMPAdd - Phased
 	if(is_incorporeal() || tmob.is_incorporeal())
 		return
 
@@ -300,7 +305,7 @@
 		for (var/atom/movable/M in prey.loc)
 			if (prey == M || pred == M)
 				continue
-			if (istype(M, /mob/living))
+			if (isliving(M))
 				var/mob/living/L = M
 				if (!M.CanPass(src, prey.loc) && !(get_effective_size(FALSE) - L.get_effective_size(TRUE) >= size_ratio_needed || L.lying))
 					can_pass = FALSE

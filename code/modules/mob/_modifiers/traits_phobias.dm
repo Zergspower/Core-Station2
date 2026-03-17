@@ -125,7 +125,7 @@
 			if(L.alpha <= FAKE_INVIS_ALPHA_THRESHOLD) // Can't fear something you can't (easily) see.
 				continue
 
-			if(istype(thing, /mob/living/carbon/human))
+			if(ishuman(thing))
 				var/mob/living/carbon/human/H = thing
 				var/self_multiplier = H == holder ? 2 : 1
 				var/human_blood_fear_amount = 0
@@ -140,7 +140,7 @@
 					clothing_slots += list(H.l_store, H.r_store)
 
 				for(var/obj/item/clothing/C in clothing_slots)
-					if(C.blood_DNA && C.blood_color && C.blood_color != SYNTH_BLOOD_COLOUR)
+					if(C.forensic_data?.has_blooddna() && C.blood_color && C.blood_color != SYNTH_BLOOD_COLOUR)
 						human_blood_fear_amount += 1
 
 				// This is divided, since humans can wear so many items at once.
@@ -150,7 +150,7 @@
 		// Bloody objects are also bad.
 		if(istype(thing, /obj))
 			var/obj/O = thing
-			if(O.blood_DNA && O.blood_color && O.blood_color != SYNTH_BLOOD_COLOUR)
+			if(O.forensic_data?.has_blooddna() && O.blood_color && O.blood_color != SYNTH_BLOOD_COLOUR)
 				fear_amount++
 
 	return fear_amount
@@ -456,7 +456,7 @@
 				else
 					fear_amount += 10 // It's huge and feral.
 
-			if(istype(L, /mob/living/carbon/human))
+			if(ishuman(L))
 				var/mob/living/carbon/human/S = L
 				if(istype(S.species, /datum/species/skrell)) //Skrell ARE slimey.
 					fear_amount += 1
@@ -547,7 +547,7 @@
 			var/mob/living/L = thing
 			if(L.alpha <= FAKE_INVIS_ALPHA_THRESHOLD) // Can't fear something you can't (easily) see.
 				continue
-			if(istype(L, /mob/living/carbon/human))
+			if(ishuman(L))
 				var/mob/living/carbon/human/H = L
 				if(H.l_hand && istype(H.l_hand, /obj/item/reagent_containers/syringe) || H.r_hand && istype(H.r_hand, /obj/item/reagent_containers/syringe))
 					fear_amount += 10

@@ -38,7 +38,7 @@
 		/mob/living/bot/medbot,
 		/obj/item/storage/secure/safe,
 		/obj/machinery/iv_drip,
-		/obj/structure/medical_stand, //VOREStation Add,
+		/obj/structure/medical_stand,
 		/obj/machinery/disposal,
 		/mob/living/simple_mob/animal/passive/cow,
 		/mob/living/simple_mob/animal/goat,
@@ -55,7 +55,7 @@
 		)
 //CHOMP Addition for feeder in the above list. I am paranoid about comments within lists so this is outside.
 
-/obj/item/reagent_containers/glass/Initialize()
+/obj/item/reagent_containers/glass/Initialize(mapload)
 	. = ..()
 	if(LAZYLEN(prefill))
 		for(var/R in prefill)
@@ -75,15 +75,13 @@
 		if(!is_open_container())
 			. += span_notice("Airtight lid seals it completely.")
 
-/obj/item/reagent_containers/glass/attack_self()
+/obj/item/reagent_containers/glass/attack_self(mob/user)
 	..()
 	if(is_open_container())
-		// to_chat(usr, span_notice("You put the lid on \the [src]."))
-		balloon_alert(usr, "Lid put on \the [src]")
+		balloon_alert(user, "lid put on \the [src]")
 		flags ^= OPENCONTAINER
 	else
-		// to_chat(usr, span_notice("You take the lid off \the [src]."))
-		balloon_alert(usr, "Lid removed off \the [src]") // CHOMPEdit - Changed to ballopn alert
+		balloon_alert(user, "lid removed off \the [src]")
 		flags |= OPENCONTAINER
 	update_icon()
 
@@ -106,8 +104,7 @@
 	return ..()
 
 /obj/item/reagent_containers/glass/self_feed_message(var/mob/user)
-	// to_chat(user, span_notice("You swallow a gulp from \the [src]."))
-	balloon_alert(user, "Swallowed from \the [src]") // CHOMPEdit - Changed to balloon alert
+	balloon_alert(user, "swallowed from \the [src]")
 
 /obj/item/reagent_containers/glass/proc/attempt_snake_milking(mob/living/user, mob/living/target)
 	var/reagent
@@ -148,8 +145,7 @@
 		if(standard_splash_mob(user,target))
 			return 1
 		if(reagents && reagents.total_volume)
-			// to_chat(user, span_notice("You splash the solution onto [target].")) //They are on harm intent, aka wanting to spill it.
-			balloon_alert(user, "Splashed the solution onto [target]")
+			balloon_alert(user, "splashed the solution onto [target]")
 			reagents.splash(target, reagents.total_volume)
 			return 1
 	..()
@@ -160,20 +156,17 @@
 		if(length(tmp_label) > 50)
 			to_chat(user, span_notice("The label can be at most 50 characters long."))
 		else if(length(tmp_label) > 10)
-			// to_chat(user, span_notice("You set the label."))
-			balloon_alert(user, "Label set.") // CHOMPEdit - Changed to balloon alert
+			balloon_alert(user, "label set")
 			label_text = tmp_label
 			update_name_label()
 		else
-			// to_chat(user, span_notice("You set the label to \"[tmp_label]\"."))
-			balloon_alert(user, "Label set to \"[tmp_label]\"") // CHOMPEdit - Changed to balloon alert
+			balloon_alert(user, "label set to \"[tmp_label]\"")
 			label_text = tmp_label
 			update_name_label()
 	if(istype(W,/obj/item/storage/bag))
 		..()
 	if(W && W.w_class <= w_class && (flags & OPENCONTAINER) && user.a_intent != I_HELP)
-		// to_chat(user, span_notice("You dip \the [W] into \the [src]."))
-		balloon_alert(user, "[W] dipped into \the [src].") // CHOMPEdit - Changed to balloon alert
+		balloon_alert(user, "[W] dipped into \the [src].")
 		reagents.touch_obj(W, reagents.total_volume)
 
 /obj/item/reagent_containers/glass/proc/update_name_label()
@@ -193,8 +186,8 @@
 	icon = 'icons/obj/chemical.dmi'
 	icon_state = "beaker"
 	item_state = "beaker"
-	center_of_mass_x = 15 //CHOMPEdit
-	center_of_mass_y= 11 //CHOMPEdit
+	center_of_mass_x = 15
+	center_of_mass_y = 11
 	matter = list(MAT_GLASS = 500)
 	drop_sound = 'sound/items/drop/glass.ogg'
 	pickup_sound = 'sound/items/pickup/glass.ogg'
@@ -203,7 +196,7 @@
 /obj/item/reagent_containers/glass/beaker/get_rating()
 	return rating
 
-/obj/item/reagent_containers/glass/beaker/Initialize()
+/obj/item/reagent_containers/glass/beaker/Initialize(mapload)
 	. = ..()
 	desc += " Can hold up to [volume] units."
 
@@ -250,8 +243,8 @@
 	name = "large beaker"
 	desc = "A large beaker."
 	icon_state = "beakerlarge"
-	center_of_mass_x = 16 //CHOMPEdit
-	center_of_mass_y= 11 //CHOMPEdit
+	center_of_mass_x = 16
+	center_of_mass_y = 11
 	matter = list(MAT_GLASS = 5000)
 	volume = 120
 	amount_per_transfer_from_this = 10
@@ -263,8 +256,8 @@
 	name = "cryostasis beaker"
 	desc = "A cryostasis beaker that allows for chemical storage without reactions."
 	icon_state = "beakernoreact"
-	center_of_mass_x = 16 //CHOMPEdit
-	center_of_mass_y= 13 //CHOMPEdit
+	center_of_mass_x = 16
+	center_of_mass_y = 13
 	matter = list(MAT_GLASS = 500)
 	volume = 60
 	amount_per_transfer_from_this = 10
@@ -274,8 +267,8 @@
 	name = "bluespace beaker"
 	desc = "A bluespace beaker, powered by experimental bluespace technology."
 	icon_state = "beakerbluespace"
-	center_of_mass_x = 16 //CHOMPEdit
-	center_of_mass_y= 11 //CHOMPEdit
+	center_of_mass_x = 16
+	center_of_mass_y = 11
 	matter = list(MAT_GLASS = 5000)
 	volume = 300
 	amount_per_transfer_from_this = 10
@@ -287,8 +280,8 @@
 	name = "vial"
 	desc = "A small glass vial."
 	icon_state = "vial"
-	center_of_mass_x = 15 //CHOMPEdit
-	center_of_mass_y= 9 //CHOMPEdit
+	center_of_mass_x = 15
+	center_of_mass_y = 9
 	matter = list(MAT_GLASS = 250)
 	volume = 30
 	w_class = ITEMSIZE_TINY
@@ -307,8 +300,8 @@
 	name = "stoppered bottle"
 	desc = "A stoppered bottle for keeping beverages fresh."
 	icon_state = "stopperedbottle"
-	center_of_mass_x = 16 //CHOMPEdit
-	center_of_mass_y= 13 //CHOMPEdit
+	center_of_mass_x = 16
+	center_of_mass_y = 13
 	volume = 120
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(5,10,15,25,30,60,120)
@@ -320,8 +313,8 @@
 	icon = 'icons/obj/janitor.dmi'
 	icon_state = "bucket"
 	item_state = "bucket"
-	center_of_mass_x = 16 //CHOMPEdit
-	center_of_mass_y= 10 //CHOMPEdit
+	center_of_mass_x = 16
+	center_of_mass_y = 10
 	matter = list(MAT_STEEL = 200)
 	w_class = ITEMSIZE_NORMAL
 	amount_per_transfer_from_this = 20
@@ -341,8 +334,7 @@
 		qdel(src)
 		return
 	else if(D.has_tool_quality(TOOL_WIRECUTTER))
-		// to_chat(user, span_notice("You cut a big hole in \the [src] with \the [D].  It's kinda useless as a bucket now."))
-		balloon_alert(user, "You cut a big hole in \the [src] with \the [D]. It's kinda useless now.") // CHOMPEdit - Changed to balloon alert
+		balloon_alert(user, "you cut a big hole in \the [src] with \the [D]. It's kinda useless now.")
 		user.put_in_hands(new /obj/item/clothing/head/helmet/bucket)
 		user.drop_from_inventory(src)
 		qdel(src)
@@ -352,19 +344,16 @@
 		if (M.use(1))
 			var/obj/item/secbot_assembly/edCLN_assembly/B = new /obj/item/secbot_assembly/edCLN_assembly
 			B.loc = get_turf(src)
-			// to_chat(user, span_notice("You armed the robot frame."))
-			balloon_alert(user, "Armed the robot frame.")
+			balloon_alert(user, "armed the robot frame.")
 			if (user.get_inactive_hand()==src)
 				user.remove_from_mob(src)
 				user.put_in_inactive_hand(B)
 			qdel(src)
 		else
-			// to_chat(user, span_warning("You need one sheet of metal to arm the robot frame."))
-			balloon_alert(user, "One sheet of metal is needed to arm the robot frame.") // CHOMPEdit - Changed to balloon alert
-	else if(istype(D, /obj/item/mop) || istype(D, /obj/item/soap) || istype(D, /obj/item/reagent_containers/glass/rag))  //VOREStation Edit - "Allows soap and rags to be used on buckets"
+			balloon_alert(user, "one sheet of metal is needed to arm the robot frame.")
+	else if(istype(D, /obj/item/mop) || istype(D, /obj/item/soap) || istype(D, /obj/item/reagent_containers/glass/rag))
 		if(reagents.total_volume < 1)
-			// to_chat(user, span_warning("\The [src] is empty!"))
-			balloon_alert(user, "\The [src] is empty!") // CHOMPEdit - Changed to balloon alert
+			balloon_alert(user, "\the [src] is empty!")
 		else
 			reagents.trans_to_obj(D, 5)
 			to_chat(user, span_notice("You wet \the [D] in \the [src]."))
@@ -383,8 +372,8 @@
 	icon = 'icons/obj/janitor.dmi'
 	icon_state = "woodbucket"
 	item_state = "woodbucket"
-	center_of_mass_x = 16 //CHOMPEdit
-	center_of_mass_y= 8 //CHOMPEdit
+	center_of_mass_x = 16
+	center_of_mass_y = 8
 	matter = list(MAT_WOOD = 50)
 	w_class = ITEMSIZE_LARGE
 	amount_per_transfer_from_this = 20
@@ -442,3 +431,7 @@
 	matter = list(MAT_WOOD = 50)
 	drop_sound = 'sound/items/drop/wooden.ogg'
 	pickup_sound = 'sound/items/pickup/wooden.ogg'
+
+/obj/item/reagent_containers/glass/beaker/vial/sustenance
+	name = "vial (artificial sustenance)"
+	prefill = list(REAGENT_ID_ASUSTENANCE = 30)

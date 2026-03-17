@@ -8,7 +8,6 @@
 	icon 		= 'icons/mob/pets.dmi'
 	icon_state 	= "syndifox"
 	chassis = "syndifox"
-	possible_chassis = list("Fox"="syndifox")
 	var/gut1 //Custom voregut temp vars
 	var/gut2
 
@@ -34,8 +33,8 @@
 		return module.attack_self(user)
 	..()
 
-/obj/item/paicard/flipper/Initialize() //ChompEDIT New --> Initialize
-	..()
+/obj/item/paicard/flipper/Initialize(mapload) //ChompEDIT New --> Initialize
+	. = ..()
 	desc 		= "The [name] is a versatile security device designed to protect and empower users in a variety of contexts. With features such as wireless hacking, radio analysis, signal jamming, and physical lock picking, the [name] is the ultimate tool for security professionals, hobbyists, and anyone seeking to better understand and defend against modern threats. Whether you're investigating a security breach, testing your own defenses, or simply curious about the workings of wireless technology, the [name] has you covered."
 	MultiTool 	= new /obj/item/multitool(src)
 	Signal 	= new /obj/item/assembly/signaler(src)
@@ -79,7 +78,7 @@
 	system_select(user)
 
 //Vore
-/mob/living/silicon/pai/flipper/init_vore()
+/mob/living/silicon/pai/flipper/init_vore(force)
 	var/obj/belly/B = new /obj/belly/flipper/maw(src)
 	B.affects_vore_sprites = FALSE
 	B.emote_lists[DM_HOLD] = list(
@@ -106,7 +105,7 @@
 		"The warm and inviting embrace of [name]'s stomach envelops you in its comforting embrace.",
 		"[name]'s stomach compresses tightly around you, its powerful systems working aroud you.",
 		"[name]'s stomach hums and churns around you.")
-	.=..()
+	. = ..()
 
 //Belly stuff
 /obj/belly/flipper
@@ -162,11 +161,11 @@
 	digest_brute = 0
 	digest_burn = 2
 	struggle_messages_inside = list(
-    "You struggle and squirm, but the walls around you are too soft and pliable, yielding to your every movement without any resistance. Every time you try to push your way out, the walls just squeeze you tighter, reminding you that there's no escape from this warm and cozy prison.",
-    "You search for any signs of an exit, but the walls around you are too thick and plush, absorbing all of your movements without a trace. You're trapped here, at the mercy of their digestive system, slowly melting away in its warm and slimy embrace.",
-    "You press your limbs and body against the soft walls, trying to push your way out. But the walls just close in around you, enveloping you in a tight and suffocating hug. You can feel the warm and slimy digestive juices slowly dissolving your flesh, as you become one with the creature that swallowed you.",
-    "You thrash and flail, trying to break free from the soft and pliable walls that surround you. But every movement just makes the stomach walls pulsate and squeeze tighter around you, coaxing you deeper into the creature's digestive system.",
-    "You try to resist the relentless contractions of the stomach walls, but they're too warm and plush, too soft and pliable. Every movement you make just sends ripples of pleasure throughout the creature's digestive system, making it squeeze and massage you even harder.")
+	"You struggle and squirm, but the walls around you are too soft and pliable, yielding to your every movement without any resistance. Every time you try to push your way out, the walls just squeeze you tighter, reminding you that there's no escape from this warm and cozy prison.",
+	"You search for any signs of an exit, but the walls around you are too thick and plush, absorbing all of your movements without a trace. You're trapped here, at the mercy of their digestive system, slowly melting away in its warm and slimy embrace.",
+	"You press your limbs and body against the soft walls, trying to push your way out. But the walls just close in around you, enveloping you in a tight and suffocating hug. You can feel the warm and slimy digestive juices slowly dissolving your flesh, as you become one with the creature that swallowed you.",
+	"You thrash and flail, trying to break free from the soft and pliable walls that surround you. But every movement just makes the stomach walls pulsate and squeeze tighter around you, coaxing you deeper into the creature's digestive system.",
+	"You try to resist the relentless contractions of the stomach walls, but they're too warm and plush, too soft and pliable. Every movement you make just sends ripples of pleasure throughout the creature's digestive system, making it squeeze and massage you even harder.")
 	belly_fullscreen = "da_tumby"
 	vore_sound = "Stomach Move"
 
@@ -189,7 +188,7 @@
 		to_chat(usr,span_warning("You cannot join a pAI card when you are banned from playing as a pAI."))
 		return
 
-	for(var/ourkey in paikeys)
+	for(var/ourkey in GLOB.paikeys)
 		if(ourkey == user.ckey)
 			to_chat(usr, span_warning("You can't just rejoin any old pAI card!!! Your card still exists."))
 			return
@@ -211,7 +210,7 @@
 		var/obj/item/paicard/flipper/card = new(location)
 		var/mob/living/silicon/pai/flipper/new_pai = new(card)
 		new_pai.key = user.key
-		paikeys |= new_pai.ckey
+		GLOB.paikeys |= new_pai.ckey
 		card.setPersonality(new_pai)
 		new_pai.SetName(actual_pai_name)
 
@@ -219,7 +218,7 @@
 		var/obj/item/paicard/flipper/card = new(location)
 		var/mob/living/silicon/pai/flipper/new_pai = new(card)
 		new_pai.key = user.key
-		paikeys |= new_pai.ckey
+		GLOB.paikeys |= new_pai.ckey
 		card.setPersonality(new_pai)
 		if(!new_pai.savefile_load(new_pai))
 			var/pai_name = "Vix"//tgui_input_text(new_pai, "Choose your character's name", "Character Name")
@@ -236,11 +235,12 @@
 	set name = "Choose Chassis"
 	var/choice
 
-	choice = tgui_input_list(usr, "What would you like to use for your mobile chassis icon?", "Chassis Choice", possible_chassis)
-	if(!choice) return
+	choice = tgui_alert(src, "What would you like to use for your mobile chassis icon (Fox)?", "Chassis Choice", list("Yes", "No"))
+	if(choice != "Yes")
+		return
 	var/oursize = size_multiplier
 	resize(1, FALSE, TRUE, TRUE, FALSE)		//We resize ourselves to normal here for a moment to let the vis_height get reset
-	chassis = possible_chassis[choice]
+	chassis = "syndifox"
 	vore_capacity = 1
 	vore_capacity_ex = list("stomach" = 1)
 	resize(oursize, FALSE, TRUE, TRUE, FALSE)	//And then back again now that we're sure the vis_height is correct.

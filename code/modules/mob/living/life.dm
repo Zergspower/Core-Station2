@@ -1,12 +1,14 @@
 /mob/living/Life()
-	set invisibility = 0
+	set invisibility = INVISIBILITY_NONE
 	set background = BACKGROUND_ENABLED
+
+	SEND_SIGNAL(src, COMSIG_LIVING_LIFE)
 
 	..()
 
 	if (transforming)
 		return
-	handle_modifiers() //VOREStation Edit - Needs to be done even if in nullspace.
+	handle_modifiers() //Needs to be done even if in nullspace.
 	if(!loc)
 		return
 
@@ -15,8 +17,6 @@
 		environment = loc.return_air_for_internal_lifeform(src)
 	else
 		environment = loc.return_air()
-
-	//handle_modifiers() // Do this early since it might affect other things later. //VOREStation Edit
 
 	handle_light()
 
@@ -62,11 +62,10 @@
 	//Check if we're on fire
 	handle_fire()
 
-	if(client && !(client.prefs.ambience_freq == 0))	// Handle re-running ambience to mobs if they've remained in an area, AND have an active client assigned to them, and do not have repeating ambience disabled.
+	if(client)	// Handle re-running ambience to mobs if they've remained in an area, AND have an active client assigned to them, and do not have repeating ambience disabled.
 		handle_ambience()
 
 	//stuff in the stomach
-	//handle_stomach() //VOREStation Code
 
 	update_gravity(mob_get_gravity())
 
@@ -77,6 +76,7 @@
 
 	if(handle_regular_status_updates()) // Status & health update, are we dead or alive etc.
 		handle_disabilities() // eye, ear, brain damages
+		handle_addictions() // Dwugs
 		handle_statuses() //all special effects, stunned, weakened, jitteryness, hallucination, sleeping, etc
 
 	update_canmove()
@@ -85,9 +85,9 @@
 
 	handle_vision()
 
-	handle_tf_holder()	//VOREStation Addition
+	handle_tf_holder()
 
-	handle_vr_derez() // CHOMPedit
+	handle_vr_derez()
 
 /mob/living/proc/handle_breathing()
 	return
@@ -111,7 +111,11 @@
 	return
 
 /mob/living/proc/handle_ambience() // If you're in an ambient area and have not moved out of it for x time as configured per-client, and do not have it disabled, we're going to play ambience again to you, to help break up the silence.
-	if(world.time >= (lastareachange + client.prefs.ambience_freq MINUTES)) // Every 5 minutes (by default, set per-client), we're going to run a 35% chance (by default, also set per-client) to play ambience.
+	var/pref = read_preference(/datum/preference/numeric/ambience_freq)
+	if(!pref)
+		return
+
+	if(world.time >= (lastareachange + pref MINUTES)) // Every 5 minutes (by default, set per-client), we're going to run a 35% chance (by default, also set per-client) to play ambience.
 		var/area/A = get_area(src)
 		if(A)
 			lastareachange = world.time // This will refresh the last area change to prevent this call happening LITERALLY every life tick.
@@ -200,6 +204,7 @@
 	return confused
 
 /mob/living/proc/handle_disabilities()
+	SEND_SIGNAL(src, COMSIG_HANDLE_DISABILITIES)
 	//Eyes
 	if(sdisabilities & BLIND || stat)	//blindness from disability or unconsciousness doesn't get better on its own
 		SetBlinded(1)

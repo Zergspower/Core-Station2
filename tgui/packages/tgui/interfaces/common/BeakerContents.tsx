@@ -1,6 +1,6 @@
-import { Box, Flex } from '../../components';
+import { Box, Stack } from 'tgui-core/components';
 
-const formatUnits = (a) => a + ' unit' + (a === 1 ? '' : 's');
+const formatUnits = (a) => `${a} unit${a === 1 ? '' : 's'}`;
 
 /**
  * Displays a beaker's contents
@@ -15,13 +15,13 @@ export const BeakerContents = (props) => {
           <Box color="label">Beaker is empty.</Box>
         ))}
       {beakerContents.map((chemical, i) => (
-        <Box key={chemical.name} width="100%">
-          <Flex align="center" justify="space-between">
-            <Flex.Item color="label">
+        <Box key={i} width="100%">
+          <Stack align="center" justify="space-between">
+            <Stack.Item color="label">
               {formatUnits(chemical.volume)} of {chemical.name}
-            </Flex.Item>
-            {!!buttons && <Flex.Item>{buttons(chemical, i)}</Flex.Item>}
-          </Flex>
+            </Stack.Item>
+            {!!buttons && <Stack.Item>{buttons(chemical, i)}</Stack.Item>}
+          </Stack>
         </Box>
       ))}
     </Box>

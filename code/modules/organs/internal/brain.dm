@@ -4,7 +4,7 @@ GLOBAL_LIST_BOILERPLATE(all_brain_organs, /obj/item/organ/internal/brain)
 	name = "brain"
 	health = 400 //They need to live awhile longer than other organs. Is this even used by organ code anymore?
 	desc = "A piece of juicy meat found in a person's head."
-	organ_tag = "brain"
+	organ_tag = O_BRAIN
 	parent_organ = BP_HEAD
 	vital = 1
 	icon_state = "brain2"
@@ -33,7 +33,7 @@ GLOBAL_LIST_BOILERPLATE(all_brain_organs, /obj/item/organ/internal/brain)
 	if(!owner || owner.stat == DEAD)
 		defib_timer = max(--defib_timer, 0)
 	else
-		defib_timer = min(++defib_timer, (CONFIG_GET(number/defib_timer) MINUTES) / 2) // CHOMPEdit
+		defib_timer = min(++defib_timer, (CONFIG_GET(number/defib_timer) MINUTES) / 2)
 
 /obj/item/organ/internal/brain/proc/can_assist()
 	return can_assist
@@ -78,18 +78,22 @@ GLOBAL_LIST_BOILERPLATE(all_brain_organs, /obj/item/organ/internal/brain)
 		tmp_owner.internal_organs_by_name[organ_tag] = new replace_path(tmp_owner, 1)
 		tmp_owner = null
 
-/obj/item/organ/internal/brain/Initialize() // CHOMPEdit
-	. = ..() // CHOMPEdit
+/obj/item/organ/internal/brain/Initialize(mapload)
+	..()
 	health = CONFIG_GET(number/default_brain_health)
-	defib_timer = (CONFIG_GET(number/defib_timer) MINUTES) / 2 // CHOMPEdit
-	spawn(5)
-		if(brainmob)
-			butcherable = FALSE
+	defib_timer = (CONFIG_GET(number/defib_timer) MINUTES) / 2	 // CHOMPEdit // Time vars measure things in ticks. Life tick happens every ~2 seconds, therefore dividing by 20
+	return INITIALIZE_HINT_LATELOAD
 
-			if(brainmob.client)
-				brainmob.client.screen.len = null //clear the hud
+/obj/item/organ/internal/brain/LateInitialize()
+	if(brainmob)
+		butcherable = FALSE
+
+		if(brainmob.client)
+			brainmob.client.screen.len = null //clear the hud
 
 /obj/item/organ/internal/brain/Destroy()
+	if(brainmob && brainmob.dna)
+		qdel(brainmob.dna)
 	QDEL_NULL(brainmob)
 	. = ..()
 
@@ -101,16 +105,14 @@ GLOBAL_LIST_BOILERPLATE(all_brain_organs, /obj/item/organ/internal/brain)
 		brainmob.real_name = H.real_name
 
 		if(istype(H))
-			brainmob.dna = H.dna.Clone()
+			qdel_swap(brainmob.dna, H.dna.Clone())
 			brainmob.timeofhostdeath = H.timeofdeath
-			brainmob.ooc_notes = H.ooc_notes //VOREStation Edit
+			brainmob.ooc_notes = H.ooc_notes
 			brainmob.ooc_notes_likes = H.ooc_notes_likes
 			brainmob.ooc_notes_dislikes = H.ooc_notes_dislikes
-			//CHOMPEdit Start
 			brainmob.ooc_notes_favs = H.ooc_notes_favs
 			brainmob.ooc_notes_maybes = H.ooc_notes_maybes
 			brainmob.ooc_notes_style = H.ooc_notes_style
-			//CHOMPEdit End
 
 		// Copy modifiers.
 		for(var/datum/modifier/M in H.modifiers)
@@ -144,7 +146,7 @@ GLOBAL_LIST_BOILERPLATE(all_brain_organs, /obj/item/organ/internal/brain)
 
 	var/obj/item/organ/internal/brain/B = src
 	if(istype(B) && owner)
-		if(istype(owner, /mob/living/carbon) && owner.ckey) //CHOMPEdit - Make sure owner's mind isn't elsewhere otherwise on brain removal brings them back
+		if(istype(owner, /mob/living/carbon) && owner.ckey)
 			B.transfer_identity(owner)
 
 	..()
@@ -169,7 +171,7 @@ GLOBAL_LIST_BOILERPLATE(all_brain_organs, /obj/item/organ/internal/brain)
 /obj/item/organ/internal/brain/pariah_brain
 	name = "brain remnants"
 	desc = "Did someone tread on this? It looks useless for cloning or cyborgification."
-	organ_tag = "brain"
+	organ_tag = O_BRAIN
 	parent_organ = BP_HEAD
 	icon = 'icons/mob/alien.dmi'
 	icon_state = "chitin"
@@ -184,7 +186,7 @@ GLOBAL_LIST_BOILERPLATE(all_brain_organs, /obj/item/organ/internal/brain)
 	can_assist = FALSE
 
 /obj/item/organ/internal/brain/slime
-	icon = 'icons/obj/surgery_vr.dmi' // Vorestation edit
+	icon = 'icons/obj/surgery_vr.dmi'
 	name = "slime core"
 	desc = "A complex, organic knot of jelly and crystalline particles."
 	icon_state = "core"
@@ -197,14 +199,16 @@ GLOBAL_LIST_BOILERPLATE(all_brain_organs, /obj/item/organ/internal/brain)
 /obj/item/organ/internal/brain/slime/is_open_container()
 	return 1
 
-/obj/item/organ/internal/brain/slime/New()
-	..()
+/obj/item/organ/internal/brain/slime/Initialize(mapload)
+	. = ..()
 	create_reagents(50)
-	var/mob/living/carbon/human/H = null
-	spawn(15) //Match the core to the Promethean's starting color.
-		if(ishuman(owner))
-			H = owner
-			color = rgb(min(H.r_skin + 40, 255), min(H.g_skin + 40, 255), min(H.b_skin + 40, 255))
+
+/obj/item/organ/internal/brain/slime/LateInitialize()
+	. = ..()
+	//Match the core to the Promethean's starting color.
+	if(ishuman(loc))
+		var/mob/living/carbon/human/H = loc
+		color = rgb(min(H.r_skin + 40, 255), min(H.g_skin + 40, 255), min(H.b_skin + 40, 255))
 
 /obj/item/organ/internal/brain/slime/removed(var/mob/living/user)
 	if(istype(owner))
@@ -212,8 +216,11 @@ GLOBAL_LIST_BOILERPLATE(all_brain_organs, /obj/item/organ/internal/brain)
 	..()
 
 /obj/item/organ/internal/brain/slime/proc/reviveBody()
+	// TODO - Reference how xenochimera component handles revival from bodyrecord in the future.
+	// This requires a promie/protean component for transformation and regeneration.
+	// This shouldn't use a brain mob for caching dna. That's what BRs are for.
 	var/datum/dna2/record/R = new /datum/dna2/record()
-	R.dna = brainmob.dna
+	qdel_swap(R.dna, brainmob.dna.Clone())
 	R.ckey = brainmob.ckey
 	R.id = copytext(md5(brainmob.real_name), 2, 6)
 	R.name = R.dna.real_name
@@ -236,7 +243,7 @@ GLOBAL_LIST_BOILERPLATE(all_brain_organs, /obj/item/organ/internal/brain)
 		if(ckey(clonemind.key) != R.ckey)
 			return 0
 	else
-		for(var/mob/observer/dead/G in player_list)
+		for(var/mob/observer/dead/G in GLOB.player_list)
 			if(G.ckey == R.ckey)
 				if(G.can_reenter_corpse)
 					break
@@ -253,10 +260,12 @@ GLOBAL_LIST_BOILERPLATE(all_brain_organs, /obj/item/organ/internal/brain)
 		H.dna = new /datum/dna()
 		H.dna.real_name = H.real_name
 	else
-		H.dna = R.dna
+		qdel_swap(H.dna, R.dna.Clone())
 
 	H.UpdateAppearance()
+	H.sync_dna_traits(FALSE) // Traitgenes Sync traits to genetics if needed
 	H.sync_organ_dna()
+	H.initialize_vessel()
 	if(!R.dna.real_name)	//to prevent null names
 		R.dna.real_name = "promethean ([rand(0,999)])"
 	H.real_name = R.dna.real_name
@@ -287,6 +296,10 @@ GLOBAL_LIST_BOILERPLATE(all_brain_organs, /obj/item/organ/internal/brain)
 	for(var/datum/language/L in R.languages)
 		H.add_language(L.name)
 	H.flavor_texts = R.flavor.Copy()
+
+	SEND_SIGNAL(H, COMSIG_HUMAN_DNA_FINALIZED)
+
+	qdel(R) // Record already deletes dna
 	qdel(src)
 	return 1
 
@@ -320,10 +333,8 @@ GLOBAL_LIST_BOILERPLATE(all_brain_organs, /obj/item/organ/internal/brain)
 	desc = "A piece of juicy meat found in a person's head. This one is strange."
 	icon_state = "brain_grey"
 
-/obj/item/organ/internal/brain/grey/colormatch/New()
-	..()
-	var/mob/living/carbon/human/H = null
-	spawn(15)
-		if(ishuman(owner))
-			H = owner
-			color = H.species.blood_color
+/obj/item/organ/internal/brain/grey/colormatch/LateInitialize()
+	. = ..()
+	if(ishuman(loc))
+		var/mob/living/carbon/human/H = loc
+		color = H.species.blood_color

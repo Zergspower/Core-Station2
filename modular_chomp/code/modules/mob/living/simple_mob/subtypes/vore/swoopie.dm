@@ -52,7 +52,7 @@
 											/mob/living/simple_mob/animal/passive/cockroach)
 	var/obj/item/vac_attachment/swoopie/Vac
 
-/mob/living/simple_mob/vore/aggressive/corrupthound/swoopie/Initialize()
+/mob/living/simple_mob/vore/aggressive/corrupthound/swoopie/Initialize(mapload)
 	. = ..()
 	if(!voremob_loaded)
 		voremob_loaded = TRUE
@@ -84,11 +84,7 @@
 		return
 	. = ..() //if not vaccable, just do what it normally does
 
-/mob/living/simple_mob/vore/aggressive/corrupthound/swoopie/init_vore()
-	if(!voremob_loaded)
-		return
-	if(LAZYLEN(vore_organs))
-		return TRUE
+/mob/living/simple_mob/vore/aggressive/corrupthound/swoopie/load_default_bellies()
 	add_verb(src,/mob/living/proc/eat_trash) //CHOMPEdit TGPanel
 	add_verb(src,/mob/living/proc/toggle_trash_catching) //CHOMPEdit TGPanel
 	add_verb(src,/mob/living/proc/restrict_trasheater) //CHOMPEdit TGPanel
@@ -214,7 +210,7 @@
 			Vac.afterattack(S, src, 1)
 			return
 	for(var/obj/O in T)
-		if(is_type_in_list(O, edible_trash) && !O.anchored)
+		if(is_type_in_list(O, GLOB.edible_trash) && !O.anchored)
 			Vac.afterattack(T, src, 1)
 			return
 	for(var/mob/living/L in T)
@@ -294,14 +290,14 @@
 		if(usr != src)
 			usr.put_in_active_hand(Vac)
 		else
-			var/mob/living/L = input("Borrow Vac-Pack for") as null| mob in view(1,usr.loc)
+			var/mob/living/L = tgui_input_list(usr, "Borrow Vac-Pack for", "Swoopie", mobs_in_view(1, usr))
 			if(!L || L == usr)
 				return
 			L.put_in_active_hand(Vac)
 
 /mob/living/simple_mob/vore/aggressive/corrupthound/swoopie/verb/change_settings()
 	set name = "Change Settings"
-	set desc = "Change \the [src]'s settings"
+	set desc = "Change the swoopie's settings"
 	set category = "IC"
 	set src in oview(1)
 	if(!has_AI() || !IIsAlly(usr))

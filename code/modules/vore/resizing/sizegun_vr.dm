@@ -24,14 +24,14 @@
 			fire_sound		= 'sound/weapons/pulse3.ogg'
 		))
 
-/obj/item/gun/energy/sizegun/Initialize()
+/obj/item/gun/energy/sizegun/Initialize(mapload)
 	. = ..()
 	verbs += /obj/item/gun/energy/sizegun/proc/select_size
 	verbs += /obj/item/gun/energy/sizegun/proc/spin_dial
 
 /obj/item/gun/energy/sizegun/attack_self(mob/user)
 	. = ..()
-	select_size()
+	select_size(user)
 
 /obj/item/gun/energy/sizegun/proc/spin_dial()
 	set name = "Spin Size Dial"
@@ -47,17 +47,17 @@
 	if(istype(G))
 		G.set_size = size_set_to
 
-/obj/item/gun/energy/sizegun/proc/select_size()
+/obj/item/gun/energy/sizegun/proc/select_size(mob/user = usr)
 	set name = "Select Size"
 	set category = "Object"
 	set src in view(1)
 
-	var/size_select = tgui_input_number(usr, "Put the desired size (25-200%), (1-600%) in dormitory areas.", "Set Size", size_set_to * 100, 600, 1)
+	var/size_select = tgui_input_number(user, "Put the desired size (25-200%), (1-600%) in dormitory areas.", "Set Size", size_set_to * 100, RESIZE_MAXIMUM_DORMS * 100, RESIZE_MINIMUM_DORMS * 100)
 	if(!size_select)
 		return //cancelled
 	//We do valid resize testing in actual firings because people move after setting these things.
 	//Just a basic clamp here to the valid ranges.
-	size_set_to = clamp((size_select/100), RESIZE_MINIMUM_DORMS, RESIZE_MAXIMUM_DORMS)
+	size_set_to = clamp((size_select / 100), RESIZE_MINIMUM_DORMS, RESIZE_MAXIMUM_DORMS)
 	to_chat(usr, span_notice("You set the size to [size_select]%"))
 	if(size_set_to < RESIZE_MINIMUM || size_set_to > RESIZE_MAXIMUM)
 		to_chat(usr, span_notice("Note: Resizing limited to 25-200% automatically while outside dormatory areas.")) //hint that we clamp it in resize
@@ -123,15 +123,15 @@
 	charge_cost = 0
 	projectile_type = /obj/item/projectile/beam/sizelaser/admin/alien
 
-/obj/item/gun/energy/sizegun/admin/select_size()
+/obj/item/gun/energy/sizegun/admin/select_size(mob/user = usr)
 	set name = "Select Size"
 	set category = "Object"
 	set src in view(1)
 
-	var/size_select = tgui_input_number(usr, "Put the desired size (1-600%)", "Set Size", size_set_to * 100, 600, 1)
+	var/size_select = tgui_input_number(user, "Put the desired size (1-600%)", "Set Size", size_set_to * 100, RESIZE_MAXIMUM_DORMS * 100, RESIZE_MINIMUM_DORMS * 100)
 	if(!size_select)
 		return //cancelled
-	size_set_to = clamp((size_select/100), 0, 1000) //eheh
+	size_set_to = clamp((size_select / 100), RESIZE_MINIMUM_DORMS, RESIZE_MAXIMUM_DORMS)
 	to_chat(usr, span_notice("You set the size to [size_select]%"))
 
 /obj/item/gun/energy/sizegun/afterattack(atom/A, mob/living/user, adjacent, params)

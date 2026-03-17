@@ -67,13 +67,13 @@
 			continue
 
 		var/flash_time = strength
-		if(istype(O, /mob/living/carbon/human))
+		if(ishuman(O))
 			var/mob/living/carbon/human/H = O
-			//VOREStation Edit Start
 			if(H.nif && H.nif.flag_check(NIF_V_FLASHPROT,NIF_FLAGS_VISION))
 				H.nif.notify("High intensity light detected, and blocked!",TRUE)
 				continue
-			//VOREStation Edit End
+			if(FLASHPROOF in H.mutations)
+				continue
 			if(!H.eyecheck() <= 0)
 				continue
 			flash_time *= H.species.flash_mod
@@ -97,9 +97,7 @@
 		flash()
 	..(severity)
 
-// CHOMPEdit Start
 /obj/machinery/flasher/portable/HasProximity(turf/T, datum/weakref/WF, oldloc)
-	SIGNAL_HANDLER
 	if(isnull(WF))
 		return
 
@@ -107,7 +105,6 @@
 	if(isnull(AM))
 		log_debug("DEBUG: HasProximity called without reference on [src].")
 		return
-// CHOMPEdit End
 	if(disable || !anchored || (last_flash && world.time < last_flash + 150))
 		return
 
@@ -145,7 +142,7 @@
 	active = 1
 	icon_state = "launcheract"
 
-	for(var/obj/machinery/flasher/M in machines)
+	for(var/obj/machinery/flasher/M in GLOB.machines)
 		if(M.id == id)
 			spawn()
 				M.flash()

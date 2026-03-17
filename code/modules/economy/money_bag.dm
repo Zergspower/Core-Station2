@@ -43,14 +43,17 @@
 		dat += text("Phoron coins: [amt_phoron] <A href='byond://?src=\ref[src];remove=phoron'>Remove one</A><br>")
 	if (amt_uranium)
 		dat += text("Uranium coins: [amt_uranium] <A href='byond://?src=\ref[src];remove=uranium'>Remove one</A><br>")
-	user << browse("[dat]", "window=moneybag")
 
-/obj/item/moneybag/attackby(obj/item/W as obj, mob/user as mob)
+	var/datum/browser/popup = new(user, "moneybag", "Moneybag")
+	popup.set_content(dat)
+	popup.open()
+
+/obj/item/moneybag/attackby(obj/item/W, mob/user)
 	..()
 	if (istype(W, /obj/item/coin))
 		var/obj/item/coin/C = W
 		to_chat(user, span_blue("You add the [C.name] into the bag."))
-		usr.drop_item()
+		user.drop_item()
 		contents += C
 	if (istype(W, /obj/item/moneybag))
 		var/obj/item/moneybag/C = W
@@ -88,8 +91,8 @@
 
 /obj/item/moneybag/vault
 
-/obj/item/moneybag/vault/New()
-	..()
+/obj/item/moneybag/vault/Initialize(mapload)
+	. = ..()
 	new /obj/item/coin/silver(src)
 	new /obj/item/coin/silver(src)
 	new /obj/item/coin/silver(src)

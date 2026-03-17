@@ -99,8 +99,6 @@
 /area/submap/whiteship)
 "fr" = (
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /turf/simulated/floor/tiled/eris/white/techfloor,
@@ -111,13 +109,11 @@
 /area/submap/whiteship)
 "fw" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "white_ship_pump";
 	dir = 8
 	},
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled/eris/white/techfloor,
@@ -220,7 +216,6 @@
 	pixel_x = -24
 	},
 /obj/structure/cable{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /turf/simulated/floor/tiled/eris/white/techfloor,
@@ -293,13 +288,10 @@
 "tb" = (
 /obj/item/cell,
 /obj/structure/cable{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /obj/machinery/power/terminal,
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/eris/white/techfloor,
@@ -347,8 +339,6 @@
 "va" = (
 /obj/random/trash,
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled/eris/white/techfloor,
@@ -379,11 +369,6 @@
 /obj/structure/frame/computer,
 /turf/simulated/floor/tiled/eris/white/techfloor,
 /area/submap/whiteship)
-"wx" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled/techfloor/grid,
-/area/submap/whiteship)
 "xq" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/yellow{
 	dir = 6
@@ -405,8 +390,6 @@
 "yA" = (
 /obj/machinery/door/airlock/voidcraft/survival_pod,
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled/eris/white/techfloor,
@@ -492,8 +475,6 @@
 /area/submap/whiteship)
 "Ex" = (
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled/eris/white/techfloor,
@@ -516,11 +497,6 @@
 /obj/effect/decal/cleanable/dirt,
 /mob/living/simple_mob/metroid/juvenile/super,
 /turf/simulated/floor/tiled/eris/white/techfloor,
-/area/submap/whiteship)
-"FB" = (
-/obj/structure/lattice,
-/obj/structure/lattice,
-/turf/template_noop,
 /area/submap/whiteship)
 "FT" = (
 /obj/machinery/portable_atmospherics/canister/oxygen,
@@ -563,7 +539,6 @@
 	name = "Hibernation Pods"
 	},
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/techmaint,
 /area/submap/whiteship)
 "IB" = (
@@ -578,7 +553,6 @@
 /turf/simulated/floor/tiled/techmaint,
 /area/submap/whiteship)
 "Jy" = (
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /obj/random/trash,
 /obj/random/junk,
@@ -640,8 +614,6 @@
 	pixel_x = 27
 	},
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled/eris/white/techfloor,
@@ -752,8 +724,6 @@
 /area/submap/whiteship)
 "Wx" = (
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/techfloor/grid,
@@ -767,17 +737,9 @@
 "Xs" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled/eris/white/techfloor,
-/area/submap/whiteship)
-"Xy" = (
-/mob/living/simple_mob/metroid/juvenile/baby,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled/techfloor/grid,
 /area/submap/whiteship)
 "XK" = (
 /obj/machinery/atmospherics/portables_connector,
@@ -1117,7 +1079,7 @@ fR
 fR
 gJ
 Jb
-Xy
+TC
 oh
 Br
 al
@@ -1351,8 +1313,8 @@ qz
 tg
 eV
 qz
-Xy
-wx
+TC
+qz
 sj
 tb
 QH
@@ -2056,7 +2018,7 @@ fR
 fR
 EE
 Nc
-FB
+EE
 Nc
 fR
 fR
@@ -2114,7 +2076,7 @@ fR
 fR
 fR
 EE
-FB
+EE
 EE
 gJ
 gJ

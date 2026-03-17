@@ -205,7 +205,7 @@
 	if(get_dist(on_wall,user) > 1)
 		return
 	var/ndir = get_dir(on_wall, user)
-	if(!(ndir in cardinal))
+	if(!(ndir in GLOB.cardinal))
 		return
 	var/turf/T = get_turf(user)
 	if(!istype(T, /turf/simulated/floor))
@@ -215,7 +215,7 @@
 	user.visible_message("\The [user] attaches \the [src] to the wall.",
 		span_notice("You attach \the [src] to the wall."),
 		span_warningplain("You hear clicking."))
-	if(istype(user, /mob/living/silicon/robot)) //Robots cannot unequip/drop items, for Safety Reasons.
+	if(isrobot(user)) //Robots cannot unequip/drop items, for Safety Reasons.
 		forceMove(T)
 	user.drop_item(T)
 	anchored = TRUE

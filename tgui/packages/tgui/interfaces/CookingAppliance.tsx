@@ -1,17 +1,16 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import {
   AnimatedNumber,
   Button,
-  Flex,
   LabeledList,
   ProgressBar,
   Section,
-} from '../components';
-import { Window } from '../layouts';
+  Stack,
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
-type Data = {
+export type Data = {
   on: BooleanLike;
   safety: BooleanLike;
   selected_option: string | null;
@@ -25,13 +24,13 @@ type Data = {
     empty: BooleanLike;
     progress: number;
     progressText: string;
+    prediction: string;
     container: string | null;
   }[];
 };
 
-export const CookingAppliance = (props) => {
+export const CookingApplianceStatus = (props) => {
   const { act, data } = useBackend<Data>();
-
   const {
     on,
     safety,
@@ -46,64 +45,74 @@ export const CookingAppliance = (props) => {
   } = data;
 
   return (
+    <Section
+      title="Status"
+      buttons={
+        <Button
+          selected={on}
+          icon="power-off"
+          onClick={() => act('toggle_power')}
+        >
+          {on ? 'On' : 'Off'}
+        </Button>
+      }
+    >
+      <LabeledList>
+        <LabeledList.Item label="Safety">
+          <Button
+            fluid
+            selected={safety}
+            icon={safety ? 'shield-alt' : 'exclamation-triangle'}
+            onClick={() => act('toggle_safety')}
+          >
+            {safety ? 'On' : 'Off'}
+          </Button>
+        </LabeledList.Item>
+        {!!show_selected_option && (
+          <LabeledList.Item label="Selected Output">
+            <Button
+              icon="pencil"
+              fluid
+              onClick={() => act('change_output')}
+              tooltip="Change Output"
+            >
+              {selected_option || 'Default'}
+            </Button>
+          </LabeledList.Item>
+        )}
+        <LabeledList.Item label="Temperature">
+          <ProgressBar
+            color={temperatureEnough ? 'good' : 'blue'}
+            value={temperature}
+            maxValue={optimalTemp}
+          >
+            <AnimatedNumber value={temperature} />
+            &deg;C / {optimalTemp}&deg;C
+          </ProgressBar>
+        </LabeledList.Item>
+        <LabeledList.Item label="Efficiency">
+          <AnimatedNumber value={efficiency} />%
+        </LabeledList.Item>
+      </LabeledList>
+    </Section>
+  );
+};
+
+export const CookingAppliance = (props) => {
+  const { act, data } = useBackend<Data>();
+
+  const { containersRemovable, our_contents } = data;
+
+  return (
     <Window width={600} height={600}>
       <Window.Content scrollable>
-        <Section
-          title="Status"
-          buttons={
-            <Button
-              selected={on}
-              icon="power-off"
-              onClick={() => act('toggle_power')}
-            >
-              {on ? 'On' : 'Off'}
-            </Button>
-          }
-        >
-          <LabeledList>
-            <LabeledList.Item label="Safety">
-              <Button
-                fluid
-                selected={safety}
-                icon={safety ? 'shield-alt' : 'exclamation-triangle'}
-                onClick={() => act('toggle_safety')}
-              >
-                {safety ? 'On' : 'Off'}
-              </Button>
-            </LabeledList.Item>
-            {!!show_selected_option && (
-              <LabeledList.Item label="Selected Output">
-                <Button
-                  icon="pencil"
-                  fluid
-                  onClick={() => act('change_output')}
-                  tooltip="Change Output"
-                >
-                  {selected_option || 'Default'}
-                </Button>
-              </LabeledList.Item>
-            )}
-            <LabeledList.Item label="Temperature">
-              <ProgressBar
-                color={temperatureEnough ? 'good' : 'blue'}
-                value={temperature}
-                maxValue={optimalTemp}
-              >
-                <AnimatedNumber value={temperature} />
-                &deg;C / {optimalTemp}&deg;C
-              </ProgressBar>
-            </LabeledList.Item>
-            <LabeledList.Item label="Efficiency">
-              <AnimatedNumber value={efficiency} />%
-            </LabeledList.Item>
-          </LabeledList>
-        </Section>
+        <CookingApplianceStatus />
         <Section title="Containers">
           <LabeledList>
             {our_contents.map((content, i) => {
               if (content.empty) {
                 return (
-                  <LabeledList.Item key={i} label={'Slot #' + (i + 1)}>
+                  <LabeledList.Item key={i} label={`Slot #${i + 1}`}>
                     <Button onClick={() => act('slot', { slot: i + 1 })}>
                       Empty
                     </Button>
@@ -113,20 +122,25 @@ export const CookingAppliance = (props) => {
 
               return (
                 <LabeledList.Item
-                  label={'Slot #' + (i + 1)}
+                  label={`Slot #${i + 1}`}
                   verticalAlign="middle"
                   key={i}
+                  tooltip={
+                    content.prediction
+                      ? `Predicted Output: ${content.prediction}`
+                      : undefined
+                  }
                 >
-                  <Flex spacing={1}>
-                    <Flex.Item>
+                  <Stack align="center">
+                    <Stack.Item>
                       <Button
                         disabled={!containersRemovable}
                         onClick={() => act('slot', { slot: i + 1 })}
                       >
                         {content.container || 'No Container'}
                       </Button>
-                    </Flex.Item>
-                    <Flex.Item grow={1}>
+                    </Stack.Item>
+                    <Stack.Item grow>
                       <ProgressBar
                         color={content.progressText[0]}
                         value={content.progress}
@@ -134,8 +148,8 @@ export const CookingAppliance = (props) => {
                       >
                         {content.progressText[1]}
                       </ProgressBar>
-                    </Flex.Item>
-                  </Flex>
+                    </Stack.Item>
+                  </Stack>
                 </LabeledList.Item>
               );
             })}

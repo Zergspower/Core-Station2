@@ -1,7 +1,7 @@
 import { useBackend } from 'tgui/backend';
 import { Box, Button, LabeledList, Section } from 'tgui-core/components';
 
-import { modalMindData as ActiveMindRecordData } from './types';
+import type { modalMindData as ActiveMindRecordData } from './types';
 
 export const MindRecordModal = (props: { data: ActiveMindRecordData }) => {
   const { act } = useBackend();
@@ -16,7 +16,7 @@ export const MindRecordModal = (props: { data: ActiveMindRecordData }) => {
     <Section
       backgroundColor="#252525"
       m={2}
-      title={'Mind Record (' + realname + ')'}
+      title={`Mind Record (${realname})`}
       buttons={
         <Button icon="times" color="red" onClick={() => act('clear_m_rec')} />
       }

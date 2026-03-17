@@ -1,7 +1,7 @@
 import { useBackend } from 'tgui/backend';
 import { Box, Button, Input } from 'tgui-core/components';
 
-import { Data } from './types';
+import type { Data } from './types';
 
 export const MedicalRecordsList = (props) => {
   const { act, data } = useBackend<Data>();
@@ -11,7 +11,7 @@ export const MedicalRecordsList = (props) => {
       <Input
         fluid
         placeholder="Search by Name, DNA, or ID"
-        onChange={(e, value: string) => act('search', { t1: value })}
+        onChange={(value: string) => act('search', { t1: value })}
       />
       <Box mt="0.5rem">
         {records.map((record, i) => (
@@ -21,7 +21,7 @@ export const MedicalRecordsList = (props) => {
             mb="0.5rem"
             onClick={() => act('d_rec', { d_rec: record.ref })}
           >
-            {record.id + ': ' + record.name}
+            {`${record.id}: ${record.name}`}
           </Button>
         ))}
       </Box>

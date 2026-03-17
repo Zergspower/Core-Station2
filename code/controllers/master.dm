@@ -72,7 +72,7 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 	// Highlander-style: there can only be one! Kill off the old and replace it with the new.
 
 	if(!random_seed)
-		#ifdef UNIT_TESTS
+		#ifdef UNIT_TEST
 		random_seed = 29051994 // How about 22475?
 		#else
 		random_seed = rand(1, 1e9)
@@ -250,7 +250,11 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 		SS_INIT_NO_NEED,
 	)
 
-	if (subsystem.flags & SS_NO_INIT || subsystem.subsystem_initialized) //Don't init SSs with the corresponding flag or if they already are initialized
+	if (subsystem.subsystem_initialized) //Don't init if they already are initialized
+		return
+
+	if (subsystem.flags & SS_NO_INIT)
+		subsystem.subsystem_initialized = TRUE
 		return
 
 	current_initializing_subsystem = subsystem
@@ -311,7 +315,7 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 	log_world(message)
 
 /datum/controller/master/proc/SetRunLevel(new_runlevel)
-	var/old_runlevel = isnull(current_runlevel) ? "NULL" : runlevel_flags[current_runlevel]
+	var/old_runlevel = isnull(current_runlevel) ? "NULL" : GLOB.runlevel_flags[current_runlevel]
 	testing("MC: Runlevel changed from [old_runlevel] to [new_runlevel]")
 	current_runlevel = RUNLEVEL_FLAG_TO_INDEX(new_runlevel)
 	if(current_runlevel < 1)
@@ -363,8 +367,8 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 
 		var/ss_runlevels = SS.runlevels
 		var/added_to_any = FALSE
-		for(var/I in 1 to global.runlevel_flags.len)
-			if(ss_runlevels & global.runlevel_flags[I])
+		for(var/I in 1 to GLOB.runlevel_flags.len)
+			if(ss_runlevels & GLOB.runlevel_flags[I])
 				while(runlevel_sorted_subsystems.len < I)
 					runlevel_sorted_subsystems += list(list())
 				runlevel_sorted_subsystems[I] += SS

@@ -5,7 +5,7 @@
 	computer_id	= client.computer_id
 	log_access_in(client)
 	if(CONFIG_GET(flag/log_access))
-		for(var/mob/M in player_list)
+		for(var/mob/M in GLOB.player_list)
 			if(M == src)	continue
 			if( M.key && (M.key != key) )
 				var/matches
@@ -21,7 +21,7 @@
 					if(matches)	matches += " and "
 					matches += "ID ([client.computer_id])"
 					if(!CONFIG_GET(flag/disable_cid_warn_popup))
-						tgui_alert_async(usr, "You appear to have logged in with another key this round, which is not permitted. Please contact an administrator if you believe this message to be in error.")
+						tgui_alert_async(src, "You appear to have logged in with another key this round, which is not permitted. Please contact an administrator if you believe this message to be in error.")
 				if(matches)
 					if(M.client)
 						message_admins("[span_red(span_bold("Notice:"))] [span_blue("[key_name_admin(src)] has the same [matches] as [key_name_admin(M)].")]", 1)
@@ -31,8 +31,9 @@
 						log_adminwarn("Notice: [key_name(src)] has the same [matches] as [key_name(M)] (no longer logged in).")
 
 /mob/Login()
+	persistent_ckey = client.ckey
 
-	player_list |= src
+	GLOB.player_list |= src
 	update_Login_details()
 	world.update_status()
 
@@ -41,11 +42,6 @@
 	if(hud_used)
 		qdel(hud_used)		//remove the hud objects
 	new /datum/hud(src)
-
-	if(client.prefs && client.prefs.client_fps)
-		client.fps = client.prefs.client_fps
-	else
-		client.fps = 0 // Results in using the server FPS
 
 	next_move = 1
 	disconnect_time = null				//VOREStation Addition: clear the disconnect time
@@ -67,6 +63,8 @@
 	if(!vis_enabled)
 		vis_enabled = list()
 	client.screen += plane_holder.plane_masters
+	if(GLOB.global_vantag_hud)
+		vantag_hud = TRUE
 	recalculate_vis()
 
 	// AO support
@@ -92,3 +90,6 @@
 		client.images += cloaked_selfimage
 	client.init_verbs()
 	SEND_SIGNAL(src, COMSIG_MOB_CLIENT_LOGIN, client)
+	SEND_SIGNAL(client, COMSIG_CLIENT_MOB_LOGIN, src)
+
+	set_listening(LISTENING_PLAYER)

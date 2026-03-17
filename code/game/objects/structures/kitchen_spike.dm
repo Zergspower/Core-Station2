@@ -19,7 +19,7 @@
 		to_chat(user, span_danger("The spike already has something on it, finish collecting its meat first!"))
 	else
 		if(spike(G.affecting))
-			var/datum/gender/T = gender_datums[G.affecting.get_visible_gender()]
+			var/datum/gender/T = GLOB.gender_datums[G.affecting.get_visible_gender()]
 			visible_message(span_danger("[user] has forced [G.affecting] onto the spike, killing [T.him] instantly!"))
 			var/mob/M = G.affecting
 			M.forceMove(src)
@@ -32,7 +32,7 @@
 	if(!istype(victim))
 		return
 
-	if(istype(victim, /mob/living/carbon/human))
+	if(ishuman(victim))
 		var/mob/living/carbon/human/H = victim
 		if(istype(H.species, /datum/species/monkey))
 			meat_type = H.species.meat_type

@@ -1,15 +1,15 @@
 import { Fragment } from 'react';
-
-import { useBackend, useSharedState } from '../../backend';
+import { useBackend, useSharedState } from 'tgui/backend';
 import {
   Box,
   Button,
-  Flex,
   Icon,
   Input,
   Section,
+  Stack,
   Tabs,
-} from '../../components';
+} from 'tgui-core/components';
+
 import { COLOR_BAD, COLOR_KEYS } from './constants';
 import {
   getFirstValidPartSet,
@@ -17,7 +17,7 @@ import {
   searchFilter,
 } from './functions';
 import { MaterialAmount } from './Material';
-import { Data, internalPart } from './types';
+import type { Data, internalPart } from './types';
 
 export const PartSets = (props) => {
   const { data } = useBackend<Data>();
@@ -76,14 +76,14 @@ export const PartLists = (props: {
   let partsObj: { Parts: internalPart[] } = {
     Parts: [],
   };
-  let partsList: internalPart[] = [];
+  const partsList: internalPart[] = [];
   // Build list of sub-categories if not using a search filter.
   if (!searchText) {
     partsObj = { Parts: [] };
     buildableParts[selectedPartTab!].forEach((part) => {
-      part['format'] = partCondFormat(materials, queueMaterials, part);
+      part.format = partCondFormat(materials, queueMaterials, part);
       if (!part.subCategory) {
-        partsObj['Parts'].push(part);
+        partsObj.Parts.push(part);
         return;
       }
       if (!(part.subCategory in partsObj)) {
@@ -93,7 +93,7 @@ export const PartLists = (props: {
     });
   } else {
     searchFilter(searchText, buildableParts).forEach((part: internalPart) => {
-      part['format'] = partCondFormat(materials, queueMaterials, part);
+      part.format = partCondFormat(materials, queueMaterials, part);
       partsList.push(part);
     });
   }
@@ -101,19 +101,19 @@ export const PartLists = (props: {
   return (
     <>
       <Section>
-        <Flex>
-          <Flex.Item mr={1}>
+        <Stack>
+          <Stack.Item mr={1}>
             <Icon name="search" />
-          </Flex.Item>
-          <Flex.Item grow={1}>
+          </Stack.Item>
+          <Stack.Item grow>
             <Input
               fluid
               placeholder="Search for..."
               value={searchText}
-              onInput={(e, v) => setSearchText(v)}
+              onChange={(v) => setSearchText(v)}
             />
-          </Flex.Item>
-        </Flex>
+          </Stack.Item>
+        </Stack>
       </Section>
       {(!!searchText && (
         <PartCategory
@@ -170,8 +170,8 @@ const PartCategory = (props: {
         {!parts.length && placeholder}
         {parts.map((part) => (
           <Fragment key={part.name}>
-            <Flex align="center">
-              <Flex.Item>
+            <Stack align="center">
+              <Stack.Item>
                 <Button
                   disabled={
                     !!buildingPart || part.format.textColor === COLOR_BAD
@@ -182,8 +182,8 @@ const PartCategory = (props: {
                   icon="play"
                   onClick={() => act('build_part', { id: part.id })}
                 />
-              </Flex.Item>
-              <Flex.Item>
+              </Stack.Item>
+              <Stack.Item>
                 <Button
                   color="average"
                   height="20px"
@@ -191,29 +191,27 @@ const PartCategory = (props: {
                   icon="plus-circle"
                   onClick={() => act('add_queue_part', { id: part.id })}
                 />
-              </Flex.Item>
-              <Flex.Item>
+              </Stack.Item>
+              <Stack.Item>
                 <Box inline textColor={COLOR_KEYS[part.format.textColor]}>
                   {part.name}
                 </Box>
-              </Flex.Item>
-              <Flex.Item grow={1} />
-              <Flex.Item>
+              </Stack.Item>
+              <Stack.Item grow />
+              <Stack.Item>
                 <Button
                   icon="question-circle"
                   color="transparent"
                   height="20px"
-                  tooltip={
-                    'Build Time: ' + part.printTime + 's. ' + (part.desc || '')
-                  }
+                  tooltip={`Build Time: ${part.printTime}s. ${part.desc || ''}`}
                   tooltipPosition="left"
                 />
-              </Flex.Item>
-            </Flex>
+              </Stack.Item>
+            </Stack>
             {displayMatCost && (
-              <Flex mb={2}>
+              <Stack mb={2}>
                 {Object.keys(part.cost).map((material) => (
-                  <Flex.Item
+                  <Stack.Item
                     width={'50px'}
                     key={material}
                     color={COLOR_KEYS[part.format[material].color]}
@@ -226,9 +224,9 @@ const PartCategory = (props: {
                       name={material}
                       amount={part.cost[material]}
                     />
-                  </Flex.Item>
+                  </Stack.Item>
                 ))}
-              </Flex>
+              </Stack>
             )}
           </Fragment>
         ))}

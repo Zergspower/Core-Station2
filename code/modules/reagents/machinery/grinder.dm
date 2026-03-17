@@ -1,55 +1,3 @@
-// Don't need a new list for every grinder in the game
-var/global/list/sheet_reagents = list( //have a number of reagents divisible by REAGENTS_PER_SHEET (default 20) unless you like decimals.
-	/obj/item/stack/material/plastic = list(REAGENT_ID_CARBON,REAGENT_ID_CARBON,REAGENT_ID_OXYGEN,REAGENT_ID_CHLORINE,REAGENT_ID_SULFUR),
-	/obj/item/stack/material/copper = list(REAGENT_ID_COPPER),
-	/obj/item/stack/material/wood = list(REAGENT_ID_CARBON,REAGENT_ID_WOODPULP,REAGENT_ID_NITROGEN,REAGENT_ID_POTASSIUM,REAGENT_ID_SODIUM),
-	/obj/item/stack/material/stick = list(REAGENT_ID_CARBON,REAGENT_ID_WOODPULP,REAGENT_ID_NITROGEN,REAGENT_ID_POTASSIUM,REAGENT_ID_SODIUM),
-	/obj/item/stack/material/log = list(REAGENT_ID_CARBON,REAGENT_ID_WOODPULP,REAGENT_ID_NITROGEN,REAGENT_ID_POTASSIUM,REAGENT_ID_SODIUM),
-	/obj/item/stack/material/algae = list(REAGENT_ID_CARBON,REAGENT_ID_NITROGEN,REAGENT_ID_NITROGEN,REAGENT_ID_PHOSPHORUS,REAGENT_ID_PHOSPHORUS),
-	/obj/item/stack/material/graphite = list(REAGENT_ID_CARBON),
-	/obj/item/stack/material/aluminium = list(REAGENT_ID_ALUMINIUM), // The material is aluminium, but the reagent is aluminum...
-	/obj/item/stack/material/glass/reinforced = list(REAGENT_ID_SILICON,REAGENT_ID_SILICON,REAGENT_ID_SILICON,REAGENT_ID_IRON,REAGENT_ID_CARBON),
-	/obj/item/stack/material/leather = list(REAGENT_ID_CARBON,REAGENT_ID_CARBON,REAGENT_ID_PROTEIN,REAGENT_ID_PROTEIN,REAGENT_ID_TRIGLYCERIDE),
-	/obj/item/stack/material/cloth = list(REAGENT_ID_CARBON,REAGENT_ID_CARBON,REAGENT_ID_CARBON,REAGENT_ID_PROTEIN,REAGENT_ID_SODIUM),
-	/obj/item/stack/material/fiber = list(REAGENT_ID_CARBON,REAGENT_ID_CARBON,REAGENT_ID_CARBON,REAGENT_ID_PROTEIN,REAGENT_ID_SODIUM),
-	/obj/item/stack/material/fur = list(REAGENT_ID_CARBON,REAGENT_ID_CARBON,REAGENT_ID_CARBON,REAGENT_ID_SULFUR,REAGENT_ID_SODIUM),
-	/obj/item/stack/material/deuterium = list(REAGENT_ID_HYDROGEN),
-	/obj/item/stack/material/glass/phoronrglass = list(REAGENT_ID_SILICON,REAGENT_ID_SILICON,REAGENT_ID_SILICON,REAGENT_ID_PHORON,REAGENT_ID_PHORON),
-	/obj/item/stack/material/diamond = list(REAGENT_ID_CARBON),
-	/obj/item/stack/material/durasteel = list(REAGENT_ID_IRON,REAGENT_ID_IRON,REAGENT_ID_CARBON,REAGENT_ID_CARBON,REAGENT_ID_PLATINUM),
-	/obj/item/stack/material/wax = list(REAGENT_ID_ETHANOL,REAGENT_ID_TRIGLYCERIDE),
-	/obj/item/stack/material/iron = list(REAGENT_ID_IRON),
-	/obj/item/stack/material/uranium = list(REAGENT_ID_URANIUM),
-	/obj/item/stack/material/phoron = list(REAGENT_ID_PHORON),
-	/obj/item/stack/material/gold = list(REAGENT_ID_GOLD),
-	/obj/item/stack/material/silver = list(REAGENT_ID_SILVER),
-	/obj/item/stack/material/platinum = list(REAGENT_ID_PLATINUM),
-	/obj/item/stack/material/mhydrogen = list(REAGENT_ID_HYDROGEN),
-	/obj/item/stack/material/steel = list(REAGENT_ID_IRON, REAGENT_ID_CARBON),
-	/obj/item/stack/material/plasteel = list(REAGENT_ID_IRON, REAGENT_ID_IRON, REAGENT_ID_CARBON, REAGENT_ID_CARBON, REAGENT_ID_PLATINUM), //8 iron, 8 carbon, 4 platinum,
-	/obj/item/stack/material/snow = list(REAGENT_ID_WATER),
-	/obj/item/stack/material/sandstone = list(REAGENT_ID_SILICON, REAGENT_ID_OXYGEN),
-	/obj/item/stack/material/glass = list(REAGENT_ID_SILICON),
-	/obj/item/stack/material/glass/phoronglass = list(REAGENT_ID_PLATINUM, REAGENT_ID_SILICON, REAGENT_ID_SILICON, REAGENT_ID_SILICON), //5 platinum, 15 silicon,
-	/obj/item/stack/material/supermatter = list(REAGENT_ID_SUPERMATTER)
-	)
-var/global/list/ore_reagents = list( //have a number of reageents divisible by REAGENTS_PER_ORE (default 20) unless you like decimals.
-	/obj/item/ore/glass = list(REAGENT_ID_SILICON),
-	/obj/item/ore/iron = list(REAGENT_ID_IRON),
-	/obj/item/ore/coal = list(REAGENT_ID_CARBON),
-	/obj/item/ore/phoron = list(REAGENT_ID_PHORON),
-	/obj/item/ore/silver = list(REAGENT_ID_SILVER),
-	/obj/item/ore/gold = list(REAGENT_ID_GOLD),
-	/obj/item/ore/marble = list(REAGENT_ID_SILICON,REAGENT_ID_ALUMINIUM,REAGENT_ID_ALUMINIUM,REAGENT_ID_SODIUM,REAGENT_ID_CALCIUM), // Some nice variety here
-	/obj/item/ore/uranium = list(REAGENT_ID_URANIUM),
-	/obj/item/ore/diamond = list(REAGENT_ID_CARBON),
-	/obj/item/ore/osmium = list(REAGENT_ID_PLATINUM), // should contain osmium
-	/obj/item/ore/lead = list(REAGENT_ID_LEAD),
-	/obj/item/ore/hydrogen = list(REAGENT_ID_HYDROGEN),
-	/obj/item/ore/verdantium = list(REAGENT_ID_RADIUM,REAGENT_ID_PHORON,REAGENT_ID_NITROGEN,REAGENT_ID_PHOSPHORUS,REAGENT_ID_SODIUM), // Some fun stuff to be useful with
-	/obj/item/ore/rutile = list(REAGENT_ID_TUNGSTEN,REAGENT_ID_OXYGEN) // Should be titanium
-)
-
 /obj/machinery/reagentgrinder
 
 	name = "All-In-One Grinder"
@@ -73,7 +21,7 @@ var/global/list/ore_reagents = list( //have a number of reageents divisible by R
 	// var/static/radial_juice = image(icon = 'icons/mob/radial.dmi', icon_state = "radial_juice")
 	// var/static/radial_mix = image(icon = 'icons/mob/radial.dmi', icon_state = "radial_mix")
 
-/obj/machinery/reagentgrinder/Initialize()
+/obj/machinery/reagentgrinder/Initialize(mapload)
 	. = ..()
 	beaker = new /obj/item/reagent_containers/glass/beaker/large(src)
 	default_apply_parts()
@@ -105,7 +53,7 @@ var/global/list/ore_reagents = list( //have a number of reageents divisible by R
 	icon_state = "juicer"+num2text(!isnull(beaker))
 	return
 
-/obj/machinery/reagentgrinder/attackby(var/obj/item/O as obj, var/mob/user as mob)
+/obj/machinery/reagentgrinder/attackby(var/obj/item/O, var/mob/user)
 	if(beaker)
 		if(default_deconstruction_screwdriver(user, O))
 			return
@@ -124,11 +72,11 @@ var/global/list/ore_reagents = list( //have a number of reageents divisible by R
 		if (beaker)
 			return 1
 		else
-			src.beaker =  O
+			beaker =  O
 			user.drop_item()
 			O.loc = src
 			update_icon()
-			src.updateUsrDialog()
+			updateUsrDialog(user)
 			return 0
 
 	if(holdingitems && holdingitems.len >= limit)
@@ -159,7 +107,7 @@ var/global/list/ore_reagents = list( //have a number of reageents divisible by R
 		else
 			to_chat(user, "You fill \the [src] from \the [O].")
 
-		src.updateUsrDialog()
+		src.updateUsrDialog(user)
 		return 0
 
 	if(istype(O,/obj/item/gripper))
@@ -173,7 +121,7 @@ var/global/list/ore_reagents = list( //have a number of reageents divisible by R
 
 		return 0
 
-	if(!global.sheet_reagents[O.type] && !global.ore_reagents[O.type] && (!O.reagents || !O.reagents.total_volume))
+	if(!GLOB.sheet_reagents[O.type] && !GLOB.ore_reagents[O.type] && (!O.reagents || !O.reagents.total_volume))
 		to_chat(user, "\The [O] is not suitable for blending.")
 		return 1
 
@@ -194,10 +142,10 @@ var/global/list/ore_reagents = list( //have a number of reageents divisible by R
 		return
 	replace_beaker(user)
 
-/obj/machinery/reagentgrinder/attack_hand(mob/user as mob)
+/obj/machinery/reagentgrinder/attack_hand(mob/user)
 	interact(user)
 
-/obj/machinery/reagentgrinder/interact(mob/user as mob) // The microwave Menu //I am reasonably certain that this is not a microwave
+/obj/machinery/reagentgrinder/interact(mob/user) // The microwave Menu //I am reasonably certain that this is not a microwave
 	if(inuse || user.incapacitated())
 		return
 
@@ -271,10 +219,10 @@ var/global/list/ore_reagents = list( //have a number of reageents divisible by R
 		if(remaining_volume <= 0)
 			break
 
-		if(global.sheet_reagents[O.type])
+		if(GLOB.sheet_reagents[O.type])
 			var/obj/item/stack/stack = O
 			if(istype(stack))
-				var/list/sheet_components = global.sheet_reagents[stack.type]
+				var/list/sheet_components = GLOB.sheet_reagents[stack.type]
 				var/amount_to_take = max(0,min(stack.get_amount(),round(remaining_volume/REAGENTS_PER_SHEET)))
 				if(amount_to_take)
 					stack.use(amount_to_take)
@@ -288,10 +236,10 @@ var/global/list/ore_reagents = list( //have a number of reageents divisible by R
 						beaker.reagents.add_reagent(sheet_components, (amount_to_take*REAGENTS_PER_SHEET))
 					continue
 
-		if(global.ore_reagents[O.type])
+		if(GLOB.ore_reagents[O.type])
 			var/obj/item/ore/R = O
 			if(istype(R))
-				var/list/ore_components = global.ore_reagents[R.type]
+				var/list/ore_components = GLOB.ore_reagents[R.type]
 				if(remaining_volume >= REAGENTS_PER_ORE)
 					holdingitems -= R
 					qdel(R)

@@ -1,6 +1,5 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import {
   Box,
   Button,
@@ -8,8 +7,9 @@ import {
   NoticeBox,
   ProgressBar,
   Section,
-} from '../components';
-import { Window } from '../layouts';
+  Stack,
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   auth: BooleanLike;
@@ -80,45 +80,51 @@ const Cyborgs = (props: {
         key={cyborg.ref}
         title={cyborg.name}
         buttons={
-          <>
+          <Stack>
             {!!cyborg.hackable && !cyborg.emagged && (
-              <Button
-                icon="terminal"
-                color="bad"
+              <Stack.Item>
+                <Button
+                  icon="terminal"
+                  color="bad"
+                  onClick={() =>
+                    act('hackbot', {
+                      ref: cyborg.ref,
+                    })
+                  }
+                >
+                  Hack
+                </Button>
+              </Stack.Item>
+            )}
+            <Stack.Item>
+              <Button.Confirm
+                icon={cyborg.locked_down ? 'unlock' : 'lock'}
+                color={cyborg.locked_down ? 'good' : 'default'}
+                disabled={!auth}
                 onClick={() =>
-                  act('hackbot', {
+                  act('stopbot', {
                     ref: cyborg.ref,
                   })
                 }
               >
-                Hack
-              </Button>
-            )}
-            <Button.Confirm
-              icon={cyborg.locked_down ? 'unlock' : 'lock'}
-              color={cyborg.locked_down ? 'good' : 'default'}
-              disabled={!auth}
-              onClick={() =>
-                act('stopbot', {
-                  ref: cyborg.ref,
-                })
-              }
-            >
-              {cyborg.locked_down ? 'Release' : 'Lockdown'}
-            </Button.Confirm>
-            <Button.Confirm
-              icon="bomb"
-              disabled={!auth}
-              color="bad"
-              onClick={() =>
-                act('killbot', {
-                  ref: cyborg.ref,
-                })
-              }
-            >
-              Detonate
-            </Button.Confirm>
-          </>
+                {cyborg.locked_down ? 'Release' : 'Lockdown'}
+              </Button.Confirm>
+            </Stack.Item>
+            <Stack.Item>
+              <Button.Confirm
+                icon="bomb"
+                disabled={!auth}
+                color="bad"
+                onClick={() =>
+                  act('killbot', {
+                    ref: cyborg.ref,
+                  })
+                }
+              >
+                Detonate
+              </Button.Confirm>
+            </Stack.Item>
+          </Stack>
         }
       >
         <LabeledList>

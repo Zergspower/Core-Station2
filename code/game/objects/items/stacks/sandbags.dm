@@ -32,8 +32,8 @@
 
 	bag_material = MAT_SYNCLOTH
 
-/obj/item/stack/sandbags/Initialize(var/ml, var/amt, var/bag_mat)
-	. = ..(ml, amt)
+/obj/item/stack/sandbags/Initialize(mapload, var/amt, var/bag_mat)
+	. = ..(mapload, amt)
 	recipes = sandbag_recipes
 	update_icon()
 	if(bag_mat)
@@ -47,9 +47,6 @@
 	var/amount = get_amount()
 
 	slowdown = round(amount / 10, 0.1)
-
-var/global/list/datum/stack_recipe/sandbag_recipes = list( \
-	new/datum/stack_recipe("barricade", /obj/structure/barricade/sandbag, 3, time = 5 SECONDS, one_per_turf = 1, on_floor = 1, pass_stack_color = TRUE))
 
 /obj/item/stack/sandbags/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user)
 	var/required = quantity*recipe.req_amount
@@ -132,8 +129,8 @@ var/global/list/datum/stack_recipe/sandbag_recipes = list( \
 
 	var/bag_material = MAT_CLOTH
 
-/obj/item/stack/emptysandbag/Initialize(var/ml, var/amt, var/bag_mat)
-	. = ..(ml, amt)
+/obj/item/stack/emptysandbag/Initialize(mapload, var/amt, var/bag_mat)
+	. = ..(mapload, amt)
 	if(bag_mat)
 		bag_material = bag_mat
 	var/datum/material/M = get_material_by_name("[bag_material]")

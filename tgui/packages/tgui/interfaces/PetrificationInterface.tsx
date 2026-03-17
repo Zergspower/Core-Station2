@@ -1,7 +1,7 @@
-import { BooleanLike } from 'common/react';
 import { useBackend } from 'tgui/backend';
-import { Button, LabeledList, Section } from 'tgui/components';
 import { Window } from 'tgui/layouts';
+import { Button, LabeledList, Section } from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   material: string;
@@ -42,7 +42,7 @@ export const PetrificationInterface = (props) => {
                 tooltipPosition="top"
                 onClick={() => act('set_option', { option: 'identifier' })}
               >
-                {'Change Identifier: "' + identifier + '"'}
+                {`Change Identifier: "${identifier}"`}
               </Button>
             </LabeledList.Item>
             <LabeledList.Item label="Material">
@@ -56,7 +56,7 @@ export const PetrificationInterface = (props) => {
                 tooltipPosition="top"
                 onClick={() => act('set_option', { option: 'material' })}
               >
-                {'Change Material: "' + material + '"'}
+                {`Change Material: "${material}"`}
               </Button>
             </LabeledList.Item>
             <LabeledList.Item label="Adjective">
@@ -70,7 +70,7 @@ export const PetrificationInterface = (props) => {
                 tooltipPosition="top"
                 onClick={() => act('set_option', { option: 'adjective' })}
               >
-                {'Change Adjective: "' + adjective + '"'}
+                {`Change Adjective: "${adjective}"`}
               </Button>
             </LabeledList.Item>
             <LabeledList.Item label="Color">

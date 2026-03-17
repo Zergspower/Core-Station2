@@ -18,13 +18,13 @@
 	is_picked_up = TRUE
 	update_transform()
 
-/obj/item/gun/energy/laser/dropped()
+/obj/item/gun/energy/laser/dropped(mob/living/user)
 	. = ..()
 	if(!istype(loc,/mob/living))
 		is_picked_up = FALSE
 	update_transform()
 
-/obj/item/gun/energy/laser/Initialize()
+/obj/item/gun/energy/laser/Initialize(mapload)
 	. = ..()
 	if((!(type == /obj/item/gun/energy/laser)) && !is64x32_override)
 		is64x32 = FALSE

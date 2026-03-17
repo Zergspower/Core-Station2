@@ -8,6 +8,7 @@
  *			Misc
  */
 
+GLOBAL_LIST_INIT(alphabet_upper, list("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"))
 
 /*
  * SQL sanitization
@@ -15,12 +16,10 @@
 
 // Run all strings to be used in an SQL query through this proc first to properly escape out injection attempts.
 /proc/sanitizeSQL(var/t as text)
-	//var/sqltext = dbcon.Quote(t); //CHOMPEdit Begin
+	//var/sqltext = dbcon.Quote(t);
 	//return copytext(sqltext, 2, length(sqltext));//Quote() adds quotes around input, we already do that
 	return t
-	//CHOMPEdit End
 
-// CHOMPEdit - Adds format_table_name
 /proc/format_table_name(table as text)
 	//return CONFIG_GET(string/feedback_tableprefix) + table
 	return table // We don't implement tableprefix
@@ -29,7 +28,7 @@
  * Text sanitization
  */
 // Can be used almost the same way as normal input for text
-/proc/clean_input(Message, Title, Default, mob/user=usr)
+/proc/clean_input(Message, Title, Default, mob/user)
 	var/txt = input(user, Message, Title, Default) as text | null
 	if(txt)
 		return html_encode(txt)
@@ -424,9 +423,9 @@ GLOBAL_LIST_EMPTY(text_tag_cache)
 	t = replacetext(t, "\[/grid\]", "</td></tr></table>")
 	t = replacetext(t, "\[row\]", "</td><tr>")
 	t = replacetext(t, "\[cell\]", "<td>")
-	t = replacetext(t, "\[logo\]", "<img src = https://raw.githubusercontent.com/CHOMPStation2/CHOMPStation2/master/html/images/ntlogo.png>") //CHOMPEdit
-	t = replacetext(t, "\[redlogo\]", "<img src = https://raw.githubusercontent.com/CHOMPStation2/CHOMPStation2/master/html/images/redntlogo.png>") //CHOMPEdit
-	t = replacetext(t, "\[sglogo\]", "<img src = https://raw.githubusercontent.com/CHOMPStation2/CHOMPStation2/master/html/images/sglogo.png>") //CHOMPEdit
+	t = replacetext(t, "\[logo\]", "<img src=\ref['html/images/ntlogo.png']")
+	t = replacetext(t, "\[redlogo\]", "<img src=\ref['html/images/redntlogo.png']>")
+	t = replacetext(t, "\[sglogo\]", "<img src=\ref['html/images/sglogo.png']")
 	t = replacetext(t, "\[editorbr\]", "")
 	return t
 
@@ -474,9 +473,9 @@ GLOBAL_LIST_EMPTY(text_tag_cache)
 	t = replacetext(t, "</table>", "\[/grid\]")
 	t = replacetext(t, "<tr>", "\[row\]")
 	t = replacetext(t, "<td>", "\[cell\]")
-	t = replacetext(t, "<img src = ntlogo.png>", "\[logo\]")
-	t = replacetext(t, "<img src = redntlogo.png>", "\[redlogo\]")
-	t = replacetext(t, "<img src = sglogo.png>", "\[sglogo\]")
+	t = replacetext(t, "<img src=\ref['html/images/ntlogo.png']>", "\[logo\]")
+	t = replacetext(t, "<img src=\ref['html/images/redntlogo.png']>", "\[redlogo\]")
+	t = replacetext(t, "<img src=\ref['html/images/sglogo.png']>", "\[sglogo\]")
 	t = replacetext(t, "<span class=\"paper_field\"></span>", "\[field\]")
 	t = replacetext(t, "<span class=\"redacted\">R E D A C T E D</span>", "\[redacted\]")
 	t = strip_html_properly(t)
@@ -631,5 +630,28 @@ GLOBAL_LIST_EMPTY(text_tag_cache)
 
 /// Removes all non-alphanumerics from the text, keep in mind this can lead to id conflicts
 /proc/sanitize_css_class_name(name)
-    var/static/regex/regex = new(@"[^a-zA-Z0-9]","g")
-    return replacetext(name, regex, "")
+	var/static/regex/regex = new(@"[^a-zA-Z0-9]","g")
+	return replacetext(name, regex, "")
+
+/// Returns TRUE if the input_text ends with the ending
+/proc/endswith(input_text, ending)
+	var/input_length = LAZYLEN(ending)
+	return !!findtext(input_text, ending, -input_length)
+
+/// Returns TRUE if the input_text starts with any of the beginnings
+/proc/starts_with_any(input_text, list/beginnings)
+	for(var/beginning in beginnings)
+		if(!!findtext(input_text, beginning, 1, LAZYLEN(beginning)+1))
+			return TRUE
+	return FALSE
+
+//finds the first occurrence of one of the characters from needles argument inside haystack
+//it may appear this can be optimised, but it really can't. findtext() is so much faster than anything you can do in byondcode.
+//stupid byond :(
+/proc/findchar(haystack, needles, start=1, end=0)
+	var/temp
+	var/len = length(needles)
+	for(var/i=1, i<=len, i++)
+		temp = findtextEx(haystack, ascii2text(text2ascii(needles,i)), start, end)	//Note: ascii2text(text2ascii) is faster than copytext()
+		if(temp)	end = temp
+	return end

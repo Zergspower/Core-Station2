@@ -1,6 +1,7 @@
 /datum/reagent/vaccine
 	name = REAGENT_VACCINE
 	id = REAGENT_ID_VACCINE
+	description = "Liquid vaccine against some type of virus."
 	color = "#C81040"
 	taste_description = "antibodies"
 
@@ -10,7 +11,7 @@
 			var/datum/disease/D = thing
 			if(D.GetDiseaseID() in data)
 				D.cure()
-		M.resistances |= data
+		M.AddResistances(data)
 
 /datum/reagent/vaccines/mix_data(newdata, newamount)
 	if(islist(newdata))
@@ -29,14 +30,14 @@
 	color = "#41B0C0"
 	taste_mult = 1.5
 
-/datum/reagent/medicine/adranol/adranolvirusfood
+/datum/reagent/adranol/adranolvirusfood
 	name = REAGENT_ADRANOLVIRUSFOOD
 	id = REAGENT_ID_ADRANOLVIRUSFOOD
 	description = "Mutates viruses when mixed in blood. This one seems rather weak."
 	color = "#D18AA5"
 
 /datum/reagent/toxin/phoron/phoronvirusfood
-	name = REAGENT_ADRANOLVIRUSFOOD
+	name = REAGENT_PHORONVIRUSFOOD
 	id = REAGENT_ID_PHORONVIRUSFOOD
 	description = "Mutates viruses when mixed in blood. This one seems to be the strongest."
 	color = "#A69DA9"
@@ -46,6 +47,23 @@
 	id = REAGENT_ID_WEAKPHORONVIRUSFOOD
 	description = "Mutates viruses when mixed in blood. This one seems to have been weakened, but still strong."
 	color = "#CEC3C6"
+
+/datum/reagent/uranium/uraniumvirusfood
+	name = REAGENT_URANIUMVIRUSFOOD
+	id = REAGENT_ID_URANIUMVIRUSFOOD
+	description = "Mutates viruses when mixed in blood. This one seems to glow lightly."
+	color = "#D18AA5"
+
+/datum/reagent/uranium/uraniumvirusfood/unstable
+	name = REAGENT_UNSTABLEURANIUMVIRUSFOOD
+	id = REAGENT_ID_UNSTABLEURANIUMVIRUSFOOD
+	description = "Mutates viruses when mixed in blood. This one seems be lightly warm."
+	color = "#D18AA5"
+
+/datum/reagent/uranium/uraniumvirusfood/stable
+	name = REAGENT_STABLEURANIUMVIRUSFOOD
+	id = REAGENT_ID_STABLEURANIUMVIRUSFOOD
+	description = "Mutates viruses when mixed in blood. This one seems to be stable."
 
 /datum/reagent/toxin/phoron/phoronvirusfood/sizevirusfood
 	name = REAGENT_SIZEVIRUSFOOD

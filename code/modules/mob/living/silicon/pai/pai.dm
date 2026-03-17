@@ -26,51 +26,6 @@
 	var/obj/item/communicator/integrated/communicator	// Our integrated communicator.
 
 	var/chassis = "pai-repairbot"   // A record of your chosen chassis.
-	var/list/possible_chassis = list( //CHOMPEDIT: This doesnt need to be /Global/ and actually makes us unable to make unique children
-		"Drone" = "pai-repairbot",
-		"Cat" = "pai-cat",
-		"Mouse" = "pai-mouse",
-		"Monkey" = "pai-monkey",
-		"Borgi" = "pai-borgi",
-		"Fox" = "pai-fox",
-		"Parrot" = "pai-parrot",
-		"Rabbit" = "pai-rabbit",
-		//VOREStation Addition Start
-		"Dire wolf" = "pai-diredog",
-		"Horse (Lune)" = "pai-horse_lune",
-		"Horse (Soleil)" = "pai-horse_soleil",
-		"Dragon" = "pai-pdragon",
-		"Bear" = "pai-bear",
-		"Fennec" = "pai-fen",
-		"Type Zero" = "pai-typezero",
-		"Raccoon" = "pai-raccoon",
-		"Raptor" = "pai-raptor",
-		"Corgi" = "pai-corgi",
-		"Bat" = "pai-bat",
-		"Butterfly" = "pai-butterfly",
-		"Hawk" = "pai-hawk",
-		"Duffel" = "pai-duffel",
-		"Rat" = "rat",
-		"Panther" = "panther",
-		"Cyber Elf" = "cyberelf",
-		"Teppi" = "teppi",
-		"Catslug" = "catslug",
-		"Car" = "car",
-		"Type One" = "typeone",
-		"Type Thirteen" = "13",
-		"Protogen Dog" = "pai-protodog"
-		//VOREStation Addition End
-		)
-
-	var/list/possible_say_verbs = list( //CHOMPEDIT: This doesnt need to be /Global/ and actually makes us unable to make unique children
-		"Robotic" = list("states","declares","queries"),
-		"Natural" = list("says","yells","asks"),
-		"Beep" = list("beeps","beeps loudly","boops"),
-		"Chirp" = list("chirps","chirrups","cheeps"),
-		"Feline" = list("purrs","yowls","meows"),
-		"Canine" = list("yaps","barks","woofs"),
-		"Rodent" = list("squeaks", "SQUEAKS", "sqiks")	//VOREStation Edit
-		)
 
 	var/obj/item/pai_cable/cable		// The cable we produce and use when door or camera jacking
 
@@ -112,9 +67,13 @@
 
 	var/our_icon_rotation = 0
 
-/mob/living/silicon/pai/New(var/obj/item/paicard)
-	src.loc = paicard
-	card = paicard
+/mob/living/silicon/pai/Initialize(mapload)
+	. = ..()
+
+	card = loc
+	if(!istype(card))
+		return INITIALIZE_HINT_QDEL
+
 	sradio = new(src)
 	communicator = new(src)
 	if(card)
@@ -135,28 +94,25 @@
 
 	//PDA
 	pda = new(src)
-	spawn(5)
-		pda.ownjob = "Personal Assistant"
-		pda.owner = text("[]", src)
-		pda.name = pda.owner + " (" + pda.ownjob + ")"
+	pda.ownjob = "Personal Assistant"
+	pda.owner = text("[]", src)
+	pda.name = pda.owner + " (" + pda.ownjob + ")"
 
-		var/datum/data/pda/app/messenger/M = pda.find_program(/datum/data/pda/app/messenger)
-		if(M)
-			M.toff = FALSE
-	..()
+	var/datum/data/pda/app/messenger/M = pda.find_program(/datum/data/pda/app/messenger)
+	if(M)
+		M.toff = FALSE
 
 /mob/living/silicon/pai/Login()
 	..()
 	// Vorestation Edit: Meta Info for pAI
 	if (client.prefs)
-		ooc_notes = client.prefs.metadata
-		ooc_notes_likes = client.prefs.metadata_likes
-		ooc_notes_dislikes = client.prefs.metadata_dislikes
-		//CHOMPEdit Start
-		ooc_notes_favs = client.prefs.metadata_favs
-		ooc_notes_maybes = client.prefs.metadata_maybes
-		ooc_notes_style = client.prefs.matadata_ooc_style
-		//CHOMPEdit End
+		ooc_notes = client.prefs.read_preference(/datum/preference/text/living/ooc_notes)
+		ooc_notes_likes = client.prefs.read_preference(/datum/preference/text/living/ooc_notes_likes)
+		ooc_notes_dislikes = client.prefs.read_preference(/datum/preference/text/living/ooc_notes_dislikes)
+		ooc_notes_favs = read_preference(/datum/preference/text/living/ooc_notes_favs)
+		ooc_notes_maybes = read_preference(/datum/preference/text/living/ooc_notes_maybes)
+		ooc_notes_style = read_preference(/datum/preference/toggle/living/ooc_notes_style)
+		private_notes = client.prefs.read_preference(/datum/preference/text/living/private_notes)
 
 	src << sound('sound/effects/pai_login.ogg', volume = 75)	//VOREStation Add
 
@@ -243,7 +199,7 @@
 	medicalActive2 = null
 	medical_cannotfind = 0
 	SStgui.update_uis(src)
-	to_chat(usr, span_notice("You reset your record-viewing software."))
+	to_chat(src, span_notice("You reset your record-viewing software."))
 
 /mob/living/silicon/pai/cancel_camera()
 	set category = "Abilities.pAI Commands"
@@ -330,30 +286,14 @@
 
 	close_up()
 
-/* //VOREStation Removal Start
-/mob/living/silicon/pai/proc/choose_chassis()
-	set category = "Abilities.pAI Commands"
-	set name = "Choose Chassis"
-	var/choice
-	var/finalized = "No"
-	while(finalized == "No" && src.client)
-		choice = tgui_input_list(usr,"What would you like to use for your mobile chassis icon?","Chassis Choice", possible_chassis)
-		if(!choice) return
-		icon_state = possible_chassis[choice]
-		finalized = tgui_alert(usr, "Look at your sprite. Is this what you wish to use?","Choose Chassis",list("No","Yes"))
-	chassis = possible_chassis[choice]
-	add_verb(src, /mob/living/proc/hide)
-//VOREStation Removal End
-*/
-
 /mob/living/silicon/pai/proc/choose_verbs()
 	set category = "Abilities.pAI Commands"
 	set name = "Choose Speech Verbs"
 
-	var/choice = tgui_input_list(usr,"What theme would you like to use for your speech verbs?","Theme Choice", possible_say_verbs)
+	var/choice = tgui_input_list(src,"What theme would you like to use for your speech verbs?","Theme Choice", GLOB.possible_say_verbs)
 	if(!choice) return
 
-	var/list/sayverbs = possible_say_verbs[choice]
+	var/list/sayverbs = GLOB.possible_say_verbs[choice]
 	speak_statement = sayverbs[1]
 	speak_exclamation = sayverbs[(sayverbs.len>1 ? 2 : sayverbs.len)]
 	speak_query = sayverbs[(sayverbs.len>2 ? 3 : sayverbs.len)]
@@ -464,6 +404,14 @@
 		var/obj/belly/B = loc
 		src.forceMove(card)
 		card.forceMove(B)
+
+	if(istype( src.loc,/obj/structure/disposalholder))
+		var/obj/structure/disposalholder/hold = loc
+		src.loc = card
+		card.loc = hold
+		src.forceMove(card)
+		card.forceMove(hold)
+
 	else				//Otherwise go on floor
 		src.loc = card
 		card.loc = get_turf(card)
@@ -536,7 +484,7 @@
 	set desc = "Upload your personality to the cloud and wipe your software from the card. This is functionally equivalent to cryo or robotic storage, freeing up your job slot."
 
 	// Make sure people don't kill themselves accidentally
-	if(tgui_alert(usr, "WARNING: This will immediately wipe your software and ghost you, removing your character from the round permanently (similar to cryo and robotic storage). Are you entirely sure you want to do this?", "Wipe Software", list("No", "Yes")) != "Yes")
+	if(tgui_alert(src, "WARNING: This will immediately wipe your software and ghost you, removing your character from the round permanently (similar to cryo and robotic storage). Are you entirely sure you want to do this?", "Wipe Software", list("No", "Yes")) != "Yes")
 		return
 
 	close_up()

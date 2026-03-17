@@ -114,7 +114,7 @@
 	var/accepting_refs = 0
 
 /obj/item/integrated_electronics/debugger/attack_self(mob/user)
-	var/type_to_use = tgui_input_list(usr, "Please choose a type to use.","[src] type setting", list("string","number","ref", "null"))
+	var/type_to_use = tgui_input_list(user, "Please choose a type to use.","[src] type setting", list("string","number","ref", "null"))
 	if(!CanInteract(user, GLOB.tgui_physical_state))
 		return
 
@@ -122,14 +122,14 @@
 	switch(type_to_use)
 		if("string")
 			accepting_refs = 0
-			new_data = tgui_input_text(usr, "Now type in a string.","[src] string writing", null, MAX_MESSAGE_LEN)
+			new_data = tgui_input_text(user, "Now type in a string.","[src] string writing", null, MAX_MESSAGE_LEN)
 			new_data = sanitizeSafe(new_data, MAX_MESSAGE_LEN, 0, 0)
 			if(istext(new_data) && CanInteract(user, GLOB.tgui_physical_state))
 				data_to_write = new_data
 				to_chat(user, span_notice("You set \the [src]'s memory to \"[new_data]\"."))
 		if("number")
 			accepting_refs = 0
-			new_data = tgui_input_number(usr, "Now type in a number.","[src] number writing", min_value=-INFINITY, round_value=FALSE)
+			new_data = tgui_input_number(user, "Now type in a number.","[src] number writing", min_value=-INFINITY, round_value=FALSE)
 			if(isnum(new_data) && CanInteract(user, GLOB.tgui_physical_state))
 				data_to_write = new_data
 				to_chat(user, span_notice("You set \the [src]'s memory to [new_data]."))
@@ -283,8 +283,7 @@
 /obj/item/storage/bag/circuits/emp_act()
 	return	//No
 
-/obj/item/storage/bag/circuits/basic/Initialize()
-	//. = ..() CHOMPEdit
+/obj/item/storage/bag/circuits/basic/Initialize(mapload)
 	new /obj/item/storage/bag/circuits/mini/arithmetic(src)
 	new /obj/item/storage/bag/circuits/mini/trig(src)
 	new /obj/item/storage/bag/circuits/mini/input(src)
@@ -306,10 +305,9 @@
 	new /obj/item/integrated_electronics/debugger(src) //CHOMPEdit
 	new /obj/item/integrated_electronics/detailer(src) //CHOMPEdit
 	make_exact_fit()
-	. = ..() //CHOMPEdit
+	. = ..()
 
-/obj/item/storage/bag/circuits/all/Initialize()
-	//. = ..() CHOMPEdit
+/obj/item/storage/bag/circuits/all/Initialize(mapload)
 	new /obj/item/storage/bag/circuits/mini/arithmetic/all(src)
 	new /obj/item/storage/bag/circuits/mini/trig/all(src)
 	new /obj/item/storage/bag/circuits/mini/input/all(src)
@@ -333,7 +331,7 @@
 	new /obj/item/integrated_electronics/detailer(src) //CHOMPEdit
 	new /obj/item/tool/crowbar(src)
 	make_exact_fit()
-	. = ..() //CHOMPEdit
+	. = ..()
 
 /obj/item/storage/bag/circuits/mini
 	name = "circuit box"
@@ -351,8 +349,8 @@
 /obj/item/storage/bag/circuits/mini/arithmetic/all // Don't believe this will ever be needed.
 	spawn_flags_to_use = IC_SPAWN_DEFAULT|IC_SPAWN_RESEARCH
 
-/obj/item/storage/bag/circuits/mini/arithmetic/Initialize()
-	for(var/obj/item/integrated_circuit/arithmetic/IC in all_integrated_circuits)
+/obj/item/storage/bag/circuits/mini/arithmetic/Initialize(mapload)
+	for(var/obj/item/integrated_circuit/arithmetic/IC in GLOB.all_integrated_circuits)
 		if(IC.spawn_flags & spawn_flags_to_use)
 			for(var/i = 1 to 4)
 				new IC.type(src)
@@ -368,8 +366,8 @@
 /obj/item/storage/bag/circuits/mini/trig/all // Ditto
 	spawn_flags_to_use = IC_SPAWN_DEFAULT|IC_SPAWN_RESEARCH
 
-/obj/item/storage/bag/circuits/mini/trig/Initialize()
-	for(var/obj/item/integrated_circuit/trig/IC in all_integrated_circuits)
+/obj/item/storage/bag/circuits/mini/trig/Initialize(mapload)
+	for(var/obj/item/integrated_circuit/trig/IC in GLOB.all_integrated_circuits)
 		if(IC.spawn_flags & spawn_flags_to_use)
 			for(var/i = 1 to 4)
 				new IC.type(src)
@@ -385,8 +383,8 @@
 /obj/item/storage/bag/circuits/mini/input/all
 	spawn_flags_to_use = IC_SPAWN_DEFAULT|IC_SPAWN_RESEARCH
 
-/obj/item/storage/bag/circuits/mini/input/Initialize()
-	for(var/obj/item/integrated_circuit/input/IC in all_integrated_circuits)
+/obj/item/storage/bag/circuits/mini/input/Initialize(mapload)
+	for(var/obj/item/integrated_circuit/input/IC in GLOB.all_integrated_circuits)
 		if(IC.spawn_flags & spawn_flags_to_use)
 			for(var/i = 1 to 4)
 				new IC.type(src)
@@ -402,8 +400,8 @@
 /obj/item/storage/bag/circuits/mini/output/all
 	spawn_flags_to_use = IC_SPAWN_DEFAULT|IC_SPAWN_RESEARCH
 
-/obj/item/storage/bag/circuits/mini/output/Initialize()
-	for(var/obj/item/integrated_circuit/output/IC in all_integrated_circuits)
+/obj/item/storage/bag/circuits/mini/output/Initialize(mapload)
+	for(var/obj/item/integrated_circuit/output/IC in GLOB.all_integrated_circuits)
 		if(IC.spawn_flags & spawn_flags_to_use)
 			for(var/i = 1 to 4)
 				new IC.type(src)
@@ -419,8 +417,8 @@
 /obj/item/storage/bag/circuits/mini/memory/all
 	spawn_flags_to_use = IC_SPAWN_DEFAULT|IC_SPAWN_RESEARCH
 
-/obj/item/storage/bag/circuits/mini/memory/Initialize()
-	for(var/obj/item/integrated_circuit/memory/IC in all_integrated_circuits)
+/obj/item/storage/bag/circuits/mini/memory/Initialize(mapload)
+	for(var/obj/item/integrated_circuit/memory/IC in GLOB.all_integrated_circuits)
 		if(IC.spawn_flags & spawn_flags_to_use)
 			for(var/i = 1 to 4)
 				new IC.type(src)
@@ -436,8 +434,8 @@
 /obj/item/storage/bag/circuits/mini/logic/all
 	spawn_flags_to_use = IC_SPAWN_DEFAULT|IC_SPAWN_RESEARCH
 
-/obj/item/storage/bag/circuits/mini/logic/Initialize()
-	for(var/obj/item/integrated_circuit/logic/IC in all_integrated_circuits)
+/obj/item/storage/bag/circuits/mini/logic/Initialize(mapload)
+	for(var/obj/item/integrated_circuit/logic/IC in GLOB.all_integrated_circuits)
 		if(IC.spawn_flags & spawn_flags_to_use)
 			for(var/i = 1 to 4)
 				new IC.type(src)
@@ -453,8 +451,8 @@
 /obj/item/storage/bag/circuits/mini/time/all
 	spawn_flags_to_use = IC_SPAWN_DEFAULT|IC_SPAWN_RESEARCH
 
-/obj/item/storage/bag/circuits/mini/time/Initialize()
-	for(var/obj/item/integrated_circuit/time/IC in all_integrated_circuits)
+/obj/item/storage/bag/circuits/mini/time/Initialize(mapload)
+	for(var/obj/item/integrated_circuit/time/IC in GLOB.all_integrated_circuits)
 		if(IC.spawn_flags & spawn_flags_to_use)
 			for(var/i = 1 to 4)
 				new IC.type(src)
@@ -470,8 +468,8 @@
 /obj/item/storage/bag/circuits/mini/reagents/all
 	spawn_flags_to_use = IC_SPAWN_DEFAULT|IC_SPAWN_RESEARCH
 
-/obj/item/storage/bag/circuits/mini/reagents/Initialize()
-	for(var/obj/item/integrated_circuit/reagent/IC in all_integrated_circuits)
+/obj/item/storage/bag/circuits/mini/reagents/Initialize(mapload)
+	for(var/obj/item/integrated_circuit/reagent/IC in GLOB.all_integrated_circuits)
 		if(IC.spawn_flags & spawn_flags_to_use)
 			for(var/i = 1 to 4)
 				new IC.type(src)
@@ -487,8 +485,8 @@
 /obj/item/storage/bag/circuits/mini/transfer/all
 	spawn_flags_to_use = IC_SPAWN_DEFAULT|IC_SPAWN_RESEARCH
 
-/obj/item/storage/bag/circuits/mini/transfer/Initialize()
-	for(var/obj/item/integrated_circuit/transfer/IC in all_integrated_circuits)
+/obj/item/storage/bag/circuits/mini/transfer/Initialize(mapload)
+	for(var/obj/item/integrated_circuit/transfer/IC in GLOB.all_integrated_circuits)
 		if(IC.spawn_flags & spawn_flags_to_use)
 			for(var/i = 1 to 4)
 				new IC.type(src)
@@ -504,8 +502,8 @@
 /obj/item/storage/bag/circuits/mini/converter/all
 	spawn_flags_to_use = IC_SPAWN_DEFAULT|IC_SPAWN_RESEARCH
 
-/obj/item/storage/bag/circuits/mini/converter/Initialize()
-	for(var/obj/item/integrated_circuit/converter/IC in all_integrated_circuits)
+/obj/item/storage/bag/circuits/mini/converter/Initialize(mapload)
+	for(var/obj/item/integrated_circuit/converter/IC in GLOB.all_integrated_circuits)
 		if(IC.spawn_flags & spawn_flags_to_use)
 			for(var/i = 1 to 4)
 				new IC.type(src)
@@ -520,8 +518,8 @@
 /obj/item/storage/bag/circuits/mini/smart/all
 	spawn_flags_to_use = IC_SPAWN_DEFAULT|IC_SPAWN_RESEARCH
 
-/obj/item/storage/bag/circuits/mini/smart/Initialize()
-	for(var/obj/item/integrated_circuit/smart/IC in all_integrated_circuits)
+/obj/item/storage/bag/circuits/mini/smart/Initialize(mapload)
+	for(var/obj/item/integrated_circuit/smart/IC in GLOB.all_integrated_circuits)
 		if(IC.spawn_flags & spawn_flags_to_use)
 			for(var/i = 1 to 4)
 				new IC.type(src)
@@ -536,8 +534,8 @@
 /obj/item/storage/bag/circuits/mini/manipulation/all
 	spawn_flags_to_use = IC_SPAWN_DEFAULT|IC_SPAWN_RESEARCH
 
-/obj/item/storage/bag/circuits/mini/manipulation/Initialize()
-	for(var/obj/item/integrated_circuit/manipulation/IC in all_integrated_circuits)
+/obj/item/storage/bag/circuits/mini/manipulation/Initialize(mapload)
+	for(var/obj/item/integrated_circuit/manipulation/IC in GLOB.all_integrated_circuits)
 		if(IC.spawn_flags & spawn_flags_to_use)
 			for(var/i = 1 to 4)
 				new IC.type(src)
@@ -553,12 +551,12 @@
 /obj/item/storage/bag/circuits/mini/power/all
 	spawn_flags_to_use = IC_SPAWN_DEFAULT|IC_SPAWN_RESEARCH
 
-/obj/item/storage/bag/circuits/mini/power/Initialize()
-	for(var/obj/item/integrated_circuit/passive/power/IC in all_integrated_circuits)
+/obj/item/storage/bag/circuits/mini/power/Initialize(mapload)
+	for(var/obj/item/integrated_circuit/passive/power/IC in GLOB.all_integrated_circuits)
 		if(IC.spawn_flags & spawn_flags_to_use)
 			for(var/i = 1 to 4)
 				new IC.type(src)
-	for(var/obj/item/integrated_circuit/power/IC in all_integrated_circuits)
+	for(var/obj/item/integrated_circuit/power/IC in GLOB.all_integrated_circuits)
 		if(IC.spawn_flags & spawn_flags_to_use)
 			for(var/i = 1 to 4)
 				new IC.type(src)

@@ -1,5 +1,5 @@
-/mob/living/New()
-	..()
+/mob/living/Initialize(mapload)
+	. = ..()
 
 	//Prime this list if we need it.
 	if(has_huds)
@@ -9,16 +9,45 @@
 		make_hud_overlays()
 
 	//I'll just hang my coat up over here
-	dsoverlay = image('icons/mob/darksight.dmi',global_hud.darksight) //This is a secret overlay! Go look at the file, you'll see.
+	dsoverlay = image('icons/mob/darksight.dmi',GLOB.global_hud.darksight) //This is a secret overlay! Go look at the file, you'll see.
 	var/mutable_appearance/dsma = new(dsoverlay) //Changing like ten things, might as well.
 	dsma.alpha = 0
 	dsma.plane = PLANE_LIGHTING
 	dsma.blend_mode = BLEND_ADD
 	dsoverlay.appearance = dsma
 
-	selected_image = image(icon = buildmode_hud, loc = src, icon_state = "ai_sel")
+	selected_image = image(icon = GLOB.buildmode_hud, loc = src, icon_state = "ai_sel")
+
+/mob/living/proc/get_visible_name()
+	var/datum/component/shadekin/SK = get_shadekin_component()
+	if(SK && SK.in_phase)
+		return "Something"
+	if(real_name)
+		return real_name
+	else
+		return name
 
 /mob/living/Destroy()
+	SSradiation.listeners -= src
+	remove_all_modifiers(TRUE)
+	QDEL_NULL(say_list)
+
+	for(var/datum/soul_link/S as anything in owned_soul_links)
+		S.owner_died(FALSE)
+		qdel(S) // If the owner is destroy()'d, the soullink is destroy()'d.
+	owned_soul_links = null
+	for(var/datum/soul_link/S as anything in shared_soul_links)
+		S.sharer_died(FALSE)
+		S.remove_soul_sharer(src) // If a sharer is destroy()'d, they are simply removed.
+	shared_soul_links = null
+
+	if(ai_holder)
+		ai_holder.holder = null
+		ai_holder.UnregisterSignal(src,COMSIG_MOB_STATCHANGE)
+		if(ai_holder.faction_friends && ai_holder.faction_friends.len) //This list is shared amongst the faction
+			ai_holder.faction_friends -= src
+			ai_holder.faction_friends = null
+		QDEL_NULL(ai_holder)
 	if(dsoverlay)
 		dsoverlay.loc = null //I'll take my coat with me
 		dsoverlay = null
@@ -29,10 +58,12 @@
 		if(istype(nest, /obj/structure/blob/factory))
 			var/obj/structure/blob/factory/F = nest
 			F.spores -= src
+		if(istype(nest, /obj/structure/mob_spawner))
+			var/obj/structure/mob_spawner/S = nest
+			S.get_death_report(src)
 		nest = null
 	if(buckled)
 		buckled.unbuckle_mob(src, TRUE)
-	//VOREStation Addition Start
 	if(tf_mob_holder && tf_mob_holder.loc == src)
 		tf_mob_holder.ckey = ckey
 		if(isbelly(loc))
@@ -52,13 +83,10 @@
 			vore_organs -= B
 	if(tf_mob_holder)
 		tf_mob_holder = null
-	//VOREStation Addition End
 	QDEL_NULL_LIST(hud_list)
 	QDEL_NULL(selected_image)
-	//QDEL_NULL(vorePanel) //VOREStation Add commented and moved to /mob
-	//QDEL_LIST_NULL(vore_organs) //VOREStation Add commented and moved to /mob
-	temp_language_sources = null //VOREStation Add
-	temp_languages = null //VOREStation Add
+	temp_language_sources = null
+	temp_languages = null
 
 	if(LAZYLEN(organs))
 		organs_by_name.Cut()
@@ -74,7 +102,14 @@
 			internal_organs -= OR
 			qdel(OR)
 
-	return ..()
+	cultnet.updateVisibility(src, 0)
+
+	if(aiming)
+		qdel(aiming)
+		aiming = null
+	aimed.Cut()
+
+	. = ..()
 
 //mob verbs are faster than object verbs. See mob/verb/examine.
 /mob/living/verb/pulled(atom/movable/AM as mob|obj in oview(1))
@@ -87,18 +122,11 @@
 	return
 
 //mob verbs are faster than object verbs. See above.
-// CHOMPEdit Start - Point refactor
 /mob/living/pointed(atom/A as mob|obj|turf in view(client.view, src))
 	if(src.stat || src.restrained())
 		return FALSE
 	if(src.status_flags & FAKEDEATH)
 		return FALSE
-	/*
-	if(!..())
-		return 0
-
-	usr.visible_message(span_filter_notice(span_bold("[src]") + " points to [A]."))
-*/
 	return ..()
 
 /mob/living/_pointed(atom/pointing_at)
@@ -106,16 +134,15 @@
 		return FALSE
 
 	visible_message(span_info(span_bold("[src]") + " points at [pointing_at]."), span_info("You point at [pointing_at]."))
-// CHOMPEdit End
 
 /mob/living/verb/succumb()
 	set name = "Succumb to death"
 	set category = "IC.Game"
 	set desc = "Press this button if you are in crit and wish to die. Use this sparingly (ending a scene, no medical, etc.)"
-	var/confirm1 = tgui_alert(usr, "Pressing this button will kill you instantenously! Are you sure you wish to proceed?", "Confirm wish to succumb", list("No","Yes"))
+	var/confirm1 = tgui_alert(src, "Pressing this button will kill you instantenously! Are you sure you wish to proceed?", "Confirm wish to succumb", list("No","Yes"))
 	var/confirm2 = "No"
 	if(confirm1 == "Yes")
-		confirm2 = tgui_alert(usr, "Pressing this buttom will really kill you, no going back", "Are you sure?", list("Yes", "No")) //Swapped answers to protect from accidental double clicks.
+		confirm2 = tgui_alert(src, "Pressing this buttom will really kill you, no going back", "Are you sure?", list("Yes", "No")) //Swapped answers to protect from accidental double clicks.
 	if (src.health < 0 && stat != DEAD && confirm1 == "Yes" && confirm2 == "Yes") // Checking both confirm1 and confirm2 for good measure. I don't trust TGUI.
 		src.death()
 		to_chat(src, span_blue("You have given up life and succumbed to death."))
@@ -143,14 +170,14 @@
 		manual_afk = TRUE
 
 /mob/living/proc/updatehealth()
-	if(status_flags & GODMODE)
-		health = 100
+	if(SEND_SIGNAL(src, COMSIG_UPDATE_HEALTH) & COMSIG_UPDATE_HEALTH_GOD_MODE)
+		health = getMaxHealth()
 		set_stat(CONSCIOUS)
 	else
-		// CHOMPEdit Start: Pain/etc calculations, but more efficient:tm: - this should work for literally anything that applies to health. Far better than slapping emote("pain") everywhere like scream does.
+		// Pain/etc calculations, but more efficient:tm: - this should work for literally anything that applies to health. Far better than slapping emote("pain") everywhere like scream does.
 		if(health > getMaxHealth()) //Overhealth
 			health = getMaxHealth()
-		var/initialhealth = health // CHOMPEdit: Getting our health before this check
+		var/initialhealth = health // Getting our health before this check
 		health = getMaxHealth() - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss() - getCloneLoss() - halloss
 		if(!((ishuman(src)) || (issilicon(src))) && src.can_pain_emote) // Only run this if we're non-human/non-silicon (bots and mechanical simplemobs should be allowed to make pain sounds) & can emote pain, bc humans + carbons already do this. human_damage doesn't call parent, but sanity is better here.
 			if(health < initialhealth) // Did we lose health?
@@ -169,7 +196,9 @@
 					if(51 to INFINITY)
 						if(prob(pain_noise * 3)  && !isbelly(loc)) // More likely, most severe damage. No pain noises inside bellies.
 							emote("pain")
-	// CHOMPEdit End: Pain
+		if(health <= -getMaxHealth()) //die only once
+			death()
+			return
 
 //This proc is used for mobs which are affected by pressure to calculate the amount of pressure that actually
 //affects them once clothing is factored in. ~Errorage
@@ -179,7 +208,7 @@
 
 //sort of a legacy burn method for /electrocute, /shock, and the e_chair
 /mob/living/proc/burn_skin(burn_amount)
-	if(istype(src, /mob/living/carbon/human))
+	if(ishuman(src))
 		//to_world("DEBUG: burn_skin(), mutations=[mutations]")
 		if(mShock in src.mutations) //shockproof
 			return 0
@@ -194,7 +223,7 @@
 				H.UpdateDamageIcon()
 		H.updatehealth()
 		return 1
-	else if(istype(src, /mob/living/silicon/ai))
+	else if(isAI(src))
 		return 0
 
 /mob/living/proc/adjustBodyTemp(actual, desired, incrementboost)
@@ -213,7 +242,7 @@
 		temperature -= change
 		if(actual < desired)
 			temperature = desired
-//	if(istype(src, /mob/living/carbon/human))
+//	if(ishuman(src))
 //		to_world("[src] ~ [src.bodytemperature] ~ [temperature]")
 	return temperature
 
@@ -233,7 +262,8 @@
 
 //'include_robo' only applies to healing, for legacy purposes, as all damage typically hurts both types of organs
 /mob/living/proc/adjustBruteLoss(var/amount,var/include_robo)
-	if(status_flags & GODMODE)	return 0	//godmode
+	if(SEND_SIGNAL(src, COMSIG_TAKING_BRUTE_DAMAGE, amount) & COMSIG_CANCEL_BRUTE_DAMAGE)
+		return 0	// Cancelled by a component
 
 	if(amount > 0)
 		for(var/datum/modifier/M in modifiers)
@@ -250,12 +280,10 @@
 			if(!isnull(M.incoming_healing_percent))
 				amount *= M.incoming_healing_percent
 
-	//VOREStation Additon Start
 	if(tf_mob_holder && tf_mob_holder.loc == src)
-		var/dmgmultiplier = tf_mob_holder.maxHealth / maxHealth
+		var/dmgmultiplier = tf_mob_holder.getMaxHealth() / getMaxHealth()
 		dmgmultiplier *= amount
 		tf_mob_holder.adjustBruteLoss(dmgmultiplier)
-	//VOREStation Additon End
 
 	bruteloss = min(max(bruteloss + amount, 0),(getMaxHealth()*2))
 	updatehealth()
@@ -264,7 +292,8 @@
 	return oxyloss
 
 /mob/living/proc/adjustOxyLoss(var/amount)
-	if(status_flags & GODMODE)	return 0	//godmode
+	if(SEND_SIGNAL(src, COMSIG_TAKING_OXY_DAMAGE, amount) & COMSIG_CANCEL_OXY_DAMAGE)
+		return 0	// Cancelled by a component
 
 	if(amount > 0)
 		for(var/datum/modifier/M in modifiers)
@@ -285,14 +314,16 @@
 	updatehealth()
 
 /mob/living/proc/setOxyLoss(var/amount)
-	if(status_flags & GODMODE)	return 0	//godmode
+	if(SEND_SIGNAL(src, COMSIG_TAKING_OXY_DAMAGE, amount) & COMSIG_CANCEL_OXY_DAMAGE)
+		return 0	// Cancelled by a component
 	oxyloss = amount
 
 /mob/living/proc/getToxLoss()
 	return toxloss
 
 /mob/living/proc/adjustToxLoss(var/amount)
-	if(status_flags & GODMODE)	return 0	//godmode
+	if(SEND_SIGNAL(src, COMSIG_TAKING_TOX_DAMAGE, amount) & COMSIG_CANCEL_TOX_DAMAGE)
+		return 0	// Cancelled by a component
 
 	if(amount > 0)
 		for(var/datum/modifier/M in modifiers)
@@ -313,7 +344,8 @@
 	updatehealth()
 
 /mob/living/proc/setToxLoss(var/amount)
-	if(status_flags & GODMODE)	return 0	//godmode
+	if(SEND_SIGNAL(src, COMSIG_TAKING_TOX_DAMAGE, amount) & COMSIG_CANCEL_TOX_DAMAGE)
+		return 0	// Cancelled by a component
 	toxloss = amount
 
 /mob/living/proc/getFireLoss()
@@ -327,7 +359,8 @@
 
 //'include_robo' only applies to healing, for legacy purposes, as all damage typically hurts both types of organs
 /mob/living/proc/adjustFireLoss(var/amount,var/include_robo)
-	if(status_flags & GODMODE)	return 0	//godmode
+	if(SEND_SIGNAL(src, COMSIG_TAKING_FIRE_DAMAGE, amount) & COMSIG_CANCEL_FIRE_DAMAGE)
+		return 0	// Cancelled by a component
 	if(amount > 0)
 		for(var/datum/modifier/M in modifiers)
 			if(!isnull(M.incoming_damage_percent))
@@ -342,12 +375,10 @@
 		for(var/datum/modifier/M in modifiers)
 			if(!isnull(M.incoming_healing_percent))
 				amount *= M.incoming_healing_percent
-	//VOREStation Additon Start
 	if(tf_mob_holder && tf_mob_holder.loc == src)
-		var/dmgmultiplier = tf_mob_holder.maxHealth / maxHealth
+		var/dmgmultiplier = tf_mob_holder.getMaxHealth() / getMaxHealth()
 		dmgmultiplier *= amount
 		tf_mob_holder.adjustFireLoss(dmgmultiplier)
-	//VOREStation Additon End
 	fireloss = min(max(fireloss + amount, 0),(getMaxHealth()*2))
 	updatehealth()
 
@@ -355,7 +386,8 @@
 	return cloneloss
 
 /mob/living/proc/adjustCloneLoss(var/amount)
-	if(status_flags & GODMODE)	return 0	//godmode
+	if(SEND_SIGNAL(src, COMSIG_TAKING_CLONE_DAMAGE, amount) & COMSIG_CANCEL_CLONE_DAMAGE)
+		return 0	// Cancelled by a component
 
 	if(amount > 0)
 		for(var/datum/modifier/M in modifiers)
@@ -376,25 +408,29 @@
 	updatehealth()
 
 /mob/living/proc/setCloneLoss(var/amount)
-	if(status_flags & GODMODE)	return 0	//godmode
+	if(SEND_SIGNAL(src, COMSIG_TAKING_CLONE_DAMAGE, amount) & COMSIG_CANCEL_CLONE_DAMAGE)
+		return 0	// Cancelled by a component
 	cloneloss = amount
 
 /mob/living/proc/getBrainLoss()
 	return brainloss
 
 /mob/living/proc/adjustBrainLoss(var/amount)
-	if(status_flags & GODMODE)	return 0	//godmode
+	if(SEND_SIGNAL(src, COMSIG_TAKING_BRAIN_DAMAGE, amount) & COMSIG_CANCEL_BRAIN_DAMAGE)
+		return 0	// Cancelled by a component
 	brainloss = min(max(brainloss + amount, 0),(getMaxHealth()*2))
 
 /mob/living/proc/setBrainLoss(var/amount)
-	if(status_flags & GODMODE)	return 0	//godmode
+	if(SEND_SIGNAL(src, COMSIG_TAKING_BRAIN_DAMAGE, amount) & COMSIG_CANCEL_BRAIN_DAMAGE)
+		return 0	// Cancelled by a component
 	brainloss = amount
 
 /mob/living/proc/getHalLoss()
 	return halloss
 
 /mob/living/proc/adjustHalLoss(var/amount)
-	if(status_flags & GODMODE)	return 0	//godmode
+	if(SEND_SIGNAL(src, COMSIG_TAKING_HALO_DAMAGE, amount) & COMSIG_CANCEL_HALO_DAMAGE)
+		return 0	// Cancelled by a component
 	if(amount > 0)
 		for(var/datum/modifier/M in modifiers)
 			if(M.energy_based && (!isnull(M.incoming_hal_damage_percent) || !isnull(M.disable_duration_percent)))
@@ -414,7 +450,8 @@
 	updatehealth()
 
 /mob/living/proc/setHalLoss(var/amount)
-	if(status_flags & GODMODE)	return 0	//godmode
+	if(SEND_SIGNAL(src, COMSIG_TAKING_HALO_DAMAGE, amount) & COMSIG_CANCEL_HALO_DAMAGE)
+		return 0	// Cancelled by a component
 	halloss = amount
 
 // Use this to get a mob's max health whenever possible.  Reading maxHealth directly will give inaccurate results if any modifiers exist.
@@ -429,8 +466,18 @@
 			result *= M.max_health_percent
 	return result
 
+///Use this proc to get the damage in which the mob will be put into critical condition (hardcrit)
+/mob/living/proc/get_crit_point()
+	return -(getMaxHealth()*0.5)
+
+/mob/living/carbon/human/get_crit_point()
+	var/crit_point = -(getMaxHealth()*0.5)
+	if(species.crit_mod)
+		crit_point *= species.crit_mod
+	return crit_point
+
 /mob/living/proc/setMaxHealth(var/newMaxHealth)
-	var/h_mult = maxHealth / newMaxHealth	//VOREStation Add Start - Calculate change multiplier
+	var/h_mult = maxHealth / newMaxHealth	//Calculate change multiplier
 	if(bruteloss)							//In case a damage value is 0, divide by 0 bad
 		bruteloss = round(bruteloss / h_mult)		//Health is calculated on life based on damage types, so we update the damage and let life handle health
 	if(fireloss)
@@ -440,7 +487,7 @@
 	if(oxyloss)
 		oxyloss = round(oxyloss / h_mult)
 	if(cloneloss)
-		cloneloss = round(cloneloss / h_mult)	//VOREStation Add End
+		cloneloss = round(cloneloss / h_mult)
 	maxHealth = newMaxHealth
 
 /mob/living/Stun(amount)
@@ -656,7 +703,12 @@
 			return 1
 	return 0
 
+/// Revives a body using the client's preferences if human
 /mob/living/proc/revive()
+	revival_healing_action()
+
+/// Performs the actual healing of Aheal, seperate from revive() because it does not use client prefs. Will not heal everything, and expects to be called through revive() or with a bodyrecord doing a respawn/revive.
+/mob/living/proc/revival_healing_action()
 	rejuvenate()
 	if(buckled)
 		buckled.unbuckle_mob()
@@ -677,6 +729,8 @@
 	fire_stacks = 0
 	if(ai_holder) // AI gets told to sleep when killed. Since they're not dead anymore, wake it up.
 		ai_holder.go_wake()
+
+	SEND_SIGNAL(src, COMSIG_HUMAN_DNA_FINALIZED)
 
 /mob/living/proc/rejuvenate()
 	if(reagents)
@@ -720,8 +774,8 @@
 
 	// remove the character from the list of the dead
 	if(stat == DEAD)
-		dead_mob_list -= src
-		living_mob_list += src
+		GLOB.dead_mob_list -= src
+		GLOB.living_mob_list += src
 		tod = null
 		timeofdeath = 0
 
@@ -744,22 +798,24 @@
 	return
 
 
-/mob/living/verb/Examine_OOC() //ChompEDIT - proc --> verb
+/mob/living/verb/Examine_OOC()
 	set name = "Examine Meta-Info (OOC)"
 	set category = "OOC.Game"
 	set src in view()
-	//VOREStation Edit Start - Making it so SSD people have prefs with fallback to original style.
+	do_examine_ooc(usr)
+
+/mob/living/proc/do_examine_ooc(mob/user)
+	//Makes it so SSD people have prefs with fallback to original style.
 	if(CONFIG_GET(flag/allow_metadata))
 		if(ooc_notes)
-			ooc_notes_window(usr)
-//			to_chat(usr, span_filter_notice("[src]'s Metainfo:<br>[ooc_notes]"))
+			ooc_notes_window(user)
+//			to_chat(user, span_filter_notice("[src]'s Metainfo:<br>[ooc_notes]"))
 		else if(client)
-			to_chat(usr, span_filter_notice("[src]'s Metainfo:<br>[client.prefs.metadata]"))
+			to_chat(user, span_filter_notice("[src]'s Metainfo:<br>[client.prefs.read_preference(/datum/preference/text/living/ooc_notes)]"))
 		else
-			to_chat(usr, span_filter_notice("[src] does not have any stored infomation!"))
+			to_chat(user, span_filter_notice("[src] does not have any stored infomation!"))
 	else
-		to_chat(usr, span_filter_notice("OOC Metadata is not supported by this server!"))
-	//VOREStation Edit End - Making it so SSD people have prefs with fallback to original style.
+		to_chat(user, span_filter_notice("OOC Metadata is not supported by this server!"))
 
 	return
 
@@ -799,7 +855,7 @@
 		else
 			resist_restraints()
 
-	if(attempt_vr(src,"vore_process_resist",args)) return TRUE //VOREStation Code
+	if(attempt_vr(src,"vore_process_resist",args)) return TRUE
 
 /mob/living/proc/resist_buckle()
 	if(buckled)
@@ -862,17 +918,15 @@
 /mob/living/proc/slip(var/slipped_on,stun_duration=8)
 	return 0
 
-// CHOMPAdd - Drop both things on hands
+/mob/living/carbon/drop_from_inventory(var/obj/item/W, var/atom/target = null)
+	return !(W in internal_organs) && ..()
+
 /mob/living/proc/drop_both_hands()
 	if(l_hand)
 		unEquip(l_hand)
 	if(r_hand)
 		unEquip(r_hand)
 	return
-// CHOMPEnd
-
-/mob/living/carbon/drop_from_inventory(var/obj/item/W, var/atom/target = null)
-	return !(W in internal_organs) && ..()
 
 /mob/living/touch_map_edge()
 
@@ -898,7 +952,7 @@
 /mob/living/adjustEarDamage(var/damage, var/deaf)
 	ear_damage = max(0, ear_damage + damage)
 	ear_deaf = max(0, ear_deaf + deaf)
-	if(ear_deaf > 0)
+	if(ear_deaf > 0) //CHOMPStaiton Enable: Ear Ringing/Deafness
 		deaf_loop.start() // CHOMPStation Add: Ear Ringing/Deafness - Not sure if we need this, but, safety.
 	else if(ear_deaf <= 0)
 		deaf_loop.stop() // CHOMPStation Add: Ear Ringing/Deafness - Not sure if we need this, but, safety.
@@ -909,67 +963,118 @@
 		ear_damage = damage
 	if(deaf >= 0)
 		ear_deaf = deaf
-		deaf_loop.start() // CHOMPStation Add: Ear Ringing/Deafness - Not sure if we need this, but, safety.
+		deaf_loop.start() // Ear Ringing/Deafness - Not sure if we need this, but, safety. NYI. Used downstream. //CHOMPStation Enable
 
-/mob/living/proc/vomit(var/skip_wait, var/blood_vomit)
-	if(!check_has_mouth())
-		return
-
+/mob/living/proc/vomit(lost_nutrition = 10, blood = FALSE, stun = 5, distance = 1, message = TRUE, toxic = VOMIT_TOXIC, purge = FALSE)
 	if(!lastpuke)
-		lastpuke = 1
-		if(isSynthetic())
-			to_chat(src, span_danger("A sudden, dizzying wave of internal feedback rushes over you!"))
-			src.Weaken(5)
-		else
-			if (nutrition <= 100)
-				to_chat(src, span_danger("You gag as you want to throw up, but there's nothing in your stomach!"))
-				src.Weaken(10)
+		lastpuke = TRUE
+		to_chat(src, span_warning("You feel nauseous..."))
+		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(to_chat), src, span_warning("You feel like you're about to throw up!")), 15 SECONDS)
+		addtimer(CALLBACK(src, PROC_REF(do_vomit), lost_nutrition, blood, stun, distance, message, toxic, purge), 25 SECONDS)
+
+/mob/living/proc/do_vomit(lost_nutrition = 10, blood = FALSE, stun = 5, distance = 1, message = TRUE, toxic = VOMIT_TOXIC, purge = FALSE)
+
+	if(!check_has_mouth())
+		return TRUE
+
+	if(ishuman(src))
+		var/mob/living/carbon/human/H = src
+		if(CE_ANTACID in H.chem_effects)
+			if(prob(min(90, H.chem_effects[CE_ANTACID] * 15)))
+				VARSET_IN(src, lastpuke, FALSE, rand(30 SECONDS, 2 MINUTES))
+			return FALSE
+
+	if(nutrition < 100 && !blood)
+		if(message)
+			visible_message(span_warning("[src] dry heaves!"), span_userdanger("You try to throw up, but there's nothing in your stomach!"))
+
+		if(stun)
+			Stun(stun)
+		return TRUE
+
+	var/obj/vomit_goal = get_active_hand()
+
+	if(!istype(vomit_goal, /obj/item/reagent_containers/glass/bucket))
+		vomit_goal = check_vomit_goal()
+
+	if(iscarbon(src) && is_mouth_covered())
+		if(message)
+			visible_message(span_danger("[src] throws up all over themself!"), span_userdanger("You throw up all over yourself!"))
+		distance = 0
+	else if(vomit_goal)
+		if(message)
+			visible_message(span_danger("[src] throws up into the [vomit_goal]!"), span_userdanger("You throw up into the [vomit_goal]!"))
+		if(istype(vomit_goal, /obj/item/reagent_containers/glass/bucket))
+			var/obj/item/organ/internal/stomach/S = organs_by_name[O_STOMACH]
+			var/obj/item/reagent_containers/glass/bucket/puke_bucket = vomit_goal
+			if(S && S.acidtype)
+				puke_bucket.reagents.add_reagent(S.acidtype, rand(3, 6))
+			else if(blood)
+				puke_bucket.reagents.add_reagent(REAGENT_BLOOD, rand(3, 6))
 			else
-				to_chat(src, span_warning("You feel nauseous..."))
+				puke_bucket.reagents.add_reagent(REAGENT_ID_TOXIN, rand(3, 6))
+		distance = 0
+	else
+		if(message)
+			visible_message(span_danger("[src] throws up!"), span_userdanger("You throw up!"))
 
-				if(ishuman(src))
-					var/mob/living/carbon/human/Hu = src
-					if(CE_ANTACID in Hu.chem_effects)
-						if(prob(min(90, Hu.chem_effects[CE_ANTACID] * 15)))
-							spawn(rand(30 SECONDS, 2 MINUTES))
-								lastpuke = FALSE
-							return
+	// Hurt liver means throwing up blood
+	if(!blood && ishuman(src))
+		var/mob/living/carbon/human/H = src
+		if(!H.isSynthetic())
+			var/obj/item/organ/internal/liver/L = H.internal_organs_by_name[O_LIVER]
+			if(!L || L.is_broken())
+				blood = TRUE
 
-				spawn()
-					if(!skip_wait)
-						sleep(150)	//15 seconds until second warning
-						to_chat(src, span_warning("You feel like you are about to throw up!"))
-						sleep(100)	//and you have 10 more for mad dash to the bucket
+	if(stun)
+		Stun(stun)
 
-					//Damaged livers cause you to vomit blood.
-					if(!blood_vomit)
-						if(ishuman(src))
-							var/mob/living/carbon/human/H = src
-							if(!H.isSynthetic())
-								var/obj/item/organ/internal/liver/L = H.internal_organs_by_name["liver"]
-								if(!L || L.is_broken())
-									blood_vomit = 1
+	playsound(get_turf(src), 'sound/effects/splat.ogg', 50, 1)
+	var/turf/T = get_turf(src)
+	var/vomit_type = NONE
+	var/mob/living/carbon/human/H = src
 
-					Stun(5)
-					src.visible_message(span_warning("[src] throws up!"),span_warning("You throw up!"))
-					playsound(src, 'sound/effects/splat.ogg', 50, 1)
+	if(isSynthetic())
+		vomit_type = VOMIT_NANITE
+	else if(ishuman(src) && H.ingested.has_reagent(REAGENT_ID_PHORON) && !isSynthetic())
+		vomit_type = VOMIT_PURPLE
+	else if(toxloss && !isSynthetic())
+		vomit_type = VOMIT_TOXIC
 
-					var/turf/simulated/T = get_turf(src)	//TODO: Make add_blood_floor remove blood from human mobs
-					if(istype(T))
-						if(blood_vomit)
-							T.add_blood_floor(src)
-						else
-							T.add_vomit_floor(src, 1)
+	if(!blood)
+		adjust_nutrition(-lost_nutrition)
+		adjustToxLoss(-3)
 
-					if(blood_vomit)
-						if(getBruteLoss() < 50)
-							adjustBruteLoss(3)
-					else
-						adjust_nutrition(-40)
-						adjustToxLoss(-3)
+	if(distance)
+		for(var/i=0 to distance)
+			if(blood)
+				if(T)
+					blood_splatter(T, src, large = TRUE)
+				if(stun)
+					adjustBruteLoss(2)
+			else if(T)
+				T.add_vomit_floor(src, vomit_type, purge)
+			T = get_step(T, dir)
 
-		spawn(350)
-			lastpuke = 0
+	VARSET_IN(src, lastpuke, FALSE, 10 SECONDS)
+
+	return TRUE
+
+/mob/living/proc/check_vomit_goal()
+	PRIVATE_PROC(TRUE)
+	var/obj_list = list(/obj/machinery/disposal,/obj/structure/toilet,/obj/structure/sink,/obj/structure/urinal)
+	for(var/type in obj_list)
+		// check standing on
+		var/turf/T = get_turf(src)
+		var/obj/O = locate(type) in T
+		if(O)
+			return O
+		// check ahead of us
+		T = get_turf(get_step(T,dir))
+		O = locate(type) in T
+		if(O && O.Adjacent(src))
+			return O
+	return null
 
 /mob/living/update_canmove()
 	if(!resting && cannot_stand() && can_stand_overridden())
@@ -1003,24 +1108,14 @@
 			lying = incapacitated(INCAPACITATION_KNOCKDOWN)
 			canmove = !incapacitated(INCAPACITATION_DISABLED)
 
-	if(incapacitated(INCAPACITATION_KNOCKOUT) || incapacitated(INCAPACITATION_STUNNED)) // CHOMPAdd - Making sure we're in good condition to crawl
+	if(incapacitated(INCAPACITATION_KNOCKOUT) || incapacitated(INCAPACITATION_STUNNED)) // Making sure we're in good condition to crawl
 		canmove = 0
-		//drop_both_hands() CHOMPremove, purple stuns dont drop items, this makes space EVA less frustrating and slips/shoves are already coded to drop your stuff.
 	else
 		canmove = 1
 
 	if(lying)
 		density = FALSE
-	/* CHOMPEdit - Allow us to hold stuff while laying down.
-		if(l_hand)
-			unEquip(l_hand)
-		if(r_hand)
-			unEquip(r_hand)
-		for(var/obj/item/holder/holder in get_mob_riding_slots())
-			unEquip(holder)
-	*/
 		update_water() // Submerges the mob.
-		// CHOMPAdd Start - For crawling.
 		stop_pulling()
 
 		if(!passtable_crawl_checked)
@@ -1031,15 +1126,12 @@
 				passtable_reset = TRUE
 				pass_flags |= PASSTABLE
 
-		// CHOMPEdit End
 	else
 		density = initial(density)
-	// CHOMPEdit Start - Rest passtable when crawling
 		if(passtable_reset)
-			passtable_reset = TRUE
+			passtable_reset = FALSE
 			pass_flags &= ~PASSTABLE
 		passtable_crawl_checked = FALSE
-	// CHOMPEdit End
 
 	for(var/obj/item/grab/G in grabbed_by)
 		if(G.state >= GRAB_AGGRESSIVE)
@@ -1050,7 +1142,6 @@
 		lying_prev = lying
 		update_transform()
 		update_mob_action_buttons()
-		//VOREStation Add
 		if(lying && LAZYLEN(buckled_mobs))
 			for(var/mob/living/L as anything in buckled_mobs)
 				if(buckled_mobs[L] != "riding")
@@ -1060,7 +1151,6 @@
 				else
 					unbuckle_mob(L)
 				L.Stun(5)
-		//VOREStation Add End
 
 	return canmove
 
@@ -1107,8 +1197,8 @@
 
 /mob/living/update_transform(var/instant = FALSE)
 	// First, get the correct size.
-	var/desired_scale_x = size_multiplier * icon_scale_x //VOREStation edit
-	var/desired_scale_y = size_multiplier * icon_scale_y //VOREStation edit
+	var/desired_scale_x = size_multiplier * icon_scale_x
+	var/desired_scale_y = size_multiplier * icon_scale_y
 	var/cent_offset = center_offset
 
 	// Now for the regular stuff.
@@ -1117,7 +1207,7 @@
 	var/matrix/M = matrix()
 	M.Scale(desired_scale_x, desired_scale_y)
 	M.Translate(cent_offset * desired_scale_x, (vis_height/2)*(desired_scale_y-1))
-	src.transform = M //VOREStation edit
+	src.transform = M
 	handle_status_indicators()
 
 // This handles setting the client's color variable, which makes everything look a specific color.
@@ -1133,6 +1223,11 @@
 				animate(client, color = M.client_color, time = 10)
 				return
 			colors_to_blend += M.client_color
+
+	if(!colors_to_blend.len) // Modifiers take priority over passive area blending, to prevent changes on every area entered
+		var/location_grade = get_location_color_tint() // Area or weather!
+		if(location_grade)
+			colors_to_blend += location_grade
 
 	if(colors_to_blend.len)
 		var/final_color
@@ -1191,7 +1286,7 @@
 		swap_hand()
 
 /mob/living/throw_item(atom/target)
-	if(incapacitated() || !target || istype(target, /obj/screen))
+	if(incapacitated() || !target || istype(target, /obj/screen) || is_incorporeal())
 		return FALSE
 
 	var/atom/movable/item = src.get_active_hand()
@@ -1214,7 +1309,7 @@
 				add_attack_logs(src,M,"Thrown via grab to [end_T.x],[end_T.y],[end_T.z]")
 			if(ishuman(M))
 				var/mob/living/carbon/human/N = M
-				if((N.health + N.halloss) < CONFIG_GET(number/health_threshold_crit) || N.stat == DEAD)
+				if((N.health + N.halloss) < N.get_crit_point() || N.stat == DEAD)
 					N.adjustBruteLoss(rand(10,30))
 			src.drop_from_inventory(G)
 
@@ -1232,7 +1327,7 @@
 	if(!item)
 		return FALSE //Grab processing has a chance of returning null
 
-/* CHOMPEdit. If I want to do a nice little give I use the actual verb for it.
+	// Help intent + Adjacent = pass item to other
 	if(a_intent == I_HELP && Adjacent(target) && isitem(item) && ishuman(target))
 		var/obj/item/I = item
 		var/mob/living/carbon/human/H = target
@@ -1243,7 +1338,6 @@
 			to_chat(src, span_notice("You offer \the [I] to \the [target]."))
 			do_give(H)
 		return TRUE
-*/
 
 	drop_from_inventory(item)
 
@@ -1320,18 +1414,17 @@
 
 /mob/living/vv_get_header()
 	. = ..()
+	var/refid = REF(src)
 	. += {"
-		<a href='byond://?_src_=vars;[HrefToken()];rename=\ref[src]'><b>[src]</b></a><font size='1'>
-		<br><a href='byond://?_src_=vars;[HrefToken()];datumedit=\ref[src];varnameedit=ckey'>[ckey ? ckey : "No ckey"]</a> / <a href='byond://?_src_=vars;[HrefToken()];datumedit=\ref[src];varnameedit=real_name'>[real_name ? real_name : "No real name"]</a>
-		<br>
-		BRUTE:<a href='byond://?_src_=vars;[HrefToken()];mobToDamage=\ref[src];adjustDamage=brute'>[getBruteLoss()]</a>
-		FIRE:<a href='byond://?_src_=vars;[HrefToken()];mobToDamage=\ref[src];adjustDamage=fire'>[getFireLoss()]</a>
-		TOXIN:<a href='byond://?_src_=vars;[HrefToken()];mobToDamage=\ref[src];adjustDamage=toxin'>[getToxLoss()]</a>
-		OXY:<a href='byond://?_src_=vars;[HrefToken()];mobToDamage=\ref[src];adjustDamage=oxygen'>[getOxyLoss()]</a>
-		CLONE:<a href='byond://?_src_=vars;[HrefToken()];mobToDamage=\ref[src];adjustDamage=clone'>[getCloneLoss()]</a>
-		BRAIN:<a href='byond://?_src_=vars;[HrefToken()];mobToDamage=\ref[src];adjustDamage=brain'>[getBrainLoss()]</a>
-		</font>
-		"}
+		<br>"} + span_small("[VV_HREF_TARGETREF(refid, VV_HK_GIVE_DIRECT_CONTROL, "[ckey || "no ckey"]")] / [VV_HREF_TARGETREF_1V(refid, VV_HK_BASIC_EDIT, "[real_name || "no real name"]", NAMEOF(src, real_name))]") + {"
+		<br>"} + span_small({"
+			BRUTE:"} + span_small("<a href='byond://?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=brute' id='brute'>[getBruteLoss()]</a>") + {"
+			FIRE:"} + span_small("<a href='byond://?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=fire' id='fire'>[getFireLoss()]</a>") + {"
+			TOXIN:"} + span_small("<a href='byond://?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=toxin' id='toxin'>[getToxLoss()]</a>") + {"
+			OXY:"} + span_small("<a href='byond://?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=oxygen' id='oxygen'>[getOxyLoss()]</a>") + {"
+			BRAIN:"} + span_small("<a href='byond://?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=brain' id='brain'>[getBrainLoss()]</a>") + {"
+			CLONE:"} + span_small("<a href='byond://?_src_=vars;[HrefToken()];mobToDamage=[refid];adjustDamage=clone' id='clone'>[getCloneLoss()]</a>") + {"
+		"})
 
 /mob/living/update_gravity(has_gravity)
 	if(!ticker)
@@ -1374,6 +1467,7 @@
 		qdel_null(screen_icon)
 
 /datum/component/character_setup/proc/create_mob_button(mob/user)
+	SIGNAL_HANDLER
 	var/datum/hud/HUD = user.hud_used
 	if(!screen_icon)
 		screen_icon = new()
@@ -1389,6 +1483,7 @@
 	user.client?.screen += screen_icon
 
 /datum/component/character_setup/proc/character_setup_click(source, location, control, params, user)
+	SIGNAL_HANDLER
 	var/mob/owner = user
 	if(owner.client?.prefs)
 		INVOKE_ASYNC(owner.client.prefs, TYPE_PROC_REF(/datum/preferences, ShowChoices), owner)
@@ -1413,9 +1508,45 @@
 /mob/living/verb/mob_sleep()
 	set name = "Sleep"
 	set category = "IC.Game"
-	if(!toggled_sleeping && alert(src, "Are you sure you wish to go to sleep? You will snooze until you use the Sleep verb again.", "Sleepy Time", "No", "Yes") == "No")
+	if(!toggled_sleeping && tgui_alert(src, "Are you sure you wish to go to sleep? You will snooze until you use the Sleep verb again.", "Sleepy Time", list("No", "Yes")) != "Yes")
 		return
 	toggled_sleeping = !toggled_sleeping
 	to_chat(src, span_notice("You are [toggled_sleeping ? "now sleeping. Use the Sleep verb again to wake up" : "no longer sleeping"]."))
 	if(toggled_sleeping)
 		Sleeping(1)
+
+/mob/living/proc/set_metainfo_favs(var/mob/user, var/reopen = TRUE)
+	if(user != src)
+		return
+	var/new_metadata = strip_html_simple(tgui_input_text(user, "Enter any information you'd like others to see relating to your FAVOURITE roleplay preferences. This will not be saved permanently unless you click save in the OOC notes panel! Type \"!clear\" to empty.", "Game Preference" , html_decode(ooc_notes_favs), multiline = TRUE,  prevent_enter = TRUE))
+	if(new_metadata && CanUseTopic(user))
+		if(new_metadata == "!clear")
+			new_metadata = ""
+		ooc_notes_favs = new_metadata
+		client.prefs.update_preference_by_type(/datum/preference/text/living/ooc_notes_favs, new_metadata)
+		to_chat(user, span_filter_notice("OOC note favs have been updated. Don't forget to save!"))
+		log_admin("[key_name(user)] updated their OOC note favs mid-round.")
+		if(reopen)
+			ooc_notes_window(user)
+
+/mob/living/proc/set_metainfo_maybes(var/mob/user, var/reopen = TRUE)
+	if(user != src)
+		return
+	var/new_metadata = strip_html_simple(tgui_input_text(user, "Enter any information you'd like others to see relating to your MAYBE roleplay preferences. This will not be saved permanently unless you click save in the OOC notes panel! Type \"!clear\" to empty.", "Game Preference" , html_decode(ooc_notes_maybes), multiline = TRUE,  prevent_enter = TRUE))
+	if(new_metadata && CanUseTopic(user))
+		if(new_metadata == "!clear")
+			new_metadata = ""
+		ooc_notes_maybes = new_metadata
+		client.prefs.update_preference_by_type(/datum/preference/text/living/ooc_notes_maybes, new_metadata)
+		to_chat(user, span_filter_notice("OOC note maybes have been updated. Don't forget to save!"))
+		log_admin("[key_name(user)] updated their OOC note maybes mid-round.")
+		if(reopen)
+			ooc_notes_window(user)
+
+/mob/living/proc/set_metainfo_ooc_style(var/mob/user, var/reopen = TRUE)
+	if(user != src)
+		return
+	ooc_notes_style = !ooc_notes_style
+	client.prefs.update_preference_by_type(/datum/preference/toggle/living/ooc_notes_style, ooc_notes_style)
+	if(reopen)
+		ooc_notes_window(user)

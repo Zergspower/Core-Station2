@@ -11,7 +11,7 @@
 	return src
 
 /mob/living/bot/mulebot/get_mob()
-	if(load && istype(load, /mob/living))
+	if(load && isliving(load))
 		return list(src, load)
 	return src
 
@@ -38,15 +38,15 @@
 	var/h_style = "Bald"
 
 	var/list/valid_hairstyles = list()
-	for(var/hairstyle in hair_styles_list)
-		var/datum/sprite_accessory/S = hair_styles_list[hairstyle]
+	for(var/hairstyle in GLOB.hair_styles_list)
+		var/datum/sprite_accessory/S = GLOB.hair_styles_list[hairstyle]
 		if(gender == MALE && S.gender == FEMALE)
 			continue
 		if(gender == FEMALE && S.gender == MALE)
 			continue
 		if( !(species in S.species_allowed))
 			continue
-		valid_hairstyles[hairstyle] = hair_styles_list[hairstyle]
+		valid_hairstyles[hairstyle] = GLOB.hair_styles_list[hairstyle]
 
 	if(valid_hairstyles.len)
 		h_style = pick(valid_hairstyles)
@@ -57,8 +57,8 @@
 	var/f_style = "Shaved"
 
 	var/list/valid_facialhairstyles = list()
-	for(var/facialhairstyle in facial_hair_styles_list)
-		var/datum/sprite_accessory/S = facial_hair_styles_list[facialhairstyle]
+	for(var/facialhairstyle in GLOB.facial_hair_styles_list)
+		var/datum/sprite_accessory/S = GLOB.facial_hair_styles_list[facialhairstyle]
 		if(gender == MALE && S.gender == FEMALE)
 			continue
 		if(gender == FEMALE && S.gender == MALE)
@@ -66,7 +66,7 @@
 		if( !(species in S.species_allowed))
 			continue
 
-		valid_facialhairstyles[facialhairstyle] = facial_hair_styles_list[facialhairstyle]
+		valid_facialhairstyles[facialhairstyle] = GLOB.facial_hair_styles_list[facialhairstyle]
 
 	if(valid_facialhairstyles.len)
 		f_style = pick(valid_facialhairstyles)
@@ -130,7 +130,7 @@
 		else				return "unknown"
 
 /proc/RoundHealth(health)
-	var/list/icon_states = cached_icon_states(ingame_hud_med)
+	var/list/icon_states = cached_icon_states(GLOB.ingame_hud_med)
 	for(var/icon_state in icon_states)
 		if(health >= text2num(icon_state))
 			return icon_state
@@ -182,7 +182,7 @@ Proc for attack log creation, because really why not
 
 //checks whether this item is a module of the robot it is located in.
 /proc/is_robot_module(var/obj/item/thing)
-	if (!thing || !istype(thing.loc, /mob/living/silicon/robot))
+	if (!thing || !isrobot(thing.loc))
 		return 0
 	var/mob/living/silicon/robot/R = thing.loc
 	return (thing in R.module.modules)
@@ -248,7 +248,7 @@ Proc for attack log creation, because really why not
 			. = FALSE
 			break
 
-		if(target_zone && user.zone_sel.selecting != target_zone)
+		if(target_zone && user.zone_sel?.selecting != target_zone)
 			. = FALSE
 			break
 
@@ -367,14 +367,24 @@ Proc for attack log creation, because really why not
 /proc/cached_character_icon(var/mob/desired)
 	var/cachekey = "\ref[desired][desired.real_name]"
 
-	if(cached_character_icons[cachekey])
-		. = cached_character_icons[cachekey]
+	if(GLOB.cached_character_icons[cachekey])
+		. = GLOB.cached_character_icons[cachekey]
 	else
 		. = getCompoundIcon(desired)
-		cached_character_icons[cachekey] = .
+		GLOB.cached_character_icons[cachekey] = .
 
 /proc/not_has_ooc_text(mob/user)
-	if (CONFIG_GET(flag/allow_metadata) && (!user.client?.prefs?.metadata || length(user.client.prefs.metadata) < 15))
+	if (CONFIG_GET(flag/allow_metadata) && (!user.client?.prefs?.read_preference(/datum/preference/text/living/ooc_notes) || length(user.client.prefs.read_preference(/datum/preference/text/living/ooc_notes)) < 15))
 		to_chat(user, span_warning("Please set informative OOC notes related to RP/ERP preferences. Set them using the 'OOC Notes' button on the 'General' tab in character setup."))
 		return TRUE
 	return FALSE
+
+///Makes a call in the context of a different usr. Use sparingly
+/world/proc/push_usr(mob/user_mob, datum/callback/invoked_callback, ...)
+	var/temp = usr
+	usr = user_mob
+	if (length(args) > 2)
+		. = invoked_callback.Invoke(arglist(args.Copy(3)))
+	else
+		. = invoked_callback.Invoke()
+	usr = temp

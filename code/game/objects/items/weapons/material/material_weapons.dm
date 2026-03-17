@@ -28,14 +28,13 @@
 	var/drops_debris = 1
 	var/named_from_material = 1 //YW EDIT, Does it prepend the material's name to it's name?
 
-/obj/item/material/New(var/newloc, var/material_key)
-	..(newloc)
+/obj/item/material/Initialize(mapload, var/material_key)
+	. = ..()
 	if(!material_key)
 		material_key = default_material
 	set_material(material_key)
 	if(!material)
-		qdel(src)
-		return
+		return INITIALIZE_HINT_QDEL
 
 	matter = material.get_matter()
 	if(matter.len)
@@ -109,7 +108,7 @@
 /obj/item/material/proc/shatter(var/consumed)
 	var/turf/T = get_turf(src)
 	T.visible_message(span_danger("\The [src] [material.destruction_desc]!"))
-	if(istype(loc, /mob/living))
+	if(isliving(loc))
 		var/mob/living/M = loc
 		M.drop_from_inventory(src)
 	playsound(src, "shatter", 70, 1)

@@ -184,8 +184,12 @@
 	//vars for vore_icons toggle control
 	var/vore_icons_cache = null // null by default. Going from ON to OFF should store vore_icons val here, OFF to ON reset as null
 
+	var/obj/movement_target //Used by some mobs to hunt down food. Mainly noodle and Ian.
 
-/mob/living/simple_mob/Initialize()
+	//no stripping of simplemobs
+	strip_pref = FALSE
+
+/mob/living/simple_mob/Initialize(mapload)
 	remove_verb(src, /mob/verb/observe)
 	health = maxHealth
 
@@ -212,7 +216,7 @@
 	if(CONFIG_GET(flag/allow_simple_mob_recolor))
 		add_verb(src, /mob/living/simple_mob/proc/ColorMate)
 
-	AddElement(/datum/element/footstep, FOOTSTEP_MOB_SHOE, 1, -6) // CHOMPEdit - Giving them all shoe footsteps FOR NOW until I go through all of them and give appropiate ones
+	AddElement(/datum/element/footstep, FOOTSTEP_MOB_SHOE, 1, -6) // Need to go through all of the mobs to give them proper footsteps...
 
 	return ..()
 
@@ -224,6 +228,7 @@
 
 	friends.Cut()
 	languages.Cut()
+	movement_target = null
 
 	if(has_eye_glow)
 		remove_eyes()
@@ -238,8 +243,7 @@
 	. = ..()
 	to_chat(src,span_boldnotice("You are \the [src].") + " [player_msg]")
 	if(vore_active && !voremob_loaded)
-		voremob_loaded = TRUE
-		init_vore()
+		init_vore(TRUE)
 	if(hasthermals)
 		add_verb(src, /mob/living/simple_mob/proc/hunting_vision) //So that maint preds can see prey through walls, to make it easier to find them.
 
@@ -314,6 +318,24 @@
 		icon_state = icon_living
 	update_icon()
 
+/mob/living/simple_mob/proc/chase_target(ticker)
+	if(QDELETED(movement_target))
+		movement_target = null
+		return
+
+	if(ticker < 10 && (get_dist(src, movement_target) > 1)) //We only chase our target for 10 tiles or until we are next to them.
+		step_to(src,movement_target,1)
+		addtimer(CALLBACK(src, PROC_REF(chase_target), ++ticker), 3, TIMER_DELETE_ME)
+		return
+
+	face_atom(movement_target)
+
+	if(isturf(movement_target.loc))
+		UnarmedAttack(movement_target)
+	else if(ishuman(movement_target.loc) && prob(20))
+		visible_emote("stares at the [movement_target] that [movement_target.loc] has with an unknowable gaze.")
+	movement_target = null
+
 
 /mob/living/simple_mob/say_quote(var/message, var/datum/language/speaking = null)
 	if(speak_emote.len)
@@ -325,28 +347,26 @@
 	return verb
 
 /mob/living/simple_mob/is_sentient()
-	return mob_class & MOB_CLASS_HUMANOID|MOB_CLASS_ANIMAL|MOB_CLASS_SLIME // Update this if needed.
+	return mob_class & (MOB_CLASS_HUMANOID|MOB_CLASS_ANIMAL|MOB_CLASS_SLIME) // Update this if needed.
 
 /mob/living/simple_mob/get_nametag_desc(mob/user)
 	return span_italics("[tt_desc]")
 
 /mob/living/simple_mob/make_hud_overlays()
-	hud_list[STATUS_HUD]  = gen_hud_image(buildmode_hud, src, "ai_0", plane = PLANE_BUILDMODE)
-	hud_list[LIFE_HUD]	  = gen_hud_image(buildmode_hud, src, "ais_1", plane = PLANE_BUILDMODE)
+	hud_list[STATUS_HUD]  = gen_hud_image(GLOB.buildmode_hud, src, "ai_0", plane = PLANE_BUILDMODE)
+	hud_list[LIFE_HUD]	  = gen_hud_image(GLOB.buildmode_hud, src, "ais_1", plane = PLANE_BUILDMODE)
 	add_overlay(hud_list)
 
-//VOREStation Add Start		Makes it so that simplemobs can understand galcomm without being able to speak it.
+//Makes it so that simplemobs can understand galcomm without being able to speak it.
 /mob/living/simple_mob/say_understands(var/mob/other, var/datum/language/speaking = null)
 	if(understands_common && (speaking?.name == LANGUAGE_GALCOM || !speaking))
 		return TRUE
 	return ..()
-//Vorestation Add End
 
 /decl/mob_organ_names
 	var/list/hit_zones = list("body") //When in doubt, it's probably got a body.
 
 /*
- * VOREStation Add
  * How injured are we? Returns a number that is then added to movement cooldown and firing/melee delay respectively.
  * Called by movement_delay and our firing/melee delay checks
 */
@@ -359,22 +379,16 @@
 		else if((h / getMaxHealth()) >= threshold)			// If our health has gone up somehow, and we're over our threshold percentage now, reset it to full
 			injury_level = 0								// Reset to no slowdown
 
-/mob/living/simple_mob/updatehealth()	// We don't want to fully override the check, just hook our own code in
-	get_injury_level()					// We check how injured we are, then actually update the mob on how hurt we are.
-	. = ..() 							// Calling parent here, actually updating our mob on how hurt we are.
-
-// VOREStation Add End
-
 /mob/living/simple_mob/proc/ColorMate()
 	set name = "Recolour"
 	set category = "Abilities.Settings"
 	set desc = "Allows to recolour once."
 
 	if(!has_recoloured)
-		var/datum/ColorMate/recolour = new /datum/ColorMate(usr)
-		recolour.tgui_interact(usr)
+		var/datum/ColorMate/recolour = new /datum/ColorMate(src)
+		recolour.tgui_interact(src)
 		return
-	to_chat(usr, "You've already recoloured yourself once. You are only allowed to recolour yourself once during a around.")
+	to_chat(src, "You've already recoloured yourself once. You are only allowed to recolour yourself once during a around.")
 
 //Thermal vision adding
 
@@ -384,14 +398,14 @@
 	set desc = "Uses you natural predatory instincts to seek out prey even through walls, or your natural survival instincts to spot predators from a distance."
 
 	if(hunting_cooldown + 5 MINUTES < world.time)
-		to_chat(usr, "You can sense other creatures by focusing carefully on your surroundings.")
+		to_chat(src, "You can sense other creatures by focusing carefully on your surroundings.")
 		sight |= SEE_MOBS
 		hunting_cooldown = world.time
 		spawn(600)
-			to_chat(usr, "Your concentration wears off.")
+			to_chat(src, "Your concentration wears off.")
 			sight -= SEE_MOBS
 	else if(hunting_cooldown + 5 MINUTES > world.time)
-		to_chat(usr, "You must wait for a while before using this again.")
+		to_chat(src, "You must wait for a while before using this again.")
 
 /mob/living/simple_mob/proc/hunting_vision_plus()
 	set name = "Thermal vision toggle"
@@ -399,10 +413,10 @@
 	set desc = "Uses you natural predatory instincts to seek out prey even through walls, or your natural survival instincts to spot predators from a distance."
 
 	if(!isthermal)
-		to_chat(usr, "You can sense other creatures by focusing carefully on your surroundings.")
+		to_chat(src, "You can sense other creatures by focusing carefully on your surroundings.")
 		sight |= SEE_MOBS
 	else
-		to_chat(usr, "You stop sensing creatures beyond the walls.")
+		to_chat(src, "You stop sensing creatures beyond the walls.")
 		sight -= SEE_MOBS
 
 /mob/living/simple_mob/proc/character_directory_species()

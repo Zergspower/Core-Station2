@@ -12,7 +12,7 @@
 	wait_if_pulled = 1
 	min_target_dist = 0
 
-	var/vocal = 1
+	var/vocal = 0
 	var/amount = 10 // 1 for tile, 2 for lattice
 	var/maxAmount = 60
 	var/tilemake = 0 // When it reaches 100, bot makes a tile
@@ -113,7 +113,7 @@
 		addTiles(1)
 
 	if(vocal && prob(1))
-		custom_emote(2, "makes an excited beeping sound!")
+		automatic_custom_emote(AUDIBLE_MESSAGE, "makes an excited beeping sound!")
 		playsound(src, 'sound/machines/twobeep.ogg', 50, 0)
 
 /mob/living/bot/floorbot/handleAdjacentTarget()
@@ -220,7 +220,7 @@
 		target = null
 		busy = 0
 		update_icons()
-	else if(istype(A, /turf/space) || istype(A, /turf/simulated/mineral/floor))
+	else if(isopenturf(A) || istype(A, /turf/simulated/mineral/floor))
 		var/building = 2
 		if(locate(/obj/structure/lattice, A))
 			building = 1

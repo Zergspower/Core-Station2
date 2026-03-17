@@ -1,26 +1,42 @@
-import { sortBy } from 'common/collections';
+import { useBackend } from 'tgui/backend';
+import { Button, LabeledList, Section } from 'tgui-core/components';
 
-import { useBackend } from '../../backend';
-import { Button, LabeledList, Section, Stack } from '../../components';
-import { Data, species, styles } from './types';
+import type { Data, species } from './types';
 
 export const AppearanceChangerSpecies = (props) => {
   const { act, data } = useBackend<Data>();
   const { species, specimen } = data;
 
-  const sortedSpecies = sortBy(species || [], (val: species) => val.specimen);
+  const sortedSpecies = (species || []).sort((a: species, b: species) =>
+    a.specimen.localeCompare(b.specimen),
+  );
 
   return (
-    <Section title="Species" fill scrollable>
-      {sortedSpecies.map((spec) => (
-        <Button
-          key={spec.specimen}
-          selected={specimen === spec.specimen}
-          onClick={() => act('race', { race: spec.specimen })}
-        >
-          {spec.specimen}
-        </Button>
-      ))}
+    <Section title="Unique Identifiers" fill scrollable>
+      <Section title="Species">
+        {sortedSpecies.map((spec) => (
+          <Button
+            key={spec.specimen}
+            selected={specimen === spec.specimen}
+            onClick={() => act('race', { race: spec.specimen })}
+          >
+            {spec.specimen}
+          </Button>
+        ))}
+      </Section>
+      <Section title="DNA">
+        <LabeledList>
+          {data.is_design_console ? (
+            <LabeledList.Item label="Character Name">
+              <Button icon="pen" onClick={() => act('char_name')}>
+                {data.name}
+              </Button>
+            </LabeledList.Item>
+          ) : (
+            ''
+          )}
+        </LabeledList>
+      </Section>
     </Section>
   );
 };
@@ -48,6 +64,7 @@ export const AppearanceChangerGender = (props) => {
           {id_genders.map((g) => (
             <Button
               key={g.gender_key}
+              disabled={data.is_design_console}
               selected={g.gender_key === gender_id}
               onClick={() => act('gender_id', { gender_id: g.gender_key })}
             >
@@ -56,111 +73,6 @@ export const AppearanceChangerGender = (props) => {
           ))}
         </LabeledList.Item>
       </LabeledList>
-    </Section>
-  );
-};
-
-export const AppearanceChangerEars = (props) => {
-  const { act, data } = useBackend<Data>();
-
-  const { ear_style, ear_styles } = data;
-
-  return (
-    <Stack vertical fill>
-      <Stack.Item grow={1}>
-        <Section title="Ears" fill scrollable>
-          <Button
-            onClick={() => act('ear', { clear: true })}
-            selected={ear_style === null}
-          >
-            -- Not Set --
-          </Button>
-          {sortBy(ear_styles, (e: styles) => e.name.toLowerCase()).map(
-            (ear) => (
-              <Button
-                key={ear.instance}
-                onClick={() => act('ear', { ref: ear.instance })}
-                selected={ear.name === ear_style}
-              >
-                {ear.name}
-              </Button>
-            ),
-          )}
-        </Section>
-      </Stack.Item>
-      <Stack.Item grow={1}>
-        <Section title="Ears - Secondary" fill scrollable>
-          <Button
-            onClick={() => act('ear_secondary', { clear: true })}
-            selected={data.ear_secondary_style === null}
-          >
-            -- Not Set --
-          </Button>
-          {sortBy(ear_styles, (e: styles) => e.name.toLowerCase()).map(
-            (ear) => (
-              <Button
-                key={ear.instance}
-                onClick={() => act('ear_secondary', { ref: ear.instance })}
-                selected={ear.name === ear_style}
-              >
-                {ear.name}
-              </Button>
-            ),
-          )}
-        </Section>
-      </Stack.Item>
-    </Stack>
-  );
-};
-
-export const AppearanceChangerTails = (props) => {
-  const { act, data } = useBackend<Data>();
-
-  const { tail_style, tail_styles } = data;
-
-  return (
-    <Section title="Tails" fill scrollable>
-      <Button
-        onClick={() => act('tail', { clear: true })}
-        selected={tail_style === null}
-      >
-        -- Not Set --
-      </Button>
-      {sortBy(tail_styles, (e: styles) => e.name.toLowerCase()).map((tail) => (
-        <Button
-          key={tail.instance}
-          onClick={() => act('tail', { ref: tail.instance })}
-          selected={tail.name === tail_style}
-        >
-          {tail.name}
-        </Button>
-      ))}
-    </Section>
-  );
-};
-
-export const AppearanceChangerWings = (props) => {
-  const { act, data } = useBackend<Data>();
-
-  const { wing_style, wing_styles } = data;
-
-  return (
-    <Section title="Wings" fill scrollable>
-      <Button
-        onClick={() => act('wing', { clear: true })}
-        selected={wing_style === null}
-      >
-        -- Not Set --
-      </Button>
-      {sortBy(wing_styles, (e: styles) => e.name.toLowerCase()).map((wing) => (
-        <Button
-          key={wing.instance}
-          onClick={() => act('wing', { ref: wing.instance })}
-          selected={wing.name === wing_style}
-        >
-          {wing.name}
-        </Button>
-      ))}
     </Section>
   );
 };

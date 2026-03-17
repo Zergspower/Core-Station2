@@ -8,8 +8,8 @@
 	var/codelen = 4
 	locked = 1
 
-/obj/structure/closet/crate/secure/loot/New()
-	..()
+/obj/structure/closet/crate/secure/loot/Initialize(mapload)
+	. = ..()
 	var/list/digits = list("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
 
 	for(var/i in 1 to codelen)
@@ -112,7 +112,7 @@
 		if(92)
 			new/obj/item/material/sword/katana(src)
 		if(93)
-			new/obj/item/dnainjector/xraymut(src) // Probably the least OP
+			new/obj/item/dnainjector/set_trait/xray(src) // Probably the least OP
 		if(94) // Why the hell not
 			new/obj/item/storage/backpack/clown(src)
 			new/obj/item/clothing/under/rank/clown(src)
@@ -148,13 +148,16 @@
 vorestation edit end */
 
 
-/obj/structure/closet/crate/secure/loot/togglelock(mob/user as mob)
+/obj/structure/closet/crate/secure/loot/togglelock(mob/user)
 	if(!locked)
 		return
 
 	to_chat(user, span_notice("The crate is locked with a Deca-code lock."))
-	var/input = tgui_input_text(usr, "Enter [codelen] digits. All digits must be unique.", "Deca-Code Lock", "")
+	var/input = tgui_input_text(user, "Enter [codelen] digits. All digits must be unique.", "Deca-Code Lock", "", codelen)
 	if(!Adjacent(user))
+		return
+	if(input == null)
+		to_chat(user, span_notice("You leave the crate alone."))
 		return
 	var/list/sanitised = list()
 	var/sanitycheck = 1
@@ -165,9 +168,11 @@ vorestation edit end */
 			if(sanitised[i] == sanitised[j])
 				sanitycheck = null //if a digit is repeated, reject the input
 
-	if(input == null || sanitycheck == null || length(input) != codelen)
-		to_chat(user, span_notice("You leave the crate alone."))
-	else if(check_input(input))
+	if(sanitycheck == null || length(input) != codelen)
+		to_chat(user, span_notice("You aren't sure this input is a good idea."))
+		return
+
+	if(check_input(input))
 		to_chat(user, span_notice("The crate unlocks!"))
 		playsound(src, 'sound/machines/lockreset.ogg', 50, 1)
 		set_locked(0)

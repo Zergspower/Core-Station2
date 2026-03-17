@@ -81,10 +81,11 @@
 	name = "crate"
 	desc = "A rectangular steel crate."
 
-
-	icon_state = "crate"
-	icon_living = "crate"
-	icon = 'modular_chomp/icons/mob/animal_ch.dmi' //CHOMPEdit
+	//CHOMPEdit Start
+	icon_state = "open"
+	icon_living = "open"
+	icon = 'modular_chomp/icons/mob/animal_ch.dmi'
+	// CHOMPEdit End
 
 	faction = FACTION_MIMIC
 
@@ -133,7 +134,9 @@
 /mob/living/simple_mob/vore/aggressive/mimic/init_vore()
 	if(!voremob_loaded)
 		return
-	.=..()
+	if(LAZYLEN(vore_organs))
+		return
+	. = ..()
 	var/obj/belly/B = vore_selected
 	B.vore_sound = "Tauric Swallow"
 	B.release_sound = "Pred Escape"

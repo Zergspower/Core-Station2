@@ -1,7 +1,7 @@
 /turf/unsimulated/floor
 	name = "floor"
 	icon = 'icons/turf/floors.dmi'
-	icon_state = "Floor3"
+	icon_state = ""
 
 /turf/unsimulated/mask
 	name = "mask"
@@ -15,3 +15,8 @@
 	name = "floor"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "elevatorshaft"
+
+/turf/unsimulated/floor/reinforced
+	name = "reinforced floor"
+	icon = 'icons/turf/flooring/tiles.dmi'
+	icon_state = "reinforced"

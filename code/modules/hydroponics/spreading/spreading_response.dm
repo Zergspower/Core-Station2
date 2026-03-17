@@ -1,13 +1,10 @@
-// CHOMPEdit Start
 /obj/effect/plant/HasProximity(turf/T, datum/weakref/WF, old_loc)
-	SIGNAL_HANDLER
 	if(isnull(WF))
 		return
 	var/atom/movable/AM = WF.resolve()
 	if(isnull(AM))
 		log_debug("DEBUG: HasProximity called without reference on [src].")
 		return
-// CHOMPEdit End
 	if(!is_mature() || seed.get_trait(TRAIT_SPREAD) != 2)
 		return
 
@@ -15,7 +12,7 @@
 	if(!istype(M))
 		return
 
-	if(M.is_incorporeal()) // CHOMPEdit - Don't buckle phased entities.
+	if(M.is_incorporeal()) // Don't buckle phased entities.
 		return
 
 	if(!has_buckled_mobs() && !M.buckled && !M.anchored && (issmall(M) || prob(round(seed.get_trait(TRAIT_POTENCY)/3))))
@@ -53,7 +50,7 @@
 	if(istype(H) && H.shoes)
 		return
 	seed.do_thorns(victim,src)
-	seed.do_sting(victim,src,pick("r_foot","l_foot","r_leg","l_leg"))
+	seed.do_sting(victim,src,pick(BP_R_FOOT,BP_L_FOOT,BP_R_LEG,BP_L_LEG))
 
 	if(seed.get_trait(TRAIT_SPORING) && prob(round(seed.get_trait(TRAIT_POTENCY)/2)))
 		seed.create_spores(get_turf(victim))
@@ -108,7 +105,7 @@
 	//grabbing people
 	if(!victim.anchored && Adjacent(victim) && victim.loc != src.loc)
 		var/can_grab = 1
-		if(istype(victim, /mob/living/carbon/human))
+		if(ishuman(victim))
 			var/mob/living/carbon/human/H = victim
 			if(istype(H.shoes, /obj/item/clothing/shoes/magboots) && (H.shoes.item_flags & NOSLIP))
 				can_grab = 0
@@ -116,7 +113,7 @@
 			src.visible_message(span_danger("Tendrils lash out from \the [src] and drag \the [victim] in!"))
 			victim.forceMove(src.loc)
 			buckle_mob(victim)
-			victim.set_dir(pick(cardinal))
+			victim.set_dir(pick(GLOB.cardinal))
 			to_chat(victim, span_danger("Tendrils [pick("wind", "tangle", "tighten")] around you!"))
 			victim.Weaken(0.5)
 			seed.do_thorns(victim,src)

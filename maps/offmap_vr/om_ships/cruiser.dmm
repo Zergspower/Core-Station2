@@ -20,7 +20,7 @@
 /area/mothership/breakroom)
 "ad" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "ws_dock_8_outer";
 	locked = 1;
@@ -28,7 +28,7 @@
 	},
 /obj/machinery/access_button{
 	command = "cycle_exterior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ws_dock_8";
 	name = "exterior access button";
 	pixel_x = -26;
@@ -52,7 +52,7 @@
 /area/mothership/breakroom)
 "ai" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_8_pump"
 	},
 /obj/machinery/light/small{
@@ -60,7 +60,7 @@
 	pixel_y = 0
 	},
 /obj/machinery/embedded_controller/radio/airlock/docking_port{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_8";
 	pixel_x = -32;
 	req_one_access = list(101);
@@ -70,7 +70,7 @@
 	tag_interior_door = "ws_dock_8_inner"
 	},
 /obj/machinery/airlock_sensor{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_8_sensor";
 	pixel_x = 25;
 	pixel_y = 0
@@ -101,7 +101,7 @@
 /area/mothership/breakroom)
 "am" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_1_pump"
 	},
 /obj/machinery/light/small{
@@ -109,13 +109,13 @@
 	pixel_x = 0
 	},
 /obj/machinery/airlock_sensor{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_1_sensor";
 	pixel_x = -25;
 	pixel_y = 0
 	},
 /obj/machinery/embedded_controller/radio/airlock/docking_port{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_1";
 	pixel_x = 32;
 	req_one_access = list(101);
@@ -129,7 +129,7 @@
 "an" = (
 /obj/machinery/atmospherics/pipe/simple/hidden,
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "ws_dock_8_inner";
 	locked = 1;
@@ -909,7 +909,6 @@
 /obj/machinery/light,
 /obj/machinery/alarm{
 	dir = 1;
-	icon_state = "alarm0";
 	pixel_y = -22
 	},
 /obj/machinery/button/remote/blast_door{
@@ -1050,7 +1049,7 @@
 /turf/simulated/floor/tiled/steel_grid,
 /area/mothership/eva)
 "cy" = (
-/obj/item/clothing/suit/space/void/medical/alt,
+/obj/item/clothing/suit/space/void/medical/veymed,
 /obj/item/clothing/head/helmet/space/void/medical/emt,
 /obj/item/tank/oxygen,
 /obj/item/clothing/shoes/magboots,
@@ -1130,7 +1129,7 @@
 /area/mothership/eva)
 "cH" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "ws_dock_7_outer";
 	locked = 1;
@@ -1138,7 +1137,7 @@
 	},
 /obj/machinery/access_button{
 	command = "cycle_exterior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ws_dock_7";
 	name = "exterior access button";
 	pixel_x = -5;
@@ -1150,18 +1149,18 @@
 "cI" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 4;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_7_pump"
 	},
 /obj/machinery/light/small,
 /obj/machinery/airlock_sensor{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_7_sensor";
 	pixel_x = 0;
 	pixel_y = -25
 	},
 /obj/machinery/embedded_controller/radio/airlock/docking_port{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_7";
 	pixel_y = 32;
 	req_one_access = list(101);
@@ -1177,7 +1176,7 @@
 	dir = 4
 	},
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "ws_dock_7_inner";
 	locked = 1;
@@ -1194,7 +1193,7 @@
 	},
 /obj/machinery/access_button{
 	command = "cycle_interior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ws_dock_7";
 	name = "interior access button";
 	pixel_x = -28;
@@ -1295,7 +1294,7 @@
 	},
 /obj/machinery/access_button{
 	command = "cycle_interior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ws_dock_2";
 	name = "interior access button";
 	pixel_x = 28;
@@ -1310,12 +1309,12 @@
 "cT" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 8;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_2_pump"
 	},
 /obj/machinery/light/small,
 /obj/machinery/embedded_controller/radio/airlock/docking_port{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_2";
 	pixel_y = 32;
 	req_one_access = list(101);
@@ -1325,7 +1324,7 @@
 	tag_interior_door = "ws_dock_2_inner"
 	},
 /obj/machinery/airlock_sensor{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_2_sensor";
 	pixel_x = 0;
 	pixel_y = -25
@@ -1604,7 +1603,6 @@
 	alarm_id = "pen_nine";
 	breach_detection = 0;
 	dir = 1;
-	icon_state = "alarm0";
 	pixel_y = -22
 	},
 /obj/machinery/light/small,
@@ -1677,7 +1675,6 @@
 	alarm_id = "pen_nine";
 	breach_detection = 0;
 	dir = 1;
-	icon_state = "alarm0";
 	pixel_y = -22
 	},
 /turf/simulated/floor/tiled/techmaint,
@@ -1711,7 +1708,6 @@
 	alarm_id = "pen_nine";
 	breach_detection = 0;
 	dir = 1;
-	icon_state = "alarm0";
 	pixel_y = -22
 	},
 /obj/machinery/light/small,
@@ -2030,7 +2026,6 @@
 	alarm_id = "pen_nine";
 	breach_detection = 0;
 	dir = 1;
-	icon_state = "alarm0";
 	pixel_y = -22
 	},
 /obj/machinery/atmospherics/unary/vent_pump/on{
@@ -2192,7 +2187,6 @@
 	alarm_id = "pen_nine";
 	breach_detection = 0;
 	dir = 1;
-	icon_state = "alarm0";
 	pixel_y = -22
 	},
 /obj/machinery/atmospherics/unary/vent_pump/on{
@@ -2325,7 +2319,6 @@
 	alarm_id = "pen_nine";
 	breach_detection = 0;
 	dir = 1;
-	icon_state = "alarm0";
 	pixel_y = -22
 	},
 /obj/effect/floor_decal/industrial/warning/corner{
@@ -2614,7 +2607,6 @@
 	},
 /obj/machinery/alarm{
 	dir = 4;
-	icon_state = "alarm0";
 	pixel_x = -22
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
@@ -7224,7 +7216,6 @@
 	alarm_id = "pen_nine";
 	breach_detection = 0;
 	dir = 1;
-	icon_state = "alarm0";
 	pixel_y = -22
 	},
 /turf/simulated/floor/tiled/techmaint,
@@ -7303,7 +7294,7 @@
 /area/mothership/cryotube)
 "pr" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "ws_dock_6_outer";
 	locked = 1;
@@ -7311,7 +7302,7 @@
 	},
 /obj/machinery/access_button{
 	command = "cycle_exterior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ws_dock_6";
 	name = "exterior access button";
 	pixel_x = -5;
@@ -7323,7 +7314,7 @@
 "ps" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 4;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_6_pump"
 	},
 /obj/machinery/light/small{
@@ -7331,13 +7322,13 @@
 	icon_state = "bulb1"
 	},
 /obj/machinery/airlock_sensor{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_6_sensor";
 	pixel_x = 0;
 	pixel_y = 25
 	},
 /obj/machinery/embedded_controller/radio/airlock/docking_port{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_6";
 	pixel_y = -32;
 	req_one_access = list(101);
@@ -7357,7 +7348,7 @@
 	dir = 4
 	},
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "ws_dock_6_inner";
 	locked = 1;
@@ -7378,7 +7369,7 @@
 	},
 /obj/machinery/access_button{
 	command = "cycle_interior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ws_dock_6";
 	name = "interior access button";
 	pixel_x = -28;
@@ -7611,7 +7602,7 @@
 	},
 /obj/machinery/access_button{
 	command = "cycle_interior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ws_dock_3";
 	name = "interior access button";
 	pixel_x = 28;
@@ -7628,7 +7619,7 @@
 	dir = 4
 	},
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "ws_dock_3_inner";
 	locked = 1;
@@ -7639,7 +7630,7 @@
 "pT" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 8;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_3_pump"
 	},
 /obj/machinery/light/small{
@@ -7647,13 +7638,13 @@
 	icon_state = "bulb1"
 	},
 /obj/machinery/airlock_sensor{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_3_sensor";
 	pixel_x = 0;
 	pixel_y = 25
 	},
 /obj/machinery/embedded_controller/radio/airlock/docking_port{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_3";
 	pixel_y = -32;
 	req_one_access = list(101);
@@ -7666,7 +7657,7 @@
 /area/mothership/telecomms2)
 "pU" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "ws_dock_3_outer";
 	locked = 1;
@@ -7674,7 +7665,7 @@
 	},
 /obj/machinery/access_button{
 	command = "cycle_exterior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ws_dock_3";
 	name = "exterior access button";
 	pixel_x = 5;
@@ -8723,7 +8714,7 @@
 "sD" = (
 /obj/machinery/atmospherics/pipe/simple/hidden,
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "ws_dock_5_inner";
 	locked = 1;
@@ -8744,7 +8735,7 @@
 "sG" = (
 /obj/machinery/atmospherics/pipe/simple/hidden,
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "ws_dock_4_inner";
 	locked = 1;
@@ -8755,7 +8746,7 @@
 "sH" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_5_pump"
 	},
 /obj/machinery/light/small{
@@ -8763,13 +8754,13 @@
 	pixel_y = 0
 	},
 /obj/machinery/airlock_sensor{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_5_sensor";
 	pixel_x = 25;
 	pixel_y = 0
 	},
 /obj/machinery/embedded_controller/radio/airlock/docking_port{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_5";
 	pixel_x = -32;
 	req_one_access = list(101);
@@ -8790,7 +8781,7 @@
 "sK" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_4_pump"
 	},
 /obj/machinery/light/small{
@@ -8798,13 +8789,13 @@
 	pixel_x = 0
 	},
 /obj/machinery/airlock_sensor{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_4_sensor";
 	pixel_x = -25;
 	pixel_y = 0
 	},
 /obj/machinery/embedded_controller/radio/airlock/docking_port{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ws_dock_4";
 	pixel_x = 32;
 	req_one_access = list(101);
@@ -8817,7 +8808,7 @@
 /area/mothership/engineering)
 "sL" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "ws_dock_5_outer";
 	locked = 1;
@@ -8825,7 +8816,7 @@
 	},
 /obj/machinery/access_button{
 	command = "cycle_exterior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ws_dock_5";
 	name = "exterior access button";
 	pixel_x = -26;
@@ -8956,7 +8947,7 @@
 	dir = 4
 	},
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "ws_dock_2_inner";
 	locked = 1;
@@ -9067,7 +9058,7 @@
 "yi" = (
 /obj/machinery/atmospherics/pipe/simple/hidden,
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "ws_dock_1_inner";
 	locked = 1;
@@ -9105,7 +9096,6 @@
 /obj/machinery/atmospherics/pipe/simple/hidden,
 /obj/machinery/alarm{
 	dir = 4;
-	icon_state = "alarm0";
 	pixel_x = -22
 	},
 /turf/simulated/floor/tiled/techmaint,
@@ -9144,7 +9134,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden,
 /obj/machinery/access_button{
 	command = "cycle_interior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ws_dock_4";
 	name = "interior access button";
 	pixel_x = -28;
@@ -9158,7 +9148,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden,
 /obj/machinery/access_button{
 	command = "cycle_interior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ws_dock_5";
 	name = "interior access button";
 	pixel_x = 28;
@@ -9383,7 +9373,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden,
 /obj/machinery/access_button{
 	command = "cycle_interior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ws_dock_8";
 	name = "interior access button";
 	pixel_x = 28;
@@ -9450,7 +9440,6 @@
 	alarm_id = "pen_nine";
 	breach_detection = 0;
 	dir = 1;
-	icon_state = "alarm0";
 	pixel_y = -22
 	},
 /obj/machinery/atmospherics/unary/vent_scrubber/on{
@@ -9508,7 +9497,6 @@
 /obj/machinery/atmospherics/pipe/manifold/hidden/supply,
 /obj/machinery/alarm{
 	dir = 1;
-	icon_state = "alarm0";
 	pixel_y = -22
 	},
 /turf/simulated/floor/tiled/techmaint,
@@ -9551,7 +9539,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden,
 /obj/machinery/access_button{
 	command = "cycle_interior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ws_dock_1";
 	name = "interior access button";
 	pixel_x = -28;
@@ -9566,7 +9554,7 @@
 /area/mothership/breakroom)
 "PT" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "ws_dock_4_outer";
 	locked = 1;
@@ -9574,7 +9562,7 @@
 	},
 /obj/machinery/access_button{
 	command = "cycle_exterior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ws_dock_4";
 	name = "exterior access button";
 	pixel_x = 26;
@@ -9693,7 +9681,6 @@
 	},
 /obj/machinery/alarm{
 	dir = 4;
-	icon_state = "alarm0";
 	pixel_x = -22
 	},
 /turf/simulated/floor/tiled/techmaint,
@@ -9726,7 +9713,7 @@
 /area/mothership/hallway)
 "SM" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "ws_dock_1_outer";
 	locked = 1;
@@ -9734,7 +9721,7 @@
 	},
 /obj/machinery/access_button{
 	command = "cycle_exterior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ws_dock_1";
 	name = "exterior access button";
 	pixel_x = 26;
@@ -9942,7 +9929,7 @@
 /area/mothership/hallway)
 "ZS" = (
 /obj/machinery/door/airlock/external{
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "ws_dock_2_outer";
 	locked = 1;
@@ -9950,7 +9937,7 @@
 	},
 /obj/machinery/access_button{
 	command = "cycle_exterior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ws_dock_2";
 	name = "exterior access button";
 	pixel_x = 5;

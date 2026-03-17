@@ -18,8 +18,8 @@
 		)
 
 //Forces different sprite sheet on equip
-/obj/item/clothing/accessory/choker/New()
-	..()
+/obj/item/clothing/accessory/choker/Initialize(mapload)
+	. = ..()
 	icon_previous_override = icon_override
 
 /obj/item/clothing/accessory/choker/equipped() //Solution for race-specific sprites for an accessory which is also a suit. Suit icons break if you don't use icon override which then also overrides race-specific sprites.
@@ -41,7 +41,8 @@
 	setUniqueSpeciesSprite()
 	..(S, user)
 
-/obj/item/clothing/accessory/choker/dropped()
+/obj/item/clothing/accessory/choker/dropped(mob/user)
+	..()
 	icon_override = icon_previous_override
 
 /obj/item/clothing/accessory/collar
@@ -56,8 +57,8 @@
 	)
 
 //Forces different sprite sheet on equip
-/obj/item/clothing/accessory/collar/New()
-	..()
+/obj/item/clothing/accessory/collar/Initialize(mapload)
+	. = ..()
 	icon_previous_override = icon_override
 
 /obj/item/clothing/accessory/collar/equipped() //Solution for race-specific sprites for an accessory which is also a suit. Suit icons break if you don't use icon override which then also overrides race-specific sprites.
@@ -79,12 +80,13 @@
 	setUniqueSpeciesSprite()
 	..(S, user)
 
-/obj/item/clothing/accessory/collar/dropped()
+/obj/item/clothing/accessory/collar/dropped(mob/user)
+	..()
 	icon_override = icon_previous_override
 
 //ywedit start. forces different sprite sheet on equip
-/obj/item/clothing/accessory/collar/New()
-	..()
+/obj/item/clothing/accessory/collar/Initialize(mapload)
+	. = ..()
 	icon_previous_override = icon_override
 
 /obj/item/clothing/accessory/collar/equipped() //Solution for race-specific sprites for an accessory which is also a suit. Suit icons break if you don't use icon override which then also overrides race-specific sprites.
@@ -98,7 +100,8 @@
 	setUniqueSpeciesSprite()
 	..(S, user)
 
-/obj/item/clothing/accessory/collar/dropped()
+/obj/item/clothing/accessory/collar/dropped(mob/user)
+	..()
 	icon_override = icon_previous_override
 //ywedit end
 
@@ -128,7 +131,7 @@
 	set name = "Jingle Bell"
 	set category = "Object"
 	set src in usr
-	if(!istype(usr, /mob/living)) return
+	if(!isliving(usr)) return
 	if(usr.stat) return
 
 	if(!jingled)
@@ -152,7 +155,7 @@
 	var/code = 2
 	var/datum/radio_frequency/radio_connection
 
-/obj/item/clothing/accessory/collar/shock/Initialize()
+/obj/item/clothing/accessory/collar/shock/Initialize(mapload)
 	. = ..()
 	radio_connection = radio_controller.add_object(src, frequency, RADIO_CHAT) // Makes it so you don't need to change the frequency off of default for it to work.
 

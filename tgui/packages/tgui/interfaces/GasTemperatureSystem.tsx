@@ -1,7 +1,5 @@
-import { toFixed } from 'common/math';
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import {
   AnimatedNumber,
   Button,
@@ -10,8 +8,9 @@ import {
   LabeledList,
   Section,
   Slider,
-} from '../components';
-import { Window } from '../layouts';
+} from 'tgui-core/components';
+import { toFixed } from 'tgui-core/math';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   on: BooleanLike;
@@ -56,6 +55,7 @@ export const GasTemperatureSystem = (props) => {
           <LabeledControls>
             <LabeledControls.Item label="Power Level">
               <Knob
+                format={(value) => toFixed(value)}
                 minValue={0}
                 maxValue={100}
                 stepPixelSize={1}
@@ -84,7 +84,7 @@ export const GasTemperatureSystem = (props) => {
             maxValue={maxGasTemperature}
             fillValue={gasTemperature}
             value={targetGasTemperature}
-            format={(value) => gasTemperature + ' / ' + toFixed(value)}
+            format={(value) => `${gasTemperature} / ${toFixed(value)}`}
             unit="K"
             color={gasTemperatureClass}
             onChange={(e, val) => act('setGasTemperature', { temp: val })}

@@ -1,7 +1,8 @@
-import { useBackend } from '../../backend';
-import { Box, Button, Icon, Input } from '../../components';
+import { useBackend } from 'tgui/backend';
+import { Box, Button, Icon, Input } from 'tgui-core/components';
+
 import { FullscreenNotice } from '../common/FullscreenNotice';
-import { Data } from './types';
+import type { Data } from './types';
 
 export const MessageMonitorLogin = (props) => {
   const { act, data } = useBackend<Data>();
@@ -24,7 +25,7 @@ export const MessageMonitorLogin = (props) => {
         <Input
           placeholder="Decryption Key"
           ml="0.5rem"
-          onChange={(e, val) => act('auth', { key: val })}
+          onBlur={(val) => act('auth', { key: val })}
         />
       </Box>
       {!!isMalfAI && (

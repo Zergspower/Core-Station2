@@ -1,21 +1,19 @@
-/* eslint react/no-danger: "off" */
-import { toFixed } from 'common/math';
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
+import { useBackend } from 'tgui/backend';
+import { NtosWindow } from 'tgui/layouts';
 import {
   AnimatedNumber,
   Box,
   Button,
-  Flex,
   Input,
   LabeledList,
   ProgressBar,
   Section,
+  Stack,
   Table,
   Tabs,
-} from '../components';
-import { NtosWindow } from '../layouts';
+} from 'tgui-core/components';
+import { toFixed } from 'tgui-core/math';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   PC_device_theme: string;
@@ -136,28 +134,34 @@ const NtosEmailClientContent = (props) => {
 
   return (
     <Section
-      title={'Logged in as: ' + current_account}
+      title={`Logged in as: ${current_account}`}
       buttons={
-        <>
-          <Button
-            icon="plus"
-            tooltip="New Message"
-            tooltipPosition="left"
-            onClick={() => act('new_message')}
-          />
-          <Button
-            icon="cogs"
-            tooltip="Change Password"
-            tooltipPosition="left"
-            onClick={() => act('changepassword')}
-          />
-          <Button
-            icon="sign-out-alt"
-            tooltip="Log Out"
-            tooltipPosition="left"
-            onClick={() => act('logout')}
-          />
-        </>
+        <Stack>
+          <Stack.Item>
+            <Button
+              icon="plus"
+              tooltip="New Message"
+              tooltipPosition="left"
+              onClick={() => act('new_message')}
+            />
+          </Stack.Item>
+          <Stack.Item>
+            <Button
+              icon="cogs"
+              tooltip="Change Password"
+              tooltipPosition="left"
+              onClick={() => act('changepassword')}
+            />
+          </Stack.Item>
+          <Stack.Item>
+            <Button
+              icon="sign-out-alt"
+              tooltip="Log Out"
+              tooltipPosition="left"
+              onClick={() => act('logout')}
+            />
+          </Stack.Item>
+        </Stack>
       }
     >
       {content}
@@ -261,26 +265,32 @@ export const NtosEmailClientViewMessage = (props: {
         administrator ? (
           <Button icon="times" onClick={() => act('back')} />
         ) : (
-          <>
-            <Button
-              icon="share"
-              tooltip="Reply"
-              tooltipPosition="left"
-              onClick={() => act('reply', { reply: cur_uid })}
-            />
-            <Button
-              color="bad"
-              icon="trash"
-              tooltip="Delete"
-              tooltipPosition="left"
-              onClick={() => act('delete', { delete: cur_uid })}
-            />
-            <Button
-              icon="save"
-              tooltip="Save To Disk"
-              tooltipPosition="left"
-              onClick={() => act('save', { save: cur_uid })}
-            />
+          <Stack>
+            <Stack.Item>
+              <Button
+                icon="share"
+                tooltip="Reply"
+                tooltipPosition="left"
+                onClick={() => act('reply', { reply: cur_uid })}
+              />
+            </Stack.Item>
+            <Stack.Item>
+              <Button
+                color="bad"
+                icon="trash"
+                tooltip="Delete"
+                tooltipPosition="left"
+                onClick={() => act('delete', { delete: cur_uid })}
+              />
+            </Stack.Item>
+            <Stack.Item>
+              <Button
+                icon="save"
+                tooltip="Save To Disk"
+                tooltipPosition="left"
+                onClick={() => act('save', { save: cur_uid })}
+              />
+            </Stack.Item>
             {(cur_hasattachment && (
               <Button
                 icon="paperclip"
@@ -290,13 +300,15 @@ export const NtosEmailClientViewMessage = (props: {
               />
             )) ||
               null}
-            <Button
-              icon="times"
-              tooltip="Close"
-              tooltipPosition="left"
-              onClick={() => act('cancel', { cancel: cur_uid })}
-            />
-          </>
+            <Stack.Item>
+              <Button
+                icon="times"
+                tooltip="Close"
+                tooltipPosition="left"
+                onClick={() => act('cancel', { cancel: cur_uid })}
+              />
+            </Stack.Item>
+          </Stack>
         )
       }
     >
@@ -311,9 +323,8 @@ export const NtosEmailClientViewMessage = (props: {
           ''}
         <LabeledList.Item label="Message" verticalAlign="top">
           <Section>
-            {/* This dangerouslySetInnerHTML is only ever passed data that has passed through pencode2html
-             * It should be safe enough to support pencode in this way.
-             */}
+            {/** biome-ignore lint/security/noDangerouslySetInnerHtml: is only ever passed data that has passed through pencode2html
+             * It should be safe enough to support pencode in this way. */}
             <div dangerouslySetInnerHTML={{ __html: cur_body! }} />
           </Section>
         </LabeledList.Item>
@@ -367,12 +378,16 @@ const NtosEmailClientNewMessage = (props) => {
     <Section
       title="New Message"
       buttons={
-        <>
-          <Button icon="share" onClick={() => act('send')}>
-            Send Message
-          </Button>
-          <Button color="bad" icon="times" onClick={() => act('cancel')} />
-        </>
+        <Stack>
+          <Stack.Item>
+            <Button icon="share" onClick={() => act('send')}>
+              Send Message
+            </Button>
+          </Stack.Item>
+          <Stack.Item>
+            <Button color="bad" icon="times" onClick={() => act('cancel')} />
+          </Stack.Item>
+        </Stack>
       }
     >
       <LabeledList>
@@ -380,29 +395,27 @@ const NtosEmailClientNewMessage = (props) => {
           <Input
             fluid
             value={msg_title!}
-            onInput={(e, val: string) => act('edit_title', { val: val })}
+            onChange={(val: string) => act('edit_title', { val: val })}
           />
         </LabeledList.Item>
         <LabeledList.Item label="Recipient" verticalAlign="top">
-          <Flex>
-            <Flex.Item grow={1}>
+          <Stack>
+            <Stack.Item grow>
               <Input
                 fluid
                 value={msg_recipient!}
-                onInput={(e, val: string) =>
-                  act('edit_recipient', { val: val })
-                }
+                onChange={(val: string) => act('edit_recipient', { val: val })}
               />
-            </Flex.Item>
-            <Flex.Item>
+            </Stack.Item>
+            <Stack.Item>
               <Button
                 icon="address-book"
                 onClick={() => act('addressbook')}
                 tooltip="Find Receipients"
                 tooltipPosition="left"
               />
-            </Flex.Item>
-          </Flex>
+            </Stack.Item>
+          </Stack>
         </LabeledList.Item>
         <LabeledList.Item
           label="Attachments"
@@ -430,13 +443,15 @@ const NtosEmailClientNewMessage = (props) => {
             null}
         </LabeledList.Item>
         <LabeledList.Item label="Message" verticalAlign="top">
-          <Flex>
-            <Flex.Item grow={1}>
+          <Stack>
+            <Stack.Item grow>
               <Section width="99%" inline>
+                {/** biome-ignore lint/security/noDangerouslySetInnerHtml: is only ever passed data that has passed through pencode2html
+                 * It should be safe enough to support pencode in this way. */}
                 <div dangerouslySetInnerHTML={{ __html: msg_body! }} />
               </Section>
-            </Flex.Item>
-            <Flex.Item>
+            </Stack.Item>
+            <Stack.Item>
               <Button
                 verticalAlign="top"
                 onClick={() => act('edit_body')}
@@ -444,8 +459,8 @@ const NtosEmailClientNewMessage = (props) => {
                 tooltip="Edit Message"
                 tooltipPosition="left"
               />
-            </Flex.Item>
-          </Flex>
+            </Stack.Item>
+          </Stack>
         </LabeledList.Item>
       </LabeledList>
     </Section>
@@ -481,14 +496,14 @@ const NtosEmailClientLogin = (props) => {
           <Input
             fluid
             value={stored_login!}
-            onInput={(e, val: string) => act('edit_login', { val: val })}
+            onChange={(val: string) => act('edit_login', { val: val })}
           />
         </LabeledList.Item>
         <LabeledList.Item label="Password">
           <Input
             fluid
             value={stored_password!}
-            onInput={(e, val: string) => act('edit_password', { val: val })}
+            onChange={(val: string) => act('edit_password', { val: val })}
           />
         </LabeledList.Item>
       </LabeledList>

@@ -22,10 +22,8 @@
 	var/reagent_type = REAGENT_ID_WATER
 	// var/datum/looping_sound/water/soundloop CHOMPEdit: Removing soundloop for now.
 
-/turf/simulated/floor/water/Initialize()
+/turf/simulated/floor/water/Initialize(mapload)
 	. = ..()
-	// var/decl/flooring/F = get_flooring_data(/decl/flooring/water) - CHOMPEdit
-	// footstep_sounds = F?.footstep_sounds CHOMPEdit - Footsteps
 	update_icon()
 	handle_fish()
 	// soundloop = new(list(src), FALSE) // CHOMPEdit: Removing soundloop for now.
@@ -106,7 +104,7 @@
 	return return_air() // Otherwise their head is above the water, so get the air from the atmosphere instead.
 
 /turf/simulated/floor/water/Entered(atom/movable/AM, atom/oldloc)
-	if(istype(AM, /mob/living))
+	if(isliving(AM))
 		var/mob/living/L = AM
 		L.update_water()
 		if(L.check_submerged() <= 0)
@@ -117,7 +115,7 @@
 	..()
 
 /turf/simulated/floor/water/Exited(atom/movable/AM, atom/newloc)
-	if(istype(AM, /mob/living))
+	if(isliving(AM))
 		var/mob/living/L = AM
 		L.update_water()
 		if(L.check_submerged() <= 0)
@@ -231,12 +229,12 @@ var/list/shoreline_icon_cache = list()
 		add_overlay(shoreline_icon_cache[cache_string])
 
 /turf/simulated/floor/water/is_safe_to_enter(mob/living/L)
-	 //CHOMPEDIT: Aquatic flags simulated water as safe now
+	//CHOMPEDIT: Aquatic flags simulated water as safe now
 	if(istype(L,/mob/living/carbon))
 		var /mob/living/carbon/A = L
 		if(/datum/trait/positive/aquatic in A.species.traits)
 			return TRUE
-		 //CHOMPEDIT: Aquatic flags simulated water as safe now
+	//CHOMPEDIT: Aquatic flags simulated water as safe now
 	if(L.get_water_protection() < 1)
 		return FALSE
 	return ..()
@@ -247,7 +245,7 @@ var/list/shoreline_icon_cache = list()
 
 /turf/simulated/floor/water/contaminated/Entered(atom/movable/AM, atom/oldloc)
 	..()
-	if(istype(AM, /mob/living))
+	if(isliving(AM))
 		var/mob/living/L = AM
 		if(L.isSynthetic())
 			return
@@ -269,7 +267,7 @@ var/list/shoreline_icon_cache = list()
 	return "bloodshallow"
 
 /turf/simulated/floor/water/blood/Entered(atom/movable/AM, atom/oldloc)
-	if(istype(AM, /mob/living))
+	if(isliving(AM))
 		var/mob/living/L = AM
 		L.update_water()
 		if(L.check_submerged() <= 0)

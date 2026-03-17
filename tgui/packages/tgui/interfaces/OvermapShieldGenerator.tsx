@@ -1,6 +1,5 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import {
   AnimatedNumber,
   Box,
@@ -8,8 +7,9 @@ import {
   LabeledList,
   ProgressBar,
   Section,
-} from '../components';
-import { Window } from '../layouts';
+  Stack,
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   running: number;
@@ -186,49 +186,59 @@ const OvermapShieldGeneratorControls = (props) => {
     <Section
       title="Controls"
       buttons={
-        <>
+        <Stack>
           {(running >= 2 && (
-            <Box>
-              <Button
-                icon="power-off"
-                onClick={() => act('begin_shutdown')}
-                selected
-              >
-                Turn off
-              </Button>
-              {(running === 3 && (
+            <>
+              <Stack.Item>
                 <Button
                   icon="power-off"
-                  onClick={() => act('toggle_idle', { toggle_idle: 0 })}
-                >
-                  Activate
-                </Button>
-              )) || (
-                <Button
-                  icon="power-off"
-                  onClick={() => act('toggle_idle', { toggle_idle: 1 })}
+                  onClick={() => act('begin_shutdown')}
                   selected
                 >
-                  Deactivate
+                  Turn off
                 </Button>
+              </Stack.Item>
+              {(running === 3 && (
+                <Stack.Item>
+                  <Button
+                    icon="power-off"
+                    onClick={() => act('toggle_idle', { toggle_idle: 0 })}
+                  >
+                    Activate
+                  </Button>
+                </Stack.Item>
+              )) || (
+                <Stack.Item>
+                  <Button
+                    icon="power-off"
+                    onClick={() => act('toggle_idle', { toggle_idle: 1 })}
+                    selected
+                  >
+                    Deactivate
+                  </Button>
+                </Stack.Item>
               )}
-            </Box>
+            </>
           )) || (
-            <Button icon="power-off" onClick={() => act('start_generator')}>
-              Turn on
-            </Button>
+            <Stack.Item>
+              <Button icon="power-off" onClick={() => act('start_generator')}>
+                Turn on
+              </Button>
+            </Stack.Item>
           )}
           {(running && hacked && (
-            <Button
-              icon="exclamation-triangle"
-              onClick={() => act('emergency_shutdown')}
-              color="bad"
-            >
-              EMERGENCY SHUTDOWN
-            </Button>
+            <Stack.Item>
+              <Button
+                icon="exclamation-triangle"
+                onClick={() => act('emergency_shutdown')}
+                color="bad"
+              >
+                EMERGENCY SHUTDOWN
+              </Button>
+            </Stack.Item>
           )) ||
             ''}
-        </>
+        </Stack>
       }
     >
       <Button icon="expand-arrows-alt" onClick={() => act('set_range')}>

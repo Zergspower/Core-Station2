@@ -17,7 +17,7 @@
 	nuke_chat()
 
 	// Failed to fix, using tgalert as fallback
-	action = tgalert(src, "Did that work?", "", "Yes", "No, switch to old ui")
+	action = tg_alert(src, "Did that work?", "", "Yes", "No, switch to old ui")
 	if (action == "No, switch to old ui")
 		winset(src, "legacy_output_selector", "left=output_legacy")
 		log_tgui(src, "Failed to fix.", context = "verb/fix_tgui_panel")
@@ -32,12 +32,9 @@
 	tgui_panel.initialize(force = TRUE)
 	// Force show the panel to see if there are any errors
 	winset(src, "legacy_output_selector", "left=output_browser")
-	// TODO: Remove version check with 516
-	if(byond_version >= 516)
-		if(prefs?.read_preference(/datum/preference/toggle/browser_dev_tools))
-			winset(src, null, "browser-options=[DEFAULT_CLIENT_BROWSER_OPTIONS],devtools")
-		else
-			winset(src, null, "browser-options=[DEFAULT_CLIENT_BROWSER_OPTIONS]")
+
+	if(prefs?.read_preference(/datum/preference/toggle/browser_dev_tools))
+		winset(src, null, "browser-options=[DEFAULT_CLIENT_BROWSER_OPTIONS],devtools")
 
 /client/verb/refresh_tgui()
 	set name = "Refresh TGUI"

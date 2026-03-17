@@ -1,8 +1,7 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
-import { Box, Button, LabeledList, Section } from '../components';
-import { Window } from '../layouts';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+import { Box, Button, LabeledList, Section } from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   suffix: string;
@@ -94,7 +93,7 @@ const MuleBotClosed = (props) => {
             selected={auto_return}
             onClick={() => act('autoret')}
           >
-            {'Auto Return Home: ' + (auto_return ? 'Enabled' : 'Disabled')}
+            {`Auto Return Home: ${auto_return ? 'Enabled' : 'Disabled'}`}
           </Button>
           <Button
             fluid
@@ -102,7 +101,7 @@ const MuleBotClosed = (props) => {
             selected={!crates_only}
             onClick={() => act('cargotypes')}
           >
-            {'Non-standard Cargo: ' + (crates_only ? 'Disabled' : 'Enabled')}
+            {`Non-standard Cargo: ${crates_only ? 'Disabled' : 'Enabled'}`}
           </Button>
         </>
       )}
@@ -122,7 +121,7 @@ const MuleBotOpen = (props) => {
         color={safety ? 'green' : 'red'}
         onClick={() => act('safety')}
       >
-        {'Safety: ' + (safety ? 'Engaged' : 'Disengaged (DANGER)')}
+        {`Safety: ${safety ? 'Engaged' : 'Disengaged (DANGER)'}`}
       </Button>
     </Section>
   );

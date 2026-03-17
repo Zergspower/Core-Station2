@@ -1,12 +1,7 @@
-/mob/proc/update_fullness(var/returning = FALSE)
-	if(!returning)
-		if(updating_fullness)
-			return
-		updating_fullness = TRUE
-		spawn(2)
-		updating_fullness = FALSE
-		src.update_fullness(TRUE)
+/mob/proc/update_fullness()
+	if(updating_fullness)
 		return
+	updating_fullness = TRUE
 	var/list/new_fullness = list()
 	vore_fullness = 0
 	for(var/belly_class in vore_icon_bellies)
@@ -14,7 +9,7 @@
 	for(var/obj/belly/B as anything in vore_organs)
 		if(DM_FLAG_VORESPRITE_BELLY & B.vore_sprite_flags)
 			new_fullness[B.belly_sprite_to_affect] += B.GetFullnessFromBelly()
-		if(istype(src, /mob/living/carbon/human) && DM_FLAG_VORESPRITE_ARTICLE & B.vore_sprite_flags)
+		if(ishuman(src) && DM_FLAG_VORESPRITE_ARTICLE & B.vore_sprite_flags)
 			if(!new_fullness[B.undergarment_chosen])
 				new_fullness[B.undergarment_chosen] = 1
 			new_fullness[B.undergarment_chosen] += B.GetFullnessFromBelly()
@@ -34,3 +29,10 @@
 
 /mob/living/proc/vs_animate(var/belly_to_animate)
 	return
+
+// use this instead of upsate fullness where you need to directly update a belly size
+/mob/proc/handle_belly_update()
+	if(ishuman(src))
+		update_fullness()
+		return
+	update_icon()

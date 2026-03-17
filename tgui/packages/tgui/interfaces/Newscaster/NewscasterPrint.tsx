@@ -1,9 +1,12 @@
-import { useBackend } from '../../backend';
-import { Box, Button, LabeledList, Section } from '../../components';
-import { NEWSCASTER_SCREEN_MAIN } from './constants';
-import { Data } from './types';
+import { useBackend } from 'tgui/backend';
+import { Box, Button, LabeledList, Section } from 'tgui-core/components';
 
-export const NewscasterPrint = (props: { setScreen: Function }) => {
+import { NEWSCASTER_SCREEN_MAIN } from './constants';
+import type { Data } from './types';
+
+export const NewscasterPrint = (props: {
+  setScreen: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   const { act, data } = useBackend<Data>();
 
   const { total_num, active_num, message_num, paper_remaining } = data;

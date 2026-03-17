@@ -12,6 +12,10 @@
 	var/list/frames = list()	// List of frames inside.
 	var/maxFrames = 5
 
+/obj/machinery/beehive/Initialize(mapload)
+	. = ..()
+	AddElement(/datum/element/climbable)
+
 /obj/machinery/beehive/update_icon()
 	cut_overlays()
 	icon_state = "beehive"
@@ -217,7 +221,7 @@
 
 	var/honey = 0
 
-/obj/item/honey_frame/Initialize()
+/obj/item/honey_frame/Initialize(mapload)
 	. = ..()
 	update_icon()
 
@@ -258,7 +262,7 @@
 	pass_color = TRUE
 	strict_color_stacking = TRUE
 
-/obj/item/stack/material/wax/Initialize()
+/obj/item/stack/material/wax/Initialize(mapload)
 	. = ..()
 	recipes = wax_recipes
 
@@ -270,9 +274,7 @@
 	weight = 1
 	pass_stack_colors = TRUE
 
-var/global/list/datum/stack_recipe/wax_recipes = list( \
-	new/datum/stack_recipe("candle", /obj/item/flame/candle) \
-)
+
 
 /obj/item/bee_pack
 	name = "bee pack"
@@ -281,8 +283,8 @@ var/global/list/datum/stack_recipe/wax_recipes = list( \
 	icon_state = "beepack"
 	var/full = 1
 
-/obj/item/bee_pack/Initialize() //ChompEDIT New --> Initialize
-	..()
+/obj/item/bee_pack/Initialize(mapload)
+	. = ..()
 	add_overlay("beepack-full")
 
 /obj/item/bee_pack/proc/empty()

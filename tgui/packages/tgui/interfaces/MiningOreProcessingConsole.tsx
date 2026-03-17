@@ -1,8 +1,6 @@
-import { BooleanLike } from 'common/react';
-import { toTitleCase } from 'common/string';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import { Stack } from 'tgui-core/components';
-
-import { useBackend } from '../backend';
 import {
   AnimatedNumber,
   Box,
@@ -10,8 +8,10 @@ import {
   Dropdown,
   LabeledList,
   Section,
-} from '../components';
-import { Window } from '../layouts';
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
+import { toTitleCase } from 'tgui-core/string';
+
 import { MiningUser } from './common/Mining';
 
 type Data = {
@@ -56,22 +56,26 @@ export const MiningOreProcessingConsole = (props) => {
             <Section
               title="Status"
               buttons={
-                <>
-                  <Button
-                    icon="bolt"
-                    selected={speed}
-                    onClick={() => act('speed_toggle')}
-                  >
-                    {speed ? 'High-Speed Active' : 'High-Speed Inactive'}
-                  </Button>
-                  <Button
-                    icon="power-off"
-                    selected={power}
-                    onClick={() => act('power')}
-                  >
-                    {power ? 'Smelting' : 'Not Smelting'}
-                  </Button>
-                </>
+                <Stack>
+                  <Stack.Item>
+                    <Button
+                      icon="bolt"
+                      selected={speed}
+                      onClick={() => act('speed_toggle')}
+                    >
+                      {speed ? 'High-Speed Active' : 'High-Speed Inactive'}
+                    </Button>
+                  </Stack.Item>
+                  <Stack.Item>
+                    <Button
+                      icon="power-off"
+                      selected={power}
+                      onClick={() => act('power')}
+                    >
+                      {power ? 'Smelting' : 'Not Smelting'}
+                    </Button>
+                  </Stack.Item>
+                </Stack>
               }
             >
               <LabeledList>

@@ -2,8 +2,6 @@
 //
 // Allows ghosts to roleplay with crewmembers without having to commit to joining the round, and also allows communications between two communicators.
 
-var/global/list/obj/item/communicator/all_communicators = list()
-
 // List of core tabs the communicator can switch to
 #define HOMETAB 1
 #define PHONTAB 2
@@ -97,10 +95,10 @@ var/global/list/obj/item/communicator/all_communicators = list()
 // Parameters: None
 // Description: Adds the new communicator to the global list of all communicators, sorts the list, obtains a reference to the Exonet node, then tries to
 //				assign the device to the holder's name automatically in a spectacularly shitty way.
-/obj/item/communicator/Initialize()
+/obj/item/communicator/Initialize(mapload)
 	. = ..()
 	all_communicators += src
-	all_communicators = sortAtom(all_communicators)
+	all_communicators = sort_names(all_communicators)
 	node = get_exonet_node()
 	START_PROCESSING(SSobj, src)
 	camera = new(src)
@@ -214,7 +212,7 @@ var/global/list/obj/item/communicator/all_communicators = list()
 // Description: Sets up the exonet datum, gives the device an address, and then gets a node reference.  Afterwards, populates the device
 //				list.
 /obj/item/communicator/proc/initialize_exonet(mob/user)
-	if(!user || !istype(user, /mob/living))
+	if(!user || !isliving(user))
 		return
 	if(!exonet)
 		exonet = new(src)
@@ -276,7 +274,7 @@ var/global/list/obj/item/communicator/all_communicators = list()
 		if(!comm || !comm.exonet || !comm.exonet.address || comm.exonet.address == src.exonet.address) //Don't add addressless devices, and don't add ourselves.
 			continue
 		src.known_devices |= comm
-	for(var/mob/observer/dead/O in dead_mob_list)
+	for(var/mob/observer/dead/O in GLOB.dead_mob_list)
 		if(!O.client || O.client.prefs.communicator_visibility == 0)
 			continue
 		src.known_devices |= O
@@ -360,7 +358,7 @@ var/global/list/obj/item/communicator/all_communicators = list()
 // Proc: New()
 // Parameters: None
 // Description: Gives ghosts an exonet address based on their key and ghost name.
-/mob/observer/dead/Initialize()
+/mob/observer/dead/Initialize(mapload)
 	. = ..()
 	exonet = new(src)
 	if(client)
@@ -416,7 +414,7 @@ var/global/list/obj/item/communicator/all_communicators = list()
 	//Clean up references that might point at us
 	all_communicators -= src
 	STOP_PROCESSING(SSobj, src)
-	listening_objects.Remove(src)
+	GLOB.listening_objects.Remove(src)
 	QDEL_NULL(camera)
 	QDEL_NULL(exonet)
 
@@ -449,10 +447,10 @@ var/global/list/obj/item/communicator/all_communicators = list()
 /obj/machinery/camera/communicator
 	network = list(NETWORK_COMMUNICATORS)
 
-/obj/machinery/camera/communicator/New()
-	..()
-	client_huds |= global_hud.whitense
-	client_huds |= global_hud.darkMask
+/obj/machinery/camera/communicator/Initialize(mapload)
+	. = ..()
+	LAZYOR(client_huds, GLOB.global_hud.whitense)
+	LAZYOR(client_huds, GLOB.global_hud.darkMask)
 
 //It's the 26th century. We should have smart watches by now.
 /obj/item/communicator/watch

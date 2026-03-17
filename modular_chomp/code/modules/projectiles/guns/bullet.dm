@@ -1,6 +1,8 @@
 /obj/item/projectile/bullet
 	damage = 25 //seems many bullets use this value for some reason
 
+/* Old balance stuff, check the modular_chomp/zBallisticPort folder for the new stuff
+
 //These are projectiles that do not have damage defined anywhere. Gonna follow laser weapons sorta with a extra kick, 25/35/60
 /obj/item/projectile/bullet/a38 //These projectiles are used but dont exist, revolvers were super underpowered forever
 	damage = 25 //.38 pretty bwoomp
@@ -35,7 +37,7 @@
 
 /obj/item/projectile/bullet/rifle/a545/hunter
 	damage = 15
-	SA_bonus_damage = 35 // 50 total on animals.
+	mob_bonus_damage = 35 // 50 total on animals.
 	SA_vulnerability = SA_ANIMAL
 	hud_state = "rifle_heavy"
 
@@ -122,7 +124,7 @@
 
 /obj/item/projectile/bullet/rifle/a762/hunter
 	damage = 10
-	SA_bonus_damage = 30
+	mob_bonus_damage = 30
 
 /obj/item/projectile/bullet/rifle/a545
 	damage = 20
@@ -138,7 +140,7 @@
 
 /obj/item/projectile/bullet/rifle/a545/hunter
 	damage = 5
-	SA_bonus_damage = 25
+	mob_bonus_damage = 25
 
 /obj/item/projectile/bullet/rifle/a145
 	damage = 60
@@ -166,4 +168,5 @@
 
 /obj/item/projectile/bullet/pellet/fragment/strong
 	damage = 7
+*/
 */

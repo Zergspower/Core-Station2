@@ -1,9 +1,6 @@
-import { useState } from 'react';
 import { useBackend } from 'tgui/backend';
-import { Box, Button, Flex, Input, Section, Stack } from 'tgui-core/components';
+import { Box, Button, Input, Section, Stack } from 'tgui-core/components';
 import { classes } from 'tgui-core/react';
-
-import { Tooltip } from '../../components';
 
 export const IconSection = (props: {
   currentName: string;
@@ -14,14 +11,11 @@ export const IconSection = (props: {
 }) => {
   const { act } = useBackend();
   const { currentName, mindName, isDefaultName, sprite, size } = props;
-  const [robotName, setRobotName] = useState<string>(currentName);
 
   return (
     <Section
       title="Sprite"
       fill
-      scrollable
-      width="40%"
       buttons={
         <Button disabled={!sprite} onClick={() => act('confirm')}>
           Confirm
@@ -34,18 +28,15 @@ export const IconSection = (props: {
             <Box>Name: </Box>
           </Stack.Item>
           <Stack.Item grow>
-            <Tooltip content="Adjust your name">
-              <Input
-                fluid
-                value={robotName}
-                onChange={(e, value) => {
-                  act('rename', { value });
-                  setRobotName(value);
-                }}
-                maxLength={52}
-                textColor={isDefaultName ? 'red' : undefined}
-              />
-            </Tooltip>
+            <Input
+              fluid
+              value={currentName}
+              onChange={(value) => {
+                act('rename', { value });
+              }}
+              maxLength={52}
+              textColor={isDefaultName ? 'red' : undefined}
+            />
           </Stack.Item>
           <Stack.Item>
             <Button
@@ -53,7 +44,6 @@ export const IconSection = (props: {
               tooltip="Load character slot name"
               onClick={() => {
                 act('rename', { value: mindName });
-                setRobotName(mindName);
               }}
             />
           </Stack.Item>
@@ -62,40 +52,40 @@ export const IconSection = (props: {
       {!!sprite && !!size && (
         <>
           <Stack.Item>
-            <Flex>
-              <Flex.Item grow />
-              <Flex.Item>
-                <Box className={classes([size, sprite + 'N'])} />
-              </Flex.Item>
-              <Flex.Item grow />
-            </Flex>
+            <Stack>
+              <Stack.Item grow />
+              <Stack.Item>
+                <Box className={classes([size, `${sprite}N`])} />
+              </Stack.Item>
+              <Stack.Item grow />
+            </Stack>
           </Stack.Item>
           <Stack.Item>
-            <Flex>
-              <Flex.Item grow />
-              <Flex.Item>
-                <Box className={classes([size, sprite + 'S'])} />
-              </Flex.Item>
-              <Flex.Item grow />
-            </Flex>
+            <Stack>
+              <Stack.Item grow />
+              <Stack.Item>
+                <Box className={classes([size, `${sprite}S`])} />
+              </Stack.Item>
+              <Stack.Item grow />
+            </Stack>
           </Stack.Item>
           <Stack.Item>
-            <Flex>
-              <Flex.Item grow />
-              <Flex.Item>
-                <Box className={classes([size, sprite + 'W'])} />
-              </Flex.Item>
-              <Flex.Item grow />
-            </Flex>
+            <Stack>
+              <Stack.Item grow />
+              <Stack.Item>
+                <Box className={classes([size, `${sprite}W`])} />
+              </Stack.Item>
+              <Stack.Item grow />
+            </Stack>
           </Stack.Item>
           <Stack.Item>
-            <Flex>
-              <Flex.Item grow />
-              <Flex.Item>
-                <Box className={classes([size, sprite + 'E'])} />
-              </Flex.Item>
-              <Flex.Item grow />
-            </Flex>
+            <Stack>
+              <Stack.Item grow />
+              <Stack.Item>
+                <Box className={classes([size, `${sprite}E`])} />
+              </Stack.Item>
+              <Stack.Item grow />
+            </Stack>
           </Stack.Item>
         </>
       )}

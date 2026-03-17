@@ -1,18 +1,18 @@
-import { KeyboardEvent } from 'react';
-
-import { useBackend } from '../../backend';
+import { type KeyboardEvent, useRef, useState } from 'react';
+import { useBackend } from 'tgui/backend';
 import {
   Box,
   Button,
   Dropdown,
-  Flex,
   Image,
   Input,
   Modal,
-} from '../../components';
+  Stack,
+} from 'tgui-core/components';
 
+// biome-ignore lint/complexity/noBannedTypes: In this case, we got any type of Object
 type Data = { modal: { id: string; args: {}; text: string; type: string } };
-let bodyOverrides = {};
+const bodyOverrides = {};
 
 /**
  * Sends a call to BYOND to open a modal
@@ -40,11 +40,18 @@ export const modalOpen = (id, args = {}) => {
  */
 export const modalRegisterBodyOverride = (
   id: string,
-  bodyOverride: Function,
+  bodyOverride: (modal: {
+    id: string;
+    text: string;
+    // biome-ignore lint/complexity/noBannedTypes: In this case, we got any type of Object
+    args: {};
+    type: string;
+  }) => React.JSX.Element,
 ) => {
   bodyOverrides[id] = bodyOverride;
 };
 
+// biome-ignore lint/complexity/noBannedTypes: In this case, we got any type of Object
 const modalAnswer = (id: string, answer: string, args: {}) => {
   const { act, data } = useBackend<Data>();
 
@@ -106,6 +113,9 @@ export const ComplexModal = (props) => {
 
   const { id, text, type } = modal;
 
+  const modalOnEscape:
+    | ((e: KeyboardEvent<HTMLDivElement>) => void)
+    | undefined = (e) => modalClose(id);
   let modalOnEnter: ((e: KeyboardEvent<HTMLDivElement>) => void) | undefined;
   let modalBody: React.JSX.Element | undefined;
   let modalFooter: React.JSX.Element = (
@@ -118,19 +128,26 @@ export const ComplexModal = (props) => {
   if (bodyOverrides[id]) {
     modalBody = bodyOverrides[id](modal);
   } else if (type === 'input') {
-    let curValue = modal.value;
+    const lastValue = useRef(modal.value);
+    const [curValue, setCurValue] = useState(modal.value);
+
+    if (lastValue.current !== modal.value) {
+      lastValue.current = modal.value;
+      setCurValue(modal.value);
+    }
+
     modalOnEnter = (e) => modalAnswer(id, curValue, {});
     modalBody = (
       <Input
         key={id}
-        value={modal.value}
+        value={curValue}
         placeholder="ENTER to submit"
         width="100%"
         my="0.5rem"
         autoFocus
         autoSelect
-        onChange={(_e, val) => {
-          curValue = val;
+        onChange={(val) => {
+          setCurValue(val);
         }}
       />
     );
@@ -174,33 +191,33 @@ export const ComplexModal = (props) => {
     );
   } else if (type === 'bento') {
     modalBody = (
-      <Flex spacingPrecise="1" wrap="wrap" my="0.5rem" maxHeight="1%">
+      <Stack wrap="wrap" my="0.5rem" maxHeight="1%">
         {modal.choices.map((c, i) => (
-          <Flex.Item key={i} flex="1 1 auto">
+          <Stack.Item key={i}>
             <Button
               selected={i + 1 === parseInt(modal.value, 10)}
               onClick={() => modalAnswer(id, (i + 1).toString(), {})}
             >
               <Image src={c} />
             </Button>
-          </Flex.Item>
+          </Stack.Item>
         ))}
-      </Flex>
+      </Stack>
     );
   } else if (type === 'bentospritesheet') {
     modalBody = (
-      <Flex spacingPrecise="1" wrap="wrap" my="0.5rem" maxHeight="1%">
+      <Stack wrap="wrap" my="0.5rem" maxHeight="1%">
         {modal.choices.map((c, i) => (
-          <Flex.Item key={i} flex="1 1 auto">
+          <Stack.Item key={i}>
             <Button
               selected={i + 1 === parseInt(modal.value, 10)}
               onClick={() => modalAnswer(id, (i + 1).toString(), {})}
             >
               <Box className={c} />
             </Button>
-          </Flex.Item>
+          </Stack.Item>
         ))}
-      </Flex>
+      </Stack>
     );
   } else if (type === 'boolean') {
     modalFooter = (
@@ -238,9 +255,10 @@ export const ComplexModal = (props) => {
 
   return (
     <Modal
-      maxWidth={props.maxWidth || window.innerWidth / 2 + 'px'}
-      maxHeight={props.maxHeight || window.innerHeight / 2 + 'px'}
+      maxWidth={props.maxWidth || `${window.innerWidth / 2}px`}
+      maxHeight={props.maxHeight || `${window.innerHeight / 2}px`}
       onEnter={modalOnEnter}
+      onEscape={modalOnEscape}
       mx="auto"
     >
       <Box inline>{text}</Box>

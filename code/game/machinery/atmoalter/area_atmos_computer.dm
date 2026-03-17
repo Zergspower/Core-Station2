@@ -14,7 +14,7 @@
 	//Simple variable to prevent me from doing attack_hand in both this and the child computer
 	var/zone = "This computer is working on a wireless range, the range is currently limited to "
 
-/obj/machinery/computer/area_atmos/Initialize()
+/obj/machinery/computer/area_atmos/Initialize(mapload)
 	. = ..()
 	scanscrubbers()
 
@@ -72,7 +72,7 @@
 			INVOKE_ASYNC(src, PROC_REF(toggle_all), FALSE)
 			. = TRUE
 		if("scan")
-			scanscrubbers()
+			scanscrubbers_user(ui.user)
 			. = TRUE
 
 	add_fingerprint(ui.user)
@@ -103,13 +103,15 @@
 	if(!found)
 		status = "ERROR: No scrubber found!"
 
-	updateUsrDialog()
+/obj/machinery/computer/area_atmos/proc/scanscrubbers_user(mob/user) //Used when the user is in the UI and scans for scrubbers.
+	scanscrubbers()
+	updateUsrDialog(user)
 
 // The one that only works in the same map area
 /obj/machinery/computer/area_atmos/area
 	zone = "This computer is working in a wired network limited to this area."
 
-/obj/machinery/computer/area_atmos/area/scanscrubbers()
+/obj/machinery/computer/area_atmos/area/scanscrubbers(mob/user)
 	connectedscrubbers.Cut()
 
 	var/found = 0
@@ -121,7 +123,9 @@
 	if(!found)
 		status = "ERROR: No scrubber found!"
 
-	src.updateUsrDialog()
+/obj/machinery/computer/area_atmos/area/scanscrubbers_user(mob/user) //Used when the user is in the UI and scans for scrubbers.
+	scanscrubbers()
+	updateUsrDialog(user)
 
 /obj/machinery/computer/area_atmos/area/validscrubber(var/obj/machinery/portable_atmospherics/powered/scrubber/huge/scrubber)
 	if(!istype(scrubber))

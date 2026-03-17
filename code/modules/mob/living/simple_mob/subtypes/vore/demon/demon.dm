@@ -49,9 +49,7 @@
 
 	can_be_drop_prey = FALSE //CHOMP Add
 
-/mob/living/simple_mob/vore/demon/init_vore()
-	if(!voremob_loaded)
-		return
+/mob/living/simple_mob/vore/demon/load_default_bellies()
 	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "Stomach"

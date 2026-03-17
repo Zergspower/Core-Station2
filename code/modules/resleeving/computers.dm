@@ -8,6 +8,7 @@
 	icon_keyboard = "med_key"
 	icon_screen = "dna"
 	light_color = "#315ab4"
+	bubble_icon = "medical"
 	circuit = /obj/item/circuitboard/resleeving_control
 	req_access = list(access_heads) //Only used for record deletion right now.
 	var/list/pods = null //Linked grower pods.
@@ -32,7 +33,9 @@
 	var/db_key
 	var/datum/transcore_db/our_db // These persist all round and are never destroyed, just keep a hard ref
 
-/obj/machinery/computer/transhuman/resleeving/Initialize()
+	var/gene_sequencing = FALSE // Traitgenes edit - create a dna injector for fixing dna, but don't let it be abusable
+
+/obj/machinery/computer/transhuman/resleeving/Initialize(mapload)
 	. = ..()
 	pods = list()
 	spods = list()
@@ -145,16 +148,17 @@
 	var/list/clonepods = list()
 	for(var/obj/machinery/clonepod/transhuman/pod in pods)
 		var/status = "idle"
+		var/mob/living/occupant = pod.get_occupant()
 		if(pod.mess)
 			status = "mess"
-		else if(pod.occupant && !(pod.stat & NOPOWER))
+		else if(occupant && !(pod.stat & NOPOWER))
 			status = "cloning"
 		clonepods += list(list(
 			"pod" = REF(pod),
 			"name" = sanitize(capitalize(pod.name)),
 			"biomass" = pod.get_biomass(),
 			"status" = status,
-			"progress" = (pod.occupant && pod.occupant.stat != DEAD) ? pod.get_completion() : 0
+			"progress" = (occupant && occupant.stat != DEAD) ? pod.get_completion() : 0
 		))
 	data["pods"] = clonepods
 
@@ -174,8 +178,8 @@
 		resleevers += list(list(
 			"sleever" = REF(resleever),
 			"name" = sanitize(capitalize(resleever.name)),
-			"occupied" = !!resleever.occupant,
-			"occupant" = resleever.occupant ? resleever.occupant.real_name : "None"
+			"occupied" = !!resleever.get_occupant(),
+			"occupant" = resleever.get_occupant() ? resleever.get_occupant().real_name : "None"
 		))
 	data["sleevers"] = resleevers
 
@@ -319,7 +323,7 @@
 							return
 
 						//Already doing someone.
-						if(pod.occupant)
+						if(pod.get_occupant())
 							set_temp("Error: Growpod is currently occupied.", "danger")
 							active_br = null
 							return
@@ -372,26 +376,32 @@
 					switch(mode)
 						if(1) //Body resleeving
 							//No body to sleeve into.
-							if(!sleever.occupant)
+							if(!sleever.get_occupant())
 								set_temp("Error: Resleeving pod is not occupied.", "danger")
 								active_mr = null
 								return
 
 							//OOC body lock thing.
-							if(sleever.occupant.resleeve_lock && active_mr.ckey != sleever.occupant.resleeve_lock)
+							if(sleever.get_occupant().resleeve_lock && active_mr.ckey != sleever.get_occupant().resleeve_lock)
 								set_temp("Error: Mind incompatible with body.", "danger")
 								active_mr = null
 								return
 
+							//Changeling lock.
+							if(sleever.get_occupant().changeling_locked && !is_changeling(active_mr.mind_ref))
+								set_temp("Error: Mind incompatible with body", "danger")
+								active_mr = null
+								return TRUE
+
 							var/list/subtargets = list()
-							for(var/mob/living/carbon/human/H in sleever.occupant)
+							for(var/mob/living/carbon/human/H in sleever.get_occupant())
 								if(H.resleeve_lock && active_mr.ckey != H.resleeve_lock)
 									continue
 								subtargets += H
 							if(subtargets.len)
-								var/oc_sanity = sleever.occupant
+								var/oc_sanity = sleever.get_occupant()
 								override = tgui_input_list(ui.user,"Multiple bodies detected. Select target for resleeving of [active_mr.mindname] manually. Sleeving of primary body is unsafe with sub-contents, and is not listed.", "Resleeving Target", subtargets)
-								if(!override || oc_sanity != sleever.occupant || !(override in sleever.occupant))
+								if(!override || oc_sanity != sleever.get_occupant() || !(override in sleever.get_occupant()))
 									set_temp("Error: Target selection aborted.", "danger")
 									active_mr = null
 									return
@@ -444,9 +454,35 @@
 		if("menu")
 			menu = clamp(text2num(params["num"]), MENU_MAIN, MENU_MIND)
 			. = TRUE
+		// Traitgenes edit begin - create a dna injector based off the BR currently selected, to allow normal doctors to reset someone's SEs
+		if("genereset")
+			if(gene_sequencing)
+				set_temp("Sequencing Record... Please wait.")
+				tgui_modal_clear(src)
+			else if(istype(active_br))
+				set_temp("Sequencing Record...")
+				tgui_modal_clear(src)
+				gene_sequencing = TRUE
+				// Make the injector here, so no desync
+				var/obj/item/dnainjector/I = new(src)
+				I.name += " ([active_br.mydna.name] - Resequencer)"
+				I.desc = "Resequences structural enzymes to match the body record this was created from."
+				I.buf = active_br.mydna.copy()
+				I.buf.types = DNA2_BUF_SE
+				I.has_radiation = FALSE // SAFE!
+				atom_say("Beginning injector synthesis.")
+				addtimer(CALLBACK(src, PROC_REF(dispense_injector), I), 10 SECONDS, TIMER_DELETE_ME)
+			. = TRUE
 		if("cleartemp")
 			temp = null
 			. = TRUE
+
+/obj/machinery/computer/transhuman/resleeving/proc/dispense_injector(var/obj/item/dnainjector/I)
+	I.forceMove(loc)
+	gene_sequencing = FALSE
+	set_temp("Injector dispensed...")
+	visible_message(span_notice("\The [src] ejects \the [I]."))
+	playsound(src, 'sound/machines/ding.ogg', 50, 1)
 
 // In here because only relevant to computer
 /obj/item/cmo_disk_holder
@@ -479,12 +515,12 @@
 	var/list/datum/transhuman/mind_record/stored = list()
 
 /**
-  * Sets a temporary message to display to the user
-  *
-  * Arguments:
-  * * text - Text to display, null/empty to clear the message from the UI
-  * * style - The style of the message: (color name), info, success, warning, danger
-  */
+ * Sets a temporary message to display to the user
+ *
+ * Arguments:
+ * * text - Text to display, null/empty to clear the message from the UI
+ * * style - The style of the message: (color name), info, success, warning, danger
+ */
 /obj/machinery/computer/transhuman/resleeving/proc/set_temp(text = "", style = "info", update_now = FALSE)
 	temp = list(text = text, style = style)
 	if(update_now)
@@ -530,7 +566,7 @@
 			if(!selected_sleever)
 				can_sleeve_active = FALSE
 				set_temp("Error: Cannot sleeve due to no selected sleever.", "danger")
-			if(selected_sleever && !selected_sleever.occupant)
+			if(selected_sleever && !selected_sleever.get_occupant())
 				can_sleeve_active = FALSE
 				set_temp("Error: Cannot sleeve due to lack of sleever occupant.", "danger")
 	else

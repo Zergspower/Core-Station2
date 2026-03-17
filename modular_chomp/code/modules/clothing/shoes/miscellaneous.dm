@@ -1,6 +1,8 @@
 /obj/item/clothing/shoes/mech_shoes
 	name = "mech shoes"
 	desc = "Thud thud."
+	icon = 'icons/effects/effects.dmi' //This is to make the unit test happy. These are invisible which are... Less than ideal. This should probably be moved to a trait or sound selector, but I digress. Outside scope of this PR.
+	icon_state = "nothing" // Horribly illegal and shouldn't be a thing, but whatever.
 	armor = list(melee = 30, bullet = 10, laser = 10, energy = 15, bomb = 20, bio = 0, rad = 0) // Same as loadout jackboots.
 	siemens_coefficient = 0.7 // Same as loadout jackboots.
 	can_hold_knife = 1
@@ -20,17 +22,18 @@
 /obj/item/clothing/shoes/mech_shoes/heavy
 	name = "heavy mech shoes"
 	desc = "Thud thud, but heavy."
-	squeak_sound = list('modular_chomp/sound/mob/footstep_large.ogg'=1,'modular_chomp/sound/mob/footstep_large2.ogg'=1)
+	squeak_sound = list('sound/mob/footstep_large.ogg'=1,'sound/mob/footstep_large2.ogg'=1)
 	step_volume_mod = 4
 
 /obj/item/clothing/shoes/mech_shoes/mister_x
 	name = "concealed extra large jackboots"
 	desc = "Lets hope there's no evil in this residence."
-	squeak_sound = list('modular_chomp/sound/mob/heavy_boots.ogg'=1)
+	squeak_sound = list('sound/mob/heavy_boots.ogg'=1)
 	step_volume_mod = 5
 
 /obj/item/clothing/shoes/mech_shoes/mister_x/visible
 	name = "visible extra large jackboots"
+	icon = 'icons/inventory/feet/item.dmi'
 	icon_state = "jackboots"
 
 /obj/item/clothing/shoes/clown_shoes

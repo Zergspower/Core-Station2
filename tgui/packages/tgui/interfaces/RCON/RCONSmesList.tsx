@@ -1,19 +1,20 @@
-import { useBackend } from '../../backend';
-import { Button, Section, Stack } from '../../components';
+import type { ReactNode } from 'react';
+import { useBackend } from 'tgui/backend';
+import { Button, Section, Stack } from 'tgui-core/components';
 import { SMESItem } from './RCONSMESItem';
-import { Data } from './types';
+import type { Data } from './types';
 
 export const RCONSmesList = (props) => {
   const { act, data } = useBackend<Data>();
 
   const { smes_info, pages, current_page } = data;
 
-  const runCallback = (cb: Function) => {
+  const runCallback = (cb: () => ReactNode) => {
     return cb();
   };
 
   return (
-    <Section title={'SMESs (Page ' + current_page + ')'}>
+    <Section title={`SMESs (Page ${current_page})`}>
       <Stack vertical>
         {smes_info.map((smes) => (
           <Stack.Item key={smes.RCON_tag}>

@@ -1,6 +1,7 @@
-import { useBackend } from '../../backend';
-import { Button, LabeledList, Section } from '../../components';
-import { Data } from './types';
+import { useBackend } from 'tgui/backend';
+import { Button, LabeledList, Section } from 'tgui-core/components';
+
+import type { Data } from './types';
 
 export const SupplyConsoleMenuOrderList = (props) => {
   const { act, data } = useBackend<Data>();
@@ -16,7 +17,7 @@ export const SupplyConsoleMenuOrderList = (props) => {
   }
 
   return (
-    <Section scrollable fill height="290px">
+    <Section scrollable fill>
       {mode === 'Requested' && order_auth ? (
         <Button
           mt={-1}
@@ -33,7 +34,7 @@ export const SupplyConsoleMenuOrderList = (props) => {
       )}
       {displayedOrders.map((order, i) => (
         <Section
-          title={'Order ' + (i + 1)}
+          title={`Order ${i + 1}`}
           key={i}
           buttons={
             mode === 'All' && order_auth ? (
@@ -56,7 +57,7 @@ export const SupplyConsoleMenuOrderList = (props) => {
                   key={i}
                   label={field.field}
                   buttons={
-                    order_auth ? (
+                    !!order_auth && (
                       <Button
                         icon="pen"
                         onClick={() => {
@@ -69,8 +70,6 @@ export const SupplyConsoleMenuOrderList = (props) => {
                       >
                         Edit
                       </Button>
-                    ) : (
-                      ''
                     )
                   }
                 >

@@ -80,7 +80,8 @@
 			qdel(src)
 		return
 
-/obj/machinery/atmospheric_field_generator/perma/Initialize()
+/obj/machinery/atmospheric_field_generator/perma/Initialize(mapload)
+	. = ..()
 	generate_field()
 
 /obj/machinery/atmospheric_field_generator/update_icon()
@@ -158,7 +159,7 @@
 			isactive = FALSE
 	return
 
-/obj/machinery/atmospheric_field_generator/Initialize()
+/obj/machinery/atmospheric_field_generator/Initialize(mapload)
 	. = ..()
 	//Delete ourselves if we find extra mapped in arfgs
 	for(var/obj/machinery/atmospheric_field_generator/F in loc)
@@ -172,7 +173,7 @@
 	LAZYADD(A.all_arfgs, src)
 	areas_added = list(A)
 
-	for(var/direction in cardinal)
+	for(var/direction in GLOB.cardinal)
 		A = get_area(get_step(src,direction))
 		if(istype(A) && !(A in areas_added))
 			LAZYADD(A.all_arfgs, src)
@@ -212,7 +213,7 @@
 
 	return
 
-/obj/structure/atmospheric_retention_field/Initialize()
+/obj/structure/atmospheric_retention_field/Initialize(mapload)
 	. = ..()
 	update_nearby_tiles() //Force ZAS update
 	update_connections(1)

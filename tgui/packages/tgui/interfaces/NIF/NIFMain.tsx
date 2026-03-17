@@ -1,4 +1,4 @@
-import { useBackend } from '../../backend';
+import { useBackend } from 'tgui/backend';
 import {
   AnimatedNumber,
   Box,
@@ -6,9 +6,11 @@ import {
   LabeledList,
   ProgressBar,
   Section,
-} from '../../components';
+  Stack,
+} from 'tgui-core/components';
+
 import { getNifCondition, getNutritionText } from './functions';
-import { Data } from './types';
+import type { Data } from './types';
 
 export const NIFMain = (props) => {
   const { act, data } = useBackend<Data>();
@@ -58,23 +60,27 @@ export const NIFMain = (props) => {
               label={module.name}
               key={module.ref}
               buttons={
-                <>
-                  <Button.Confirm
-                    icon="trash"
-                    color="bad"
-                    confirmContent="UNINSTALL?"
-                    confirmIcon="trash"
-                    tooltip="Uninstall Module"
-                    tooltipPosition="left"
-                    onClick={() => act('uninstall', { module: module.ref })}
-                  />
-                  <Button
-                    icon="search"
-                    onClick={() => setViewing(module)}
-                    tooltip="View Information"
-                    tooltipPosition="left"
-                  />
-                </>
+                <Stack>
+                  <Stack.Item>
+                    <Button.Confirm
+                      icon="trash"
+                      color="bad"
+                      confirmContent="UNINSTALL?"
+                      confirmIcon="trash"
+                      tooltip="Uninstall Module"
+                      tooltipPosition="left"
+                      onClick={() => act('uninstall', { module: module.ref })}
+                    />
+                  </Stack.Item>
+                  <Stack.Item>
+                    <Button
+                      icon="search"
+                      onClick={() => setViewing(module)}
+                      tooltip="View Information"
+                      tooltipPosition="left"
+                    />
+                  </Stack.Item>
+                </Stack>
               }
             >
               {(module.activates && (

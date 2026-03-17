@@ -10,7 +10,7 @@
 
 	if(!check_rights(R_FUN)) return
 
-	var/player_list_local = player_list //Copying player list so we don't touch a global var all the time
+	var/player_list_local = GLOB.player_list //Copying player list so we don't touch a global var all the time
 	var/list/area_list = list() //An associative list, where key is area name, value is a list of mob references
 	var/inactives = 0
 	var/players = 0
@@ -18,7 +18,7 @@
 	//Initializing our working list
 	for(var/player in player_list_local)
 
-		if(!istype(player, /mob/living)) continue //We only care for living players
+		if(!isliving(player)) continue //We only care for living players
 		var/mob/living/L = player
 		players += 1
 		if(L.client.inactivity > INACTIVITY_CAP)

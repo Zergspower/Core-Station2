@@ -1,17 +1,14 @@
-/* eslint react/no-danger: "off" */
-import { sortBy } from 'common/collections';
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
-import { Box, Button, LabeledList, Section } from '../components';
-import { Window } from '../layouts';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+import { Box, Button, LabeledList, Section } from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   access: number[] | null;
   area: area[];
   giver: string | null;
   giveName: string;
-  reason: String;
+  reason: string;
   duration: number;
   mode: BooleanLike;
   log: string[];
@@ -24,6 +21,8 @@ export const GuestPass = (props) => {
   const { act, data } = useBackend<Data>();
 
   const { area, giver, giveName, reason, duration, mode, log, uid } = data;
+
+  area.sort((a, b) => a.area_name.localeCompare(b.area_name));
 
   return (
     <Window width={500} height={520}>
@@ -45,16 +44,16 @@ export const GuestPass = (props) => {
               Print
             </Button>
             <Section title="Logs">
-              {/* These are internally generated only. */}
               {(log.length &&
                 log.map((l) => (
+                  // biome-ignore lint/security/noDangerouslySetInnerHtml: These are internally generated only.
                   <div key={l} dangerouslySetInnerHTML={{ __html: l }} />
                 ))) || <Box>No logs.</Box>}
             </Section>
           </Section>
         )) || (
           <Section
-            title={'Guest pass terminal #' + uid}
+            title={`Guest pass terminal #${uid}`}
             buttons={
               <Button icon="scroll" onClick={() => act('mode', { mode: 1 })}>
                 Activity Log
@@ -81,7 +80,7 @@ export const GuestPass = (props) => {
               Issue Pass
             </Button.Confirm>
             <Section title="Access">
-              {sortBy(area, (a: area) => a.area_name).map((a) => (
+              {area.map((a) => (
                 <Button.Checkbox
                   checked={a.on}
                   key={a.area}

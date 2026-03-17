@@ -62,10 +62,8 @@
 /mob/living/simple_mob/vr/alchemistbee/MouseDrop_T(mob/living/M, mob/living/user)
 	return
 
-/mob/living/simple_mob/vr/alchemistbee/init_vore()
-	if(!voremob_loaded)
-		return
-	.=..()
+/mob/living/simple_mob/vr/alchemistbee/load_default_bellies()
+	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "stomach"
 	B.desc = "The fearsome predator gets a firm grip upon you, before dunking you into it's maw, then with a powerful swift gulp you're sent tumbling into it's stomach."
@@ -237,6 +235,12 @@
 	var/splatter = FALSE			// Will this make a cloud of reagents?
 	var/splatter_volume = 5			// The volume of its chemical container, for said cloud of reagents.
 	var/list/my_chems = list(REAGENT_ID_MOLD)
+
+/obj/item/projectile/arc/vial/Initialize(mapload)
+	. = ..()
+	if(splatter)
+		create_reagents(splatter_volume)
+		ready_chemicals()
 
 /obj/item/projectile/arc/vial/on_impact(var/atom/A)
 	if(splatter)

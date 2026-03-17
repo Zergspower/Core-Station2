@@ -37,6 +37,7 @@
 
 //Extra micro turfs
 /turf/simulated/floor/smole/grass
+	icon = 'icons/turf/outdoors.dmi'
 	name = "grass"
 	icon_state = "grass0"
 	initial_flooring = /decl/flooring/grass/outdoors
@@ -65,7 +66,7 @@
 	recipes += new/datum/stack_recipe("smole museum", /obj/structure/smolebuilding/museum, 2, time = 10)
 
 /datum/material/smolebricks
-	name = "smolebricks"
+	name = MAT_SMOLEBRICKS
 	stack_type = /obj/item/stack/material/smolebricks
 	icon_base = "solid"
 	icon_reinf = "reinf_over"
@@ -76,13 +77,13 @@
 //the actual materials
 
 /obj/item/stack/material/smolebricks
-	name = "smolebricks"
+	name = MAT_SMOLEBRICKS
 	desc = "A collection of tiny colored bricks ready to be built into whatever you want."
 	icon = 'icons/vore/smoleworld_vr.dmi'
 	icon_state = "smolematerial"
 	drop_sound = 'sound/items/drop/smolematerial.ogg'
 	pickup_sound = 'sound/items/pickup/pillbottle.ogg'
-	default_type = "smolebricks"
+	default_type = MAT_SMOLEBRICKS
 	w_class = ITEMSIZE_SMALL
 
 //smolebrick case to make for easy bricks.
@@ -114,7 +115,7 @@
 
 /obj/structure/smoletrack/attack_hand(mob/user)
 	if(user.a_intent == I_DISARM)
-		if(ismouse(usr) || (isobserver(usr) && !CONFIG_GET(flag/ghost_interaction)))
+		if(ismouse(user) || (isobserver(user) && !CONFIG_GET(flag/ghost_interaction)))
 			return
 		to_chat(user, span_notice("[src] was dismantaled into bricks."))
 		playsound(src, 'sound/items/smolesmallbuild.ogg', 50, 1, -1, volume_channel = VOLUME_CHANNEL_MASTER)
@@ -147,7 +148,7 @@
 	set src in oview(1)
 	if(ismouse(usr) || (isobserver(usr) && !CONFIG_GET(flag/ghost_interaction)))
 		return
-	var/new_color = input(usr, "Please select color.", "Paint Color", color) as color|null
+	var/new_color = tgui_color_picker(usr, "Please select color.", "Paint Color", color)
 	color = new_color
 	return
 
@@ -211,7 +212,7 @@
 //makes it so buildings can be dismaintaled or GodZilla style attacked
 /obj/structure/smolebuilding/attack_hand(mob/user)
 	if(user.a_intent == I_DISARM)
-		if(ismouse(usr) || (isobserver(usr) && !CONFIG_GET(flag/ghost_interaction)))
+		if(ismouse(user) || (isobserver(user) && !CONFIG_GET(flag/ghost_interaction)))
 			return
 		to_chat(user, span_notice("[src] was dismantaled into bricks."))
 		playsound(src, 'sound/items/smolesmallbuild.ogg', 50, 1, -1, volume_channel = VOLUME_CHANNEL_MASTER)
@@ -220,19 +221,19 @@
 			new /obj/item/stack/material/smolebricks(loc)
 		qdel(src)
 
-	else if (usr.a_intent == I_HURT)
+	else if (user.a_intent == I_HURT)
 
-		if(ismouse(usr) || (isobserver(usr) && !CONFIG_GET(flag/ghost_interaction)))
+		if(ismouse(user) || (isobserver(user) && !CONFIG_GET(flag/ghost_interaction)))
 			return
 
 		take_damage()
 		playsound(src, 'sound/items/smolebuildinghit2.ogg', 50, 1)
 		user.do_attack_animation(src)
-		usr.visible_message(span_danger("\The [usr] bangs against \the [src]!"),
+		user.visible_message(span_danger("\The [user] bangs against \the [src]!"),
 							span_danger("You bang against \the [src]!"),
 							"You hear a banging sound.")
 	else
-		usr.visible_message("[usr.name] knocks on the [src.name].",
+		user.visible_message("[user.name] knocks on the [src.name].",
 							"You knock on the [src.name].")
 	return
 
@@ -274,7 +275,7 @@
 //get material from ruins
 /obj/structure/smoleruins/attack_hand(mob/user)
 	if(user.a_intent == I_DISARM)
-		if(ismouse(usr) || (isobserver(usr) && !CONFIG_GET(flag/ghost_interaction)))
+		if(ismouse(user) || (isobserver(user) && !CONFIG_GET(flag/ghost_interaction)))
 			return
 		to_chat(user, span_notice("[src] was dismantaled into bricks."))
 		playsound(src, 'sound/items/smolelargeunbuild.ogg', 50, 1, volume_channel = VOLUME_CHANNEL_MASTER)
@@ -307,7 +308,7 @@
 	set src in oview(1)
 	if(ismouse(usr) || (isobserver(usr) && !CONFIG_GET(flag/ghost_interaction)))
 		return
-	var/new_color = input(usr, "Please select color.", "Paint Color", color) as color|null
+	var/new_color = tgui_color_picker(usr, "Please select color.", "Paint Color", color)
 	color = new_color
 	return
 

@@ -78,11 +78,12 @@
 	var/list/shadekin_abilities
 	var/check_for_observer = FALSE
 	var/check_timer = 0
+	var/doing_phase = FALSE // Prevent bugs when spamming phase button
 
 	var/respite_activating = FALSE //CHOMPEdit - Dark Respite
 	var/list/active_dark_maws = list()
 
-/mob/living/simple_mob/shadekin/Initialize()
+/mob/living/simple_mob/shadekin/Initialize(mapload)
 	//You spawned the prototype, and want a totally random one.
 	if(type == /mob/living/simple_mob/shadekin)
 
@@ -97,7 +98,7 @@
 		var/new_type = pickweight(sk_types)
 
 		new new_type(loc)
-		flags |= ATOM_INITIALIZED //CHOMPEdit
+		flags |= ATOM_INITIALIZED
 		return INITIALIZE_HINT_QDEL
 
 	if(icon_state == "map_example")
@@ -147,7 +148,7 @@
 		return
 	if(LAZYLEN(vore_organs))
 		return
-
+	. = ..()
 	var/obj/belly/B = new /obj/belly(src)
 	vore_selected = B
 	B.immutable = 1
@@ -199,6 +200,7 @@
 		"The stinging and aching gives way to numbness as you're slowly smothered out. Your body is steadily reduced to nutrients and energy for the creature to continue on its way.",
 		"The chaos of being digested fades as you're snuffed out by a harsh clench! You're steadily broken down into a thick paste, processed and absorbed by the predator!"
 		)
+	. = ..()
 
 /mob/living/simple_mob/shadekin/Life()
 	. = ..()
@@ -213,7 +215,7 @@
 		check_timer = 0
 		var/non_kin_count = 0
 		for(var/mob/living/M in view(6,src))
-			if(!istype(M, /mob/living/simple_mob/shadekin))
+			if(!issimplekin(M))
 				non_kin_count ++
 		// Technically can be combined with ||, they call the same function, but readability is poor
 		if(!non_kin_count && (ability_flags & AB_PHASE_SHIFTED))
@@ -266,10 +268,7 @@
 		return ..(FALSE, deathmessage)
 
 
-	var/list/floors = list()
-	for(var/turf/unsimulated/floor/dark/floor in get_area_turfs(/area/shadekin))
-		floors.Add(floor)
-	if(!LAZYLEN(floors))
+	if(!LAZYLEN(GLOB.latejoin_thedark))
 		log_and_message_admins("[src] died outside of the dark but there were no valid floors to warp to")
 		icon_state = ""
 		spawn(1 SECOND)
@@ -299,10 +298,10 @@
 		var/obj/belly/belly = src.loc
 		add_attack_logs(belly.owner, src, "Digested in [lowertext(belly.name)]")
 		to_chat(belly.owner, span_notice("\The [src.name] suddenly vanishes within your [belly.name]"))
-		forceMove(pick(floors))
+		forceMove(pick(GLOB.latejoin_thedark))
 		flick("tp_in",src)
 		respite_activating = FALSE
-		belly.owner.update_fullness()
+		belly.owner.handle_belly_update() // CHOMPEdit
 		clear_fullscreen("belly")
 		if(hud_used)
 			if(!hud_used.hud_shown)
@@ -317,7 +316,7 @@
 	else
 		spawn(1 SECOND)
 			respite_activating = FALSE
-			forceMove(pick(floors))
+			forceMove(pick(GLOB.latejoin_thedark))
 			update_icon()
 			flick("tp_in",src)
 			invisibility = initial(invisibility)
@@ -485,7 +484,7 @@
 
 				//Random walk
 				if(!moving_to)
-					moving_to = pick(cardinal)
+					moving_to = pick(GLOB.cardinal)
 					dir = moving_to
 
 				var/turf/T = get_step(src,moving_to)

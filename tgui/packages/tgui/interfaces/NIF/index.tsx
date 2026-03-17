@@ -1,18 +1,19 @@
 import { useState } from 'react';
-
-import { useBackend } from '../../backend';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import {
   Box,
   Button,
   Modal,
   NoticeBox,
   Section,
+  Stack,
   Table,
-} from '../../components';
-import { Window } from '../../layouts';
+} from 'tgui-core/components';
+
 import { NIFMain } from './NIFMain';
 import { NIFSettings } from './NIFSettings';
-import { Data, module } from './types';
+import type { Data, module } from './types';
 
 export const NIF = (props) => {
   const { act, config, data } = useBackend<Data>();
@@ -51,24 +52,28 @@ export const NIF = (props) => {
               m={0}
               title={viewingModule.name}
               buttons={
-                <>
-                  <Button.Confirm
-                    icon="ban"
-                    color="bad"
-                    confirmIcon="ban"
-                    confirmContent={'Uninstall ' + viewingModule.name + '?'}
-                    onClick={() => {
-                      act('uninstall', { module: viewingModule.ref });
-                      setViewing(null);
-                    }}
-                  >
-                    Uninstall
-                  </Button.Confirm>
-                  <Button
-                    icon="window-close"
-                    onClick={() => setViewing(null)}
-                  />
-                </>
+                <Stack>
+                  <Stack.Item>
+                    <Button.Confirm
+                      icon="ban"
+                      color="bad"
+                      confirmIcon="ban"
+                      confirmContent={`Uninstall ${viewingModule.name}?`}
+                      onClick={() => {
+                        act('uninstall', { module: viewingModule.ref });
+                        setViewing(null);
+                      }}
+                    >
+                      Uninstall
+                    </Button.Confirm>
+                  </Stack.Item>
+                  <Stack.Item>
+                    <Button
+                      icon="window-close"
+                      onClick={() => setViewing(null)}
+                    />
+                  </Stack.Item>
+                </Stack>
               }
             >
               <Box>{viewingModule.desc}</Box>
@@ -104,7 +109,7 @@ export const NIF = (props) => {
           </Modal>
         )}
         <Section
-          title={'Welcome to your NIF, ' + config.user.name}
+          title={`Welcome to your NIF, ${config.user.name}`}
           buttons={
             <Button
               icon="cogs"

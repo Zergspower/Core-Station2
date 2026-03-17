@@ -1,8 +1,8 @@
-import { capitalize, toTitleCase } from 'common/string';
+import { useBackend } from 'tgui/backend';
+import { Box, Button, LabeledList, Section, Stack } from 'tgui-core/components';
+import { capitalize, toTitleCase } from 'tgui-core/string';
 
-import { useBackend } from '../../backend';
-import { Box, Button, Flex, LabeledList, Section } from '../../components';
-import { Data } from './types';
+import type { Data } from './types';
 
 export const RIGSuitModules = (props) => {
   const { act, data } = useBackend<Data>();
@@ -30,16 +30,14 @@ export const RIGSuitModules = (props) => {
       <Box color="label" mb="0.2rem" fontSize={1.5}>
         Selected Primary: {capitalize(primarysystem || 'None')}
       </Box>
-      {modules &&
-        modules.map((module, i) => (
-          <Section
-            key={i}
-            title={
-              toTitleCase(module.name) + (module.damage ? ' (damaged)' : '')
-            }
-            buttons={
-              <>
-                {module.can_select ? (
+      {modules?.map((module, i) => (
+        <Section
+          key={i}
+          title={toTitleCase(module.name) + (module.damage ? ' (damaged)' : '')}
+          buttons={
+            <Stack>
+              {module.can_select ? (
+                <Stack.Item>
                   <Button
                     selected={module.name === primarysystem}
                     icon="arrow-circle-right"
@@ -52,10 +50,12 @@ export const RIGSuitModules = (props) => {
                   >
                     {module.name === primarysystem ? 'Selected' : 'Select'}
                   </Button>
-                ) : (
-                  ''
-                )}
-                {module.can_use ? (
+                </Stack.Item>
+              ) : (
+                ''
+              )}
+              {module.can_use ? (
+                <Stack.Item>
                   <Button
                     icon="arrow-circle-down"
                     onClick={() =>
@@ -67,10 +67,12 @@ export const RIGSuitModules = (props) => {
                   >
                     {module.engagestring}
                   </Button>
-                ) : (
-                  ''
-                )}
-                {module.can_toggle ? (
+                </Stack.Item>
+              ) : (
+                ''
+              )}
+              {module.can_toggle ? (
+                <Stack.Item>
                   <Button
                     selected={module.is_active}
                     icon="arrow-circle-down"
@@ -85,57 +87,58 @@ export const RIGSuitModules = (props) => {
                       ? module.deactivatestring
                       : module.activatestring}
                   </Button>
-                ) : (
-                  ''
-                )}
-              </>
-            }
-          >
-            {module.damage >= 2 ? (
-              <Box color="bad">-- MODULE DESTROYED --</Box>
-            ) : (
-              <Flex spacing={1}>
-                <Flex.Item grow={1}>
-                  <Box color="average">Engage: {module.engagecost}</Box>
-                  <Box color="average">Active: {module.activecost}</Box>
-                  <Box color="average">Passive: {module.passivecost}</Box>
-                </Flex.Item>
-                <Flex.Item grow={1}>{module.desc}</Flex.Item>
-              </Flex>
-            )}
-            {module.charges ? (
-              <Flex.Item>
-                <Section title="Module Charges">
-                  <LabeledList>
-                    <LabeledList.Item label="Selected">
-                      {capitalize(module.chargetype)}
+                </Stack.Item>
+              ) : (
+                ''
+              )}
+            </Stack>
+          }
+        >
+          {module.damage >= 2 ? (
+            <Box color="bad">-- MODULE DESTROYED --</Box>
+          ) : (
+            <Stack>
+              <Stack.Item grow>
+                <Box color="average">Engage: {module.engagecost}</Box>
+                <Box color="average">Active: {module.activecost}</Box>
+                <Box color="average">Passive: {module.passivecost}</Box>
+              </Stack.Item>
+              <Stack.Item grow>{module.desc}</Stack.Item>
+            </Stack>
+          )}
+          {module.charges ? (
+            <Stack.Item>
+              <Section title="Module Charges">
+                <LabeledList>
+                  <LabeledList.Item label="Selected">
+                    {capitalize(module.chargetype)}
+                  </LabeledList.Item>
+                  {module.charges.map((charge, i) => (
+                    <LabeledList.Item
+                      key={charge.caption}
+                      label={capitalize(charge.caption)}
+                    >
+                      <Button
+                        selected={module.realchargetype === charge.index}
+                        icon="arrow-right"
+                        onClick={() =>
+                          act('interact_module', {
+                            module: module.index,
+                            module_mode: 'select_charge_type',
+                            charge_type: charge.index,
+                          })
+                        }
+                      />
                     </LabeledList.Item>
-                    {module.charges.map((charge, i) => (
-                      <LabeledList.Item
-                        key={charge.caption}
-                        label={capitalize(charge.caption)}
-                      >
-                        <Button
-                          selected={module.realchargetype === charge.index}
-                          icon="arrow-right"
-                          onClick={() =>
-                            act('interact_module', {
-                              module: module.index,
-                              module_mode: 'select_charge_type',
-                              charge_type: charge.index,
-                            })
-                          }
-                        />
-                      </LabeledList.Item>
-                    ))}
-                  </LabeledList>
-                </Section>
-              </Flex.Item>
-            ) : (
-              ''
-            )}
-          </Section>
-        ))}
+                  ))}
+                </LabeledList>
+              </Section>
+            </Stack.Item>
+          ) : (
+            ''
+          )}
+        </Section>
+      ))}
     </Section>
   );
 };

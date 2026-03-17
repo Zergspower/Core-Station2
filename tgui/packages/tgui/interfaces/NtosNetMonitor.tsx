@@ -1,6 +1,5 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
+import { useBackend } from 'tgui/backend';
+import { NtosWindow } from 'tgui/layouts';
 import {
   Box,
   Button,
@@ -8,8 +7,9 @@ import {
   NoticeBox,
   NumberInput,
   Section,
-} from '../components';
-import { NtosWindow } from '../layouts';
+  Stack,
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   ntnetstatus: BooleanLike;
@@ -139,14 +139,21 @@ export const NtosNetMonitor = (props) => {
             <LabeledList.Item
               label="Banned NIDs"
               buttons={
-                <>
-                  <Button icon="ban" onClick={() => act('ban_nid')}>
-                    Ban NID
-                  </Button>
-                  <Button icon="balance-scale" onClick={() => act('unban_nid')}>
-                    Unban NID
-                  </Button>
-                </>
+                <Stack>
+                  <Stack.Item>
+                    <Button icon="ban" onClick={() => act('ban_nid')}>
+                      Ban NID
+                    </Button>
+                  </Stack.Item>
+                  <Stack.Item>
+                    <Button
+                      icon="balance-scale"
+                      onClick={() => act('unban_nid')}
+                    >
+                      Unban NID
+                    </Button>
+                  </Stack.Item>
+                </Stack>
               }
             >
               {banned_nids.join(', ') || 'None'}
@@ -154,22 +161,26 @@ export const NtosNetMonitor = (props) => {
             <LabeledList.Item
               label="IDS Status"
               buttons={
-                <>
-                  <Button
-                    icon={idsstatus ? 'power-off' : 'times'}
-                    selected={idsstatus}
-                    onClick={() => act('toggleIDS')}
-                  >
-                    {idsstatus ? 'ENABLED' : 'DISABLED'}
-                  </Button>
-                  <Button
-                    icon="sync"
-                    color="bad"
-                    onClick={() => act('resetIDS')}
-                  >
-                    Reset
-                  </Button>
-                </>
+                <Stack>
+                  <Stack.Item>
+                    <Button
+                      icon={idsstatus ? 'power-off' : 'times'}
+                      selected={idsstatus}
+                      onClick={() => act('toggleIDS')}
+                    >
+                      {idsstatus ? 'ENABLED' : 'DISABLED'}
+                    </Button>
+                  </Stack.Item>
+                  <Stack.Item>
+                    <Button
+                      icon="sync"
+                      color="bad"
+                      onClick={() => act('resetIDS')}
+                    >
+                      Reset
+                    </Button>
+                  </Stack.Item>
+                </Stack>
               }
             />
             <LabeledList.Item

@@ -1,17 +1,17 @@
-import { createSearch } from 'common/string';
 import { useState } from 'react';
-
-import { useBackend } from '../backend';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import {
   Box,
   Button,
   Collapsible,
   Dropdown,
-  Flex,
   Input,
   Section,
-} from '../components';
-import { Window } from '../layouts';
+  Stack,
+} from 'tgui-core/components';
+import { createSearch } from 'tgui-core/string';
+
 import { MiningUser } from './common/Mining';
 
 type Data = {
@@ -34,29 +34,17 @@ export const MiningVendor = (props) => {
   const [sortOrder, setSortOrder] = useState('Alphabetical');
   const [descending, setDescending] = useState(false);
 
-  function handleSearchText(value: string) {
-    setSearchText(value);
-  }
-
-  function handleSortOrder(value: string) {
-    setSortOrder(value);
-  }
-
-  function handleDescending(value: boolean) {
-    setDescending(value);
-  }
-
   return (
     <Window width={400} height={450}>
-      <Window.Content className="Layout__content--flexColumn" scrollable>
+      <Window.Content className="Layout__content--StackColumn" scrollable>
         <MiningUser insertIdText="Please insert an ID in order to make purchases." />
         <MiningVendorSearch
           searchText={searchText}
           sortOrder={sortOrder}
           descending={descending}
-          onSearchText={handleSearchText}
-          onSortOrder={handleSortOrder}
-          onDescending={handleDescending}
+          onSearchText={setSearchText}
+          onSortOrder={setSortOrder}
+          onDescending={setDescending}
         />
         <MiningVendorItems
           searchText={searchText}
@@ -84,7 +72,7 @@ const MiningVendorItems = (props: {
   );
 
   let has_contents = false;
-  let contents = Object.entries(items).map((kv, _i) => {
+  const contents = Object.entries(items).map((kv, _i) => {
     let items_in_cat = Object.entries(kv[1])
       .filter(searcher)
       .map((kv2) => {
@@ -109,7 +97,7 @@ const MiningVendorItems = (props: {
     );
   });
   return (
-    <Flex.Item grow="1" overflow="auto">
+    <Stack.Item grow overflow="auto">
       <Section>
         {has_contents ? (
           contents
@@ -117,7 +105,7 @@ const MiningVendorItems = (props: {
           <Box color="label">No items matching your criteria was found!</Box>
         )}
       </Section>
-    </Flex.Item>
+    </Stack.Item>
   );
 };
 
@@ -125,22 +113,22 @@ const MiningVendorSearch = (props: {
   searchText: string;
   sortOrder: string;
   descending: boolean;
-  onSearchText: Function;
-  onSortOrder: Function;
-  onDescending: Function;
+  onSearchText: React.Dispatch<React.SetStateAction<string>>;
+  onSortOrder: React.Dispatch<React.SetStateAction<string>>;
+  onDescending: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   return (
     <Box mb="0.5rem">
-      <Flex width="100%">
-        <Flex.Item grow="1" mr="0.5rem">
+      <Stack width="100%">
+        <Stack.Item grow mr="0.5rem">
           <Input
             placeholder="Search by item name.."
             value={props.searchText}
             width="100%"
-            onInput={(_e, value) => props.onSearchText(value)}
+            onChange={(value) => props.onSearchText(value)}
           />
-        </Flex.Item>
-        <Flex.Item basis="30%">
+        </Stack.Item>
+        <Stack.Item basis="30%">
           <Dropdown
             autoScroll={false}
             selected={props.sortOrder}
@@ -149,8 +137,8 @@ const MiningVendorSearch = (props: {
             lineHeight="19px"
             onSelected={(v) => props.onSortOrder(v)}
           />
-        </Flex.Item>
-        <Flex.Item>
+        </Stack.Item>
+        <Stack.Item>
           <Button
             icon={props.descending ? 'arrow-down' : 'arrow-up'}
             height="19px"
@@ -159,8 +147,8 @@ const MiningVendorSearch = (props: {
             ml="0.5rem"
             onClick={() => props.onDescending(!props.descending)}
           />
-        </Flex.Item>
-      </Flex>
+        </Stack.Item>
+      </Stack>
     </Box>
   );
 };

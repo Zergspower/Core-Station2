@@ -1,19 +1,20 @@
-import { toFixed } from 'common/math';
 import { useState } from 'react';
 import { useBackend } from 'tgui/backend';
-import { LabeledList } from 'tgui/components';
-import { formatPower } from 'tgui/format';
 import { Window } from 'tgui/layouts';
 import {
   AnimatedNumber,
   Box,
   Button,
+  LabeledList,
   ProgressBar,
   Section,
+  Stack,
 } from 'tgui-core/components';
+import { formatPower } from 'tgui-core/format';
+import { toFixed } from 'tgui-core/math';
 
 import { Plane } from './Plane';
-import { Data } from './types';
+import type { Data } from './types';
 
 export const ICAssembly = (props) => {
   const [showInfo, setShowInfo] = useState(false);
@@ -22,29 +23,33 @@ export const ICAssembly = (props) => {
   return (
     <Window
       buttons={
-        <>
-          <Button
-            color="transparent"
-            width={2.5}
-            height={2}
-            textAlign="center"
-            icon="pencil"
-            tooltip="Edit Name"
-            tooltipPosition="bottom-start"
-            onClick={() => act('rename')}
-          />
-          <Button
-            color="transparent"
-            width={2.5}
-            height={2}
-            textAlign="center"
-            icon="info"
-            tooltip="Circuit Info"
-            tooltipPosition="bottom-start"
-            selected={showInfo}
-            onClick={() => setShowInfo(!showInfo)}
-          />
-        </>
+        <Stack>
+          <Stack.Item>
+            <Button
+              color="transparent"
+              width={2.5}
+              height={2}
+              textAlign="center"
+              icon="pencil"
+              tooltip="Edit Name"
+              tooltipPosition="bottom-start"
+              onClick={() => act('rename')}
+            />
+          </Stack.Item>
+          <Stack.Item>
+            <Button
+              color="transparent"
+              width={2.5}
+              height={2}
+              textAlign="center"
+              icon="info"
+              tooltip="Circuit Info"
+              tooltipPosition="bottom-start"
+              selected={showInfo}
+              onClick={() => setShowInfo(!showInfo)}
+            />
+          </Stack.Item>
+        </Stack>
       }
       width={1280}
       height={800}
@@ -151,7 +156,7 @@ const CircuitInfo = (props) => {
           {(net_power === 0 && '0 W/s') || (
             <AnimatedNumber
               value={net_power}
-              format={(val) => '-' + formatPower(Math.abs(val)) + '/s'}
+              format={(val) => `-${formatPower(Math.abs(val))}/s`}
             />
           )}
         </LabeledList.Item>

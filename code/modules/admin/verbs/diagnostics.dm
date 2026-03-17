@@ -39,7 +39,9 @@
 	Tile Update: [SSair.tiles_to_update.len]<BR>
 "}
 
-	usr << browse(output,"window=airreport")
+	var/datum/browser/popup = new(src, "airreport", "Airreport")
+	popup.set_content(output)
+	popup.open()
 
 /client/proc/fix_next_move()
 	set category = "Debug.Game"
@@ -48,7 +50,7 @@
 	var/largest_click_time = 0
 	var/mob/largest_move_mob = null
 	var/mob/largest_click_mob = null
-	for(var/mob/M in mob_list)
+	for(var/mob/M in GLOB.mob_list)
 		if(!M.client)
 			continue
 		if(M.next_move >= largest_move_time)
@@ -95,7 +97,9 @@
 				else
 					output += "&nbsp;&nbsp;&nbsp;&nbsp;[device]<br>"
 
-	usr << browse(output,"window=radioreport")
+	var/datum/browser/popup = new(src, "radioreport", "Radioreport")
+	popup.set_content(output)
+	popup.open()
 	feedback_add_details("admin_verb","RR") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/reload_admins()

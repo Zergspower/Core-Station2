@@ -1,8 +1,14 @@
-import { BooleanLike } from 'common/react';
-
-import { useBackend } from '../backend';
-import { Box, Button, Dropdown, LabeledList, Section } from '../components';
-import { Window } from '../layouts';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+import {
+  Box,
+  Button,
+  Dropdown,
+  LabeledList,
+  Section,
+  Stack,
+} from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
 type Data = {
   drones: {
@@ -64,28 +70,32 @@ export const DroneConsole = (props) => {
           </Button>
         </Section>
         <Section title="Maintenance Units">
-          {drones && drones.length ? (
+          {drones?.length ? (
             <LabeledList>
               {drones.map((drone) => (
                 <LabeledList.Item
                   key={drone.name}
                   label={drone.name}
                   buttons={
-                    <>
-                      <Button
-                        icon="sync"
-                        onClick={() => act('resync', { ref: drone.ref })}
-                      >
-                        Resync
-                      </Button>
-                      <Button.Confirm
-                        icon="exclamation-triangle"
-                        color="red"
-                        onClick={() => act('shutdown', { ref: drone.ref })}
-                      >
-                        Shutdown
-                      </Button.Confirm>
-                    </>
+                    <Stack>
+                      <Stack.Item>
+                        <Button
+                          icon="sync"
+                          onClick={() => act('resync', { ref: drone.ref })}
+                        >
+                          Resync
+                        </Button>
+                      </Stack.Item>
+                      <Stack.Item>
+                        <Button.Confirm
+                          icon="exclamation-triangle"
+                          color="red"
+                          onClick={() => act('shutdown', { ref: drone.ref })}
+                        >
+                          Shutdown
+                        </Button.Confirm>
+                      </Stack.Item>
+                    </Stack>
                   }
                 >
                   <LabeledList>

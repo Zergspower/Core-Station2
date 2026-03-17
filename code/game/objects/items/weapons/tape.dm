@@ -10,7 +10,7 @@
 	toolspeed = 2 //It is now used in surgery as a not awful, but probably dangerous option, due to speed.
 
 /obj/item/tape_roll/proc/can_place(var/mob/living/carbon/human/H, var/mob/user)
-	if(istype(user, /mob/living/silicon/robot) || user == H)
+	if(isrobot(user) || user == H)
 		return TRUE
 
 	for (var/obj/item/grab/G in H.grabbed_by)
@@ -87,7 +87,7 @@
 				H.update_inv_wear_mask()
 				playsound(src, 'sound/effects/tape.ogg',25)
 
-			else if(user.zone_sel.selecting == "r_hand" || user.zone_sel.selecting == "l_hand")
+			else if(user.zone_sel.selecting == BP_R_HAND || user.zone_sel.selecting == BP_L_HAND)
 				if(!can_place(H, user))
 					return
 
@@ -119,12 +119,9 @@
 	plane = MOB_PLANE
 	anchored = FALSE
 	drop_sound = null
+	flags = NOBLUDGEON
 
 	var/obj/item/stuck = null
-
-/obj/item/ducttape/New()
-	..()
-	flags |= NOBLUDGEON
 
 /obj/item/ducttape/examine(mob/user)
 	SHOULD_CALL_PARENT(FALSE)
@@ -174,8 +171,8 @@
 	var/dir_offset = 0
 	if(target_turf != source_turf)
 		dir_offset = get_dir(source_turf, target_turf)
-		if(!(dir_offset in cardinal))
-			to_chat(user, "You cannot reach that from here.")		// can only place stuck papers in cardinal directions, to
+		if(!(dir_offset in GLOB.cardinal))
+			to_chat(user, "You cannot reach that from here.")		// can only place stuck papers in GLOB.cardinal directions, to
 			return											// reduce papers around corners issue.
 
 	user.drop_from_inventory(src)

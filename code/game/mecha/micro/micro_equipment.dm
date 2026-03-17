@@ -3,7 +3,6 @@
 /////////////////////////////
 ////    WEAPONS BELOW    ////
 /////////////////////////////
-/* //CHOMPedit commented micromech stuff, because fuck this trash
 /obj/item/mecha_parts/mecha_equipment/weapon/energy/microlaser
 	w_class = ITEMSIZE_LARGE
 	desc = "A mounted micro laser-carbine for micro mechs." //CHOMPedit
@@ -39,7 +38,7 @@
 	energy_drain = 40
 	equip_cooldown = 10
 	projectile = /obj/item/projectile/beam/stun
-	fire_sound = 'sound/weapons/Taser.ogg'
+	fire_sound = 'sound/weapons/taser.ogg'
 	equip_type = EQUIP_MICRO_WEAPON
 	required_type = list(/obj/mecha/micro/sec)
 
@@ -52,7 +51,7 @@
 	equip_cooldown = 15
 	var/mode = 0 //0 - buckshot, 1 - beanbag, 2 - slug.
 	projectile = /obj/item/projectile/bullet/pellet/shotgun
-	fire_sound = 'sound/weapons/Gunshot_shotgun.ogg'
+	fire_sound = 'sound/weapons/gunshot_shotgun.ogg'
 	fire_volume = 80
 	projectiles = 6
 	projectiles_per_shot = 1
@@ -133,7 +132,7 @@
 				else
 					log_message("Drilled through [target]")
 					target.ex_act(2)
-			else if(istype(target, /turf/simulated/mineral))
+			else if(ismineralturf(target))
 				for(var/turf/simulated/mineral/M in range(chassis,1))
 					if(get_dir(chassis,M)&chassis.dir)
 						M.GetDrilled()
@@ -203,7 +202,7 @@
 	set category = "Object"
 	set src in view(1)
 
-	if(!istype(usr, /mob/living/carbon/human)) //Only living, intelligent creatures with hands can empty ore boxes.
+	if(!ishuman(usr)) //Only living, intelligent creatures with hands can empty ore boxes.
 		to_chat(usr, span_warning("You are physically incapable of emptying the ore box."))
 		return
 
@@ -225,4 +224,4 @@
 		O.loc = src.loc
 	to_chat(usr, span_info("You empty the ore box"))
 
-	return */
+	return

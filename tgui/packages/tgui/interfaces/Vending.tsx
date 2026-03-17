@@ -1,10 +1,6 @@
-import { filter } from 'common/collections';
-import { flow } from 'common/fp';
-import { BooleanLike, classes } from 'common/react';
-import { createSearch } from 'common/string';
 import { useState } from 'react';
-
-import { useBackend } from '../backend';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
 import {
   Box,
   Button,
@@ -13,8 +9,10 @@ import {
   Section,
   Table,
   Tooltip,
-} from '../components';
-import { Window } from '../layouts';
+} from 'tgui-core/components';
+import { flow } from 'tgui-core/fp';
+import { type BooleanLike, classes } from 'tgui-core/react';
+import { createSearch } from 'tgui-core/string';
 
 type Data = {
   chargesMoney: BooleanLike;
@@ -88,7 +86,7 @@ const VendingRow = (props: { product: product }) => {
             })
           }
         >
-          {product.price ? 'Buy (' + product.price + '₮)' : 'Vend'}
+          {product.price ? `Buy (${product.price}₮)` : 'Vend'}
         </Button>
       </Table.Cell>
     </Table.Row>
@@ -100,14 +98,10 @@ export const Vending = (props) => {
   const { panel } = data;
   const [searchText, setSearchText] = useState<string>('');
 
-  function handleSearchText(value: string) {
-    setSearchText(value);
-  }
-
   return (
     <Window width={450} height={600}>
       <Window.Content scrollable>
-        <VendingProducts searchText={searchText} onSearch={handleSearchText} />
+        <VendingProducts searchText={searchText} onSearch={setSearchText} />
         {panel ? <VendingMaintenance /> : null}
       </Window.Content>
     </Window>
@@ -116,7 +110,7 @@ export const Vending = (props) => {
 
 export const VendingProducts = (props: {
   searchText: string;
-  onSearch: Function;
+  onSearch: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const { act, data } = useBackend<Data>();
   const { coin, chargesMoney, user, userMoney, guestNotice, products } = data;
@@ -146,7 +140,7 @@ export const VendingProducts = (props: {
             <Input
               fluid
               placeholder="Search for products..."
-              onInput={(e, value: string) => props.onSearch(value)}
+              onChange={(value: string) => props.onSearch(value)}
             />
           </Table.Cell>
         </Table>
@@ -158,7 +152,7 @@ export const VendingProducts = (props: {
       </Section>
       {!!coin && (
         <Section
-          title={coin + ' deposited'}
+          title={`${coin} deposited`}
           buttons={
             <Button icon="eject" onClick={() => act('remove_coin')}>
               Eject Coin
@@ -209,7 +203,7 @@ export const prepareSearch = (
       if (!searchText) {
         return products;
       } else {
-        return filter(products, testSearch);
+        return products.filter(testSearch);
       }
     },
   ])(products);

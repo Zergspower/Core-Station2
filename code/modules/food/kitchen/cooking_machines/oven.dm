@@ -27,6 +27,8 @@
 
 	var/open = FALSE // Start closed just so people don't try to preheat with it open, lol.
 
+	tgui_id = "CookingOven"
+
 	output_options = list(
 		"Pizza" = /obj/item/reagent_containers/food/snacks/variable/pizza,
 		"Bread" = /obj/item/reagent_containers/food/snacks/variable/bread,
@@ -39,7 +41,7 @@
 		"Donut" = /obj/item/reagent_containers/food/snacks/variable/donut,
 		)
 
-/obj/machinery/appliance/cooker/oven/Initialize()
+/obj/machinery/appliance/cooker/oven/Initialize(mapload)
 	. = ..()
 
 	oven_loop = new(list(src), FALSE)
@@ -82,14 +84,14 @@
 	try_toggle_door(usr)
 
 /obj/machinery/appliance/cooker/oven/proc/try_toggle_door(mob/user)
-	if(!isliving(usr) || isAI(user))
+	if(!isliving(user) || isAI(user))
 		return
 
-	if(!usr.IsAdvancedToolUser())
+	if(!user.IsAdvancedToolUser())
 		to_chat(user, span_notice("You lack the dexterity to do that."))
 		return
 
-	if(!Adjacent(usr))
+	if(!Adjacent(user))
 		to_chat(user, span_notice("You can't reach the [src] from there, get closer!"))
 		return
 

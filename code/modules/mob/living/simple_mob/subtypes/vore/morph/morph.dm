@@ -61,7 +61,7 @@
 	/mob/living/simple_mob/vore/morph,
 	/obj/effect))
 
-/mob/living/simple_mob/vore/morph/Initialize()
+/mob/living/simple_mob/vore/morph/Initialize(mapload)
 	add_verb(src, /mob/living/proc/ventcrawl)
 	add_verb(src, /mob/living/simple_mob/vore/morph/proc/take_over_prey)
 	if(!istype(src, /mob/living/simple_mob/vore/morph/dominated_prey))
@@ -249,7 +249,7 @@
 	set name = "Pick Color"
 	set category = "Abilities.Settings"
 	set desc = "You can set your color!"
-	var/newcolor = input(usr, "Choose a color.", "", color) as color|null
+	var/newcolor = tgui_color_picker(src, "Choose a color.", "", color)
 	if(newcolor)
 		color = newcolor
 		chosen_color = newcolor
@@ -295,7 +295,7 @@
 						L.pulledby.stop_pulling()
 					stop_pulling()
 					original_ckey = ckey
-					log_and_message_admins("[key_name_admin(src)] has swapped bodies with [key_name_admin(L)] as a morph at [get_area(src)] - [COORD(src)].")
+					log_and_message_admins("has swapped bodies with [key_name_admin(L)] as a morph at [get_area(src)] - [COORD(src)].", src)
 					new /mob/living/simple_mob/vore/morph/dominated_prey(L.vore_selected, L.ckey, src, L)
 				else
 					to_chat(src, span_warning("\The [L] declined your request for control."))
@@ -312,23 +312,22 @@
 	var/prey_ckey
 
 
-/mob/living/simple_mob/vore/morph/dominated_prey/New(loc, pckey, parent, prey)
+/mob/living/simple_mob/vore/morph/dominated_prey/Initialize(mapload, pckey, parent, prey)
 	. = ..()
-	if(pckey)
-		prey_ckey = pckey
-		parent_morph = parent
-		prey_body = prey
-		prey_body.forceMove(get_turf(parent_morph))
-		prey_body.muffled = FALSE
-		prey_body.absorbed = FALSE
-		absorbed = TRUE
-		ckey = prey_ckey
-		prey_body.ckey = parent_morph.original_ckey
-		parent_morph.forceMove(src)
-		name = "[prey_body.name]"
-		to_chat(prey_body, span_notice("You have completely assumed the form of [prey_body]. Your form is now unable to change anymore until you restore control back to them. You can do this by 'ejecting' them from your [prey_body.vore_selected]. This will not actually release them from your body in this state, but instead return control to them, and restore you to your original form."))
-	else
-		qdel(src)
+	if(!pckey)
+		return INITIALIZE_HINT_QDEL
+	prey_ckey = pckey
+	parent_morph = parent
+	prey_body = prey
+	prey_body.forceMove(get_turf(parent_morph))
+	prey_body.muffled = FALSE
+	prey_body.absorbed = FALSE
+	absorbed = TRUE
+	ckey = prey_ckey
+	prey_body.ckey = parent_morph.original_ckey
+	parent_morph.forceMove(src)
+	name = "[prey_body.name]"
+	to_chat(prey_body, span_notice("You have completely assumed the form of [prey_body]. Your form is now unable to change anymore until you restore control back to them. You can do this by 'ejecting' them from your [prey_body.vore_selected]. This will not actually release them from your body in this state, but instead return control to them, and restore you to your original form."))
 
 /mob/living/simple_mob/vore/morph/dominated_prey/death(gibbed)
 	. = ..()
@@ -362,13 +361,13 @@
 		parent_morph.forceMove(get_turf(src))
 		parent_morph.ckey = parent_morph.original_ckey
 		prey_body.ckey = prey_ckey
-		log_and_message_admins("[key_name_admin(prey_body)] used the OOC escape button to get out of [key_name_admin(parent_morph)]. They have been returned to their original bodies. [ADMIN_FLW(src)]")
+		log_and_message_admins("used the OOC escape button to get out of [key_name_admin(parent_morph)]. They have been returned to their original bodies. [ADMIN_FLW(src)]", prey_body)
 	else
 		parent_morph.forceMove(get_turf(prey_body))
 		parent_morph.ckey = parent_morph.original_ckey
 		prey_body.ckey = prey_ckey
 		prey_body.forceMove(parent_morph.vore_selected)
-		log_and_message_admins("[key_name_admin(prey_body)] and [key_name_admin(parent_morph)] have been returned to their original bodies. [get_area(src)] - [COORD(src)].")
+		log_and_message_admins("and [key_name_admin(parent_morph)] have been returned to their original bodies. [get_area(src)] - [COORD(src)].", prey_body)
 	qdel(src)
 
 #undef MORPH_COOLDOWN

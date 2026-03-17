@@ -37,7 +37,7 @@
 				s.set_up(3, 1, src)
 				s.start()
 			if(effect == 2)
-				for(var/obj/machinery/light/L in machines)
+				for(var/obj/machinery/light/L in GLOB.machines)
 					if(L.z != user.z || get_dist(user,L) > 10)
 						continue
 					else
@@ -48,13 +48,13 @@
 						continue
 
 					var/flash_time = 10
-					if(istype(O, /mob/living/carbon/human))
+					if(ishuman(O))
 						var/mob/living/carbon/human/H = O
-						//VOREStation Edit Start
 						if(H.nif && H.nif.flag_check(NIF_V_FLASHPROT,NIF_FLAGS_VISION))
 							H.nif.notify("High intensity light detected, and blocked!",TRUE)
 							continue
-						//VOREStation Edit End
+						if(FLASHPROOF in H.mutations)
+							continue
 						if(!H.eyecheck() <= 0)
 							continue
 						flash_time *= H.species.flash_mod
@@ -173,7 +173,7 @@
 	var/check_togglable
 
 
-	if(!holder)
+	if(!check_rights_for(src, R_HOLDER))
 		return
 
 	var/s_name = tgui_input_text(src, "Item Name:", "Name")

@@ -1,5 +1,6 @@
-import { useBackend } from '../../backend';
-import { Window } from '../../layouts';
+import { useBackend } from 'tgui/backend';
+import { Window } from 'tgui/layouts';
+
 import { AirlockConsoleAdvanced } from './AirlockConsoleAdvanced';
 import { AirlockConsoleDocking } from './AirlockConsoleDocking';
 import { AirlockConsolePhoron } from './AirlockConsolePhoron';
@@ -9,7 +10,7 @@ import { DockingConsoleSimple } from './DockingConsoleSimple';
 import { DoorAccessConsole } from './DoorAccessConsole';
 import { EscapePodBerthConsole } from './EscapePodBerthConsole';
 import { EscapePodConsole } from './EscapePodConsole';
-import { Data } from './types';
+import type { Data } from './types';
 
 /**
  * This is an all-in-one replacement for the following NanoUI Templates:
@@ -80,20 +81,20 @@ export const EmbeddedController = (props) => {
 
   const primaryRoutes: Record<string, React.JSX.Element> = {};
 
-  primaryRoutes['AirlockConsoleAdvanced'] = <AirlockConsoleAdvanced />;
-  primaryRoutes['AirlockConsoleSimple'] = <AirlockConsoleSimple />;
-  primaryRoutes['AirlockConsolePhoron'] = <AirlockConsolePhoron />;
-  primaryRoutes['AirlockConsoleDocking'] = <AirlockConsoleDocking />;
-  primaryRoutes['DockingConsoleSimple'] = <DockingConsoleSimple />;
-  primaryRoutes['DockingConsoleMulti'] = <DockingConsoleMulti />;
-  primaryRoutes['DoorAccessConsole'] = <DoorAccessConsole />;
-  primaryRoutes['EscapePodConsole'] = <EscapePodConsole />;
-  primaryRoutes['EscapePodBerthConsole'] = <EscapePodBerthConsole />;
+  primaryRoutes.AirlockConsoleAdvanced = <AirlockConsoleAdvanced />;
+  primaryRoutes.AirlockConsoleSimple = <AirlockConsoleSimple />;
+  primaryRoutes.AirlockConsolePhoron = <AirlockConsolePhoron />;
+  primaryRoutes.AirlockConsoleDocking = <AirlockConsoleDocking />;
+  primaryRoutes.DockingConsoleSimple = <DockingConsoleSimple />;
+  primaryRoutes.DockingConsoleMulti = <DockingConsoleMulti />;
+  primaryRoutes.DoorAccessConsole = <DoorAccessConsole />;
+  primaryRoutes.EscapePodConsole = <EscapePodConsole />;
+  primaryRoutes.EscapePodBerthConsole = <EscapePodBerthConsole />;
 
   const Component: React.JSX.Element = primaryRoutes[internalTemplateName];
   if (!Component) {
     throw Error(
-      'Unable to find Component for template name: ' + internalTemplateName,
+      `Unable to find Component for template name: ${internalTemplateName}`,
     );
   }
 

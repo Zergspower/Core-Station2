@@ -17,11 +17,12 @@
 
 	if(client?.prefs?.read_preference(/datum/preference/toggle/tgui_say))
 		winset(src, null, "command=[client.tgui_say_create_open_command(SAY_CHANNEL)]")
+		winset(src, "tgui_say.browser", "focus=true")
 		return
 
 	client?.start_thinking()
 	client?.start_typing()
-	var/message = tgui_input_text(usr, "Type your message:", "Say")
+	var/message = tgui_input_text(src, "Type your message:", "Say")
 	client?.stop_thinking()
 
 	if(message)
@@ -33,11 +34,12 @@
 
 	if(client?.prefs?.read_preference(/datum/preference/toggle/tgui_say) && client?.prefs?.read_preference(/datum/preference/toggle/tgui_say_emotes))
 		winset(src, null, "command=[client.tgui_say_create_open_command(ME_CHANNEL)]")
+		winset(src, "tgui_say.browser", "focus=true")
 		return
 
 	client?.start_thinking()
 	client?.start_typing()
-	var/message = tgui_input_text(usr, "Type your message:", "Emote", multiline = TRUE)
+	var/message = tgui_input_text(src, "Type your message:", "Emote", multiline = TRUE)
 	client?.stop_thinking()
 
 	if(message)
@@ -49,12 +51,13 @@
 
 	if(client?.prefs?.read_preference(/datum/preference/toggle/tgui_say))
 		winset(src, null, "command=[client.tgui_say_create_open_command(WHIS_CHANNEL)]")
+		winset(src, "tgui_say.browser", "focus=true")
 		return
 
 	if(client?.prefs?.read_preference(/datum/preference/toggle/show_typing_indicator_subtle))
 		client?.start_thinking()
 		client?.start_typing()
-	var/message = tgui_input_text(usr, "Type your message:", "Whisper")
+	var/message = tgui_input_text(src, "Type your message:", "Whisper")
 	client?.stop_thinking()
 
 	if(message)
@@ -67,12 +70,13 @@
 
 	if(client?.prefs?.read_preference(/datum/preference/toggle/tgui_say) && client?.prefs?.read_preference(/datum/preference/toggle/tgui_say_emotes))
 		winset(src, null, "command=[client.tgui_say_create_open_command(SUBTLE_CHANNEL)]")
+		winset(src, "tgui_say.browser", "focus=true")
 		return
 
 	if(client?.prefs?.read_preference(/datum/preference/toggle/show_typing_indicator_subtle))
 		client?.start_thinking()
 		client?.start_typing()
-	var/message = tgui_input_text(usr, "Type your message:", "Subtle", multiline = TRUE)
+	var/message = tgui_input_text(src, "Type your message:", "Subtle", multiline = TRUE)
 	client?.stop_thinking()
 
 	if(message)

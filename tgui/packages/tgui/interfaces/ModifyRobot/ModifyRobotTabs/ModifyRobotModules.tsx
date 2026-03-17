@@ -1,4 +1,3 @@
-import { capitalize } from 'common/string';
 import { useState } from 'react';
 import { useBackend } from 'tgui/backend';
 import {
@@ -6,18 +5,18 @@ import {
   Button,
   Divider,
   Dropdown,
-  Flex,
   Icon,
   Image,
   Input,
   Section,
   Stack,
-} from 'tgui/components';
+} from 'tgui-core/components';
 import { classes } from 'tgui-core/react';
+import { capitalize } from 'tgui-core/string';
 
 import { NoSpriteWarning } from '../components';
 import { prepareSearch } from '../functions';
-import { Module, Source, Target } from '../types';
+import type { Module, Source, Target } from '../types';
 
 export const ModifyRobotModules = (props: {
   target: Target;
@@ -32,8 +31,8 @@ export const ModifyRobotModules = (props: {
   return (
     <>
       {!target.active && <NoSpriteWarning name={target.name} />}
-      <Flex height={!target.active ? '75%' : '80%'}>
-        <Flex.Item width="40%" fill>
+      <Stack fill>
+        <Stack.Item width="40%">
           <Section title="Source Module" scrollable fill>
             <Box>Robot to salvage</Box>
             <Dropdown
@@ -59,13 +58,13 @@ export const ModifyRobotModules = (props: {
               />
             )}
           </Section>
-        </Flex.Item>
-        <Flex.Item grow />
-        <Flex.Item>
+        </Stack.Item>
+        <Stack.Item grow />
+        <Stack.Item>
           <Stack vertical>
             <Stack.Item>
               <Button.Confirm
-                width="50px"
+                width="90px"
                 height="50px"
                 disabled={!source}
                 tooltip="Swaps the source and destination module types."
@@ -76,7 +75,7 @@ export const ModifyRobotModules = (props: {
             </Stack.Item>
             <Stack.Item>
               <Button.Confirm
-                width="50px"
+                width="90px"
                 height="50px"
                 mt={40}
                 textAlign="center"
@@ -91,9 +90,9 @@ export const ModifyRobotModules = (props: {
               />
             </Stack.Item>
           </Stack>
-        </Flex.Item>
-        <Flex.Item grow />
-        <Flex.Item width="40%" fill>
+        </Stack.Item>
+        <Stack.Item grow />
+        <Stack.Item width="40%">
           <Section title="Destination Module" scrollable fill>
             <Box>{target ? target.module : ''}</Box>
             <Button.Confirm
@@ -118,8 +117,8 @@ export const ModifyRobotModules = (props: {
               modules={target.modules}
             />
           </Section>
-        </Flex.Item>
-      </Flex>
+        </Stack.Item>
+      </Stack>
     </>
   );
 };
@@ -128,7 +127,7 @@ const SelectionField = (props: {
   previewImage: string | undefined;
   previewImageSize: string | undefined;
   searchText: string;
-  onSearchText: Function;
+  onSearchText: React.Dispatch<React.SetStateAction<string>>;
   action: string;
   buttonIcon: string;
   buttonColor: string;
@@ -149,19 +148,19 @@ const SelectionField = (props: {
   return (
     <>
       <Divider />
-      <Flex>
-        <Flex.Item grow />
-        <Flex.Item>
-          <Box className={classes([previewImageSize, previewImage + 'S'])} />
-        </Flex.Item>
-        <Flex.Item grow />
-      </Flex>
+      <Stack>
+        <Stack.Item grow />
+        <Stack.Item>
+          <Box className={classes([previewImageSize, `${previewImage}S`])} />
+        </Stack.Item>
+        <Stack.Item grow />
+      </Stack>
       <Divider />
       <Input
         fluid
         value={searchText}
         placeholder="Search for modules..."
-        onInput={(e, value: string) => onSearchText(value)}
+        onChange={(value: string) => onSearchText(value)}
       />
       <Divider />
       <Stack>
@@ -178,22 +177,21 @@ const SelectionField = (props: {
                   })
                 }
               >
-                <Flex varticalAlign="center">
-                  <Flex.Item>
-                    <Image src={modul_option.icon} />
-                  </Flex.Item>
-                  <Flex.Item ml="10px">
+                <Stack fill align="center">
+                  <Stack.Item>
+                    <Image fixErrors src={modul_option.icon} />
+                  </Stack.Item>
+                  <Stack.Item grow overflow="hidden" ml="10px">
                     {capitalize(modul_option.name)}
-                  </Flex.Item>
-                  <Flex.Item grow />
-                  <Flex.Item>
+                  </Stack.Item>
+                  <Stack.Item>
                     <Icon
                       name={buttonIcon}
                       backgroundColor={buttonColor}
                       size={1.5}
                     />
-                  </Flex.Item>
-                </Flex>
+                  </Stack.Item>
+                </Stack>
               </Button>
             );
           })}

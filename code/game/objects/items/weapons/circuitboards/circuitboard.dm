@@ -18,6 +18,11 @@
 	drop_sound = 'sound/items/drop/device.ogg'
 	pickup_sound = 'sound/items/pickup/device.ogg'
 
+/obj/item/circuitboard/Destroy()
+	if(isobject(board_type)) // Some boards use text instead of an instance...
+		QDEL_NULL(board_type)
+	return ..()
+
 //Called when the circuitboard is used to contruct a new machine.
 /obj/item/circuitboard/proc/construct(var/obj/machinery/M)
 	if(istype(M, build_path))

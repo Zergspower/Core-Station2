@@ -344,7 +344,6 @@
 	},
 /obj/effect/floor_decal/industrial/outline/yellow,
 /obj/structure/cable/green{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /obj/machinery/power/shield_generator/charged{
@@ -1468,14 +1467,6 @@
 	},
 /turf/simulated/floor/tiled/techfloor/grid,
 /area/survivalpod/superpose/CultShip)
-"bbP" = (
-/obj/structure/hull_corner{
-	dir = 4
-	},
-/obj/structure/lattice,
-/obj/structure/lattice,
-/turf/template_noop,
-/area/template_noop)
 "bcf" = (
 /obj/structure/table/standard,
 /obj/machinery/reagentgrinder,
@@ -1913,8 +1904,6 @@
 	req_access = list(2,4)
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/structure/bed/chair/bay/chair/padded/black{
@@ -2014,7 +2003,6 @@
 "byP" = (
 /obj/item/clothing/suit/storage/apron/white,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/white,
 /area/survivalpod/superpose/LoneHome)
 "bze" = (
@@ -2062,8 +2050,6 @@
 	req_one_access = null
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled/techmaint,
@@ -2307,8 +2293,6 @@
 /area/survivalpod/superpose/HydroCave)
 "bLf" = (
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /obj/effect/floor_decal/industrial/loading{
@@ -2364,8 +2348,6 @@
 "bNk" = (
 /obj/machinery/light,
 /obj/effect/floor_decal/rust,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/steel_dirty,
 /area/survivalpod/superpose/MethLab)
@@ -2988,7 +2970,6 @@
 	dir = 1
 	},
 /obj/structure/cable/cyan{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /turf/simulated/floor,
@@ -3718,11 +3699,6 @@
 	},
 /turf/simulated/floor/carpet/sblucarpet,
 /area/survivalpod)
-"cOZ" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/wood/broken,
-/area/survivalpod/superpose/LoneHome)
 "cPf" = (
 /obj/machinery/atmospherics/binary/pump/on{
 	dir = 1;
@@ -3750,11 +3726,6 @@
 	},
 /turf/simulated/floor/tiled/white,
 /area/survivalpod/superpose/HydroCave)
-"cPL" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/wood,
-/area/survivalpod/superpose/OldHotel)
 "cQd" = (
 /obj/machinery/door/firedoor,
 /turf/simulated/floor/tiled/dark,
@@ -3897,7 +3868,6 @@
 /obj/item/clothing/shoes/sandal,
 /obj/item/clothing/shoes/sandal,
 /obj/machinery/computer/security/telescreen/entertainment{
-	icon_state = "frame";
 	pixel_x = -32
 	},
 /obj/item/towel/random,
@@ -3968,8 +3938,6 @@
 /area/survivalpod/superpose/HydroCave)
 "cXq" = (
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/door/airlock/voidcraft/survival_pod{
@@ -4074,7 +4042,6 @@
 	dir = 4
 	},
 /obj/structure/cable{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /turf/simulated/floor/tiled/steel_dirty,
@@ -5250,13 +5217,9 @@
 	req_access = list(2,4)
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/shuttle/plating/skipjack,
@@ -5388,7 +5351,6 @@
 	id = "SP-Sec"
 	},
 /obj/structure/cable/green{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /turf/simulated/floor/plating,
@@ -5567,12 +5529,9 @@
 	id = "SP-Sec"
 	},
 /obj/structure/cable/green{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /turf/simulated/floor/plating,
@@ -5843,14 +5802,14 @@
 "eko" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "estrella_pump"
 	},
 /obj/effect/floor_decal/industrial/warning{
 	dir = 6
 	},
 /obj/machinery/airlock_sensor{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "estrella_sensor";
 	pixel_y = -28
 	},
@@ -6067,7 +6026,7 @@
 /obj/machinery/atmospherics/pipe/simple/visible,
 /obj/machinery/access_button{
 	command = "cycle_interior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "estrella";
 	name = "interior access button";
 	pixel_y = 26
@@ -6363,8 +6322,6 @@
 /area/survivalpod/superpose/DragonCave)
 "eAz" = (
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/freezer/cold,
@@ -6714,7 +6671,6 @@
 	dir = 8
 	},
 /obj/machinery/computer/security/telescreen/entertainment{
-	icon_state = "frame";
 	pixel_x = 32
 	},
 /turf/simulated/floor/carpet,
@@ -6767,8 +6723,6 @@
 /area/survivalpod/superpose/HydroCave)
 "eMp" = (
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/gear_painter,
@@ -6990,7 +6944,6 @@
 	dir = 1
 	},
 /obj/structure/cable/cyan{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /turf/simulated/floor,
@@ -7091,12 +7044,9 @@
 	id = "SP-Sec"
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /obj/structure/cable/green{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /turf/simulated/floor/plating,
@@ -7276,8 +7226,6 @@
 /area/survivalpod/superpose/CrashedInfestedShip)
 "fgs" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/techfloor,
@@ -7734,14 +7682,9 @@
 /area/survivalpod/superpose/WoodenCamp)
 "fyt" = (
 /obj/structure/cable{
-	d1 = 2;
-	d2 = 4;
-	dir = 4;
 	icon_state = "2-4"
 	},
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /turf/simulated/shuttle/wall/voidcraft/blue,
@@ -8160,7 +8103,7 @@
 "fKG" = (
 /obj/machinery/door/airlock/external{
 	desc = "It opens and closes. It is stamped with the logo of Major Bill's Transportation";
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = null;
 	locked = 1;
@@ -8542,11 +8485,6 @@
 /obj/item/material/knife/butch,
 /turf/simulated/floor/tiled/white,
 /area/survivalpod/superpose/Dinner)
-"gax" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled/asteroid_steel,
-/area/survivalpod/superpose/OldHotel)
 "gaP" = (
 /obj/structure/simple_door/wood,
 /obj/structure/barricade/planks,
@@ -8573,7 +8511,6 @@
 	pixel_x = -24
 	},
 /obj/structure/cable{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /turf/simulated/floor/tiled/steel_dirty,
@@ -8708,13 +8645,9 @@
 /area/survivalpod/superpose/LoneHome)
 "gjM" = (
 /obj/structure/cable{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /turf/simulated/shuttle/wall/voidcraft/blue,
@@ -9186,8 +9119,6 @@
 /obj/machinery/light/small{
 	dir = 8
 	},
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/wood,
 /area/survivalpod/superpose/LoneHome)
@@ -10478,8 +10409,6 @@
 "hrp" = (
 /obj/machinery/atmospherics/pipe/simple/hidden,
 /obj/structure/cable{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /turf/simulated/shuttle/wall/voidcraft/blue,
@@ -10614,13 +10543,9 @@
 /area/survivalpod/superpose/TradingShip)
 "hxz" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/shuttle/floor/voidcraft,
@@ -10826,7 +10751,6 @@
 "hFo" = (
 /obj/random/trash,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/steel_dirty,
 /area/survivalpod/superpose/MethLab)
 "hFu" = (
@@ -10980,9 +10904,7 @@
 "hJi" = (
 /obj/machinery/portable_atmospherics/hydroponics/soil,
 /obj/effect/decal/cleanable/dirt,
-/obj/item/seeds/wheatseed{
-	icon_state = "seed"
-	},
+/obj/item/seeds/wheatseed,
 /turf/simulated/floor/outdoors/dirt,
 /area/survivalpod/superpose/DragonCave)
 "hJu" = (
@@ -11176,11 +11098,6 @@
 /obj/item/seeds/pumpkinseed,
 /turf/simulated/floor/tiled/hydro,
 /area/survivalpod/superpose/HydroCave)
-"hPW" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/carpet/sblucarpet,
-/area/survivalpod/superpose/LoneHome)
 "hQb" = (
 /obj/item/pen/fountain,
 /turf/simulated/floor/wood,
@@ -11690,8 +11607,6 @@
 /area/survivalpod/superpose/MethLab)
 "iiA" = (
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/shuttle/wall/voidcraft/blue,
@@ -11933,8 +11848,6 @@
 "itA" = (
 /obj/structure/table/steel_reinforced,
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/random/maintenance,
@@ -12103,7 +12016,6 @@
 /obj/machinery/power/port_gen/pacman,
 /obj/machinery/atmospherics/pipe/simple/hidden/yellow,
 /obj/structure/cable{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /obj/effect/floor_decal/industrial/outline/yellow,
@@ -12436,13 +12348,9 @@
 /area/template_noop)
 "iQm" = (
 /obj/structure/cable/cyan{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /obj/structure/cable/cyan{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/fire,
@@ -12626,7 +12534,6 @@
 /turf/template_noop,
 /area/survivalpod/superpose/MethLab)
 "iZk" = (
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /obj/item/paper{
 	info = "Seems to be filled with odd runes drawn with blood";
@@ -13237,12 +13144,6 @@
 /obj/structure/table/darkglass,
 /turf/simulated/floor/tiled/white,
 /area/survivalpod/superpose/HydroCave)
-"jtF" = (
-/obj/effect/floor_decal/rust,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled/steel_dirty,
-/area/survivalpod/superpose/MethLab)
 "jtI" = (
 /obj/effect/floor_decal/industrial/hatch/yellow,
 /turf/simulated/shuttle/floor/voidcraft/dark,
@@ -13326,7 +13227,6 @@
 	output_level = 950000
 	},
 /obj/structure/cable/cyan{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /turf/simulated/floor,
@@ -13445,8 +13345,6 @@
 	dir = 4
 	},
 /obj/structure/cable/cyan{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/fire,
@@ -13841,7 +13739,6 @@
 /area/template_noop)
 "jRX" = (
 /obj/item/stool,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/steel_dirty,
 /area/survivalpod/superpose/MethLab)
@@ -14317,8 +14214,6 @@
 /area/survivalpod/superpose/CrashedInfestedShip)
 "kgy" = (
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /obj/effect/floor_decal/industrial/warning/corner,
@@ -14501,8 +14396,6 @@
 /area/template_noop)
 "kmz" = (
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /turf/simulated/shuttle/wall/voidcraft/blue,
@@ -14724,8 +14617,6 @@
 /obj/random/maintenance/research,
 /obj/random/maintenance/research,
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled/techfloor,
@@ -14969,11 +14860,6 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/outdoors/dirt,
 /area/survivalpod/superpose/DragonCave)
-"kBL" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled,
-/area/survivalpod/superpose/HydroCave)
 "kCu" = (
 /obj/structure/bed/double/padded,
 /obj/item/bedsheet/hosdouble,
@@ -15010,8 +14896,6 @@
 /area/survivalpod/superpose/TradingShip)
 "kEc" = (
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden,
@@ -15232,7 +15116,6 @@
 	dir = 4
 	},
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor,
 /area/survivalpod/superpose/LoneHome)
 "kUL" = (
@@ -15417,7 +15300,6 @@
 "laC" = (
 /obj/item/pack/cardemon,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/carpet/bcarpet,
 /area/survivalpod/superpose/LoneHome)
 "lbc" = (
@@ -15549,8 +15431,6 @@
 /area/template_noop)
 "lcC" = (
 /obj/structure/cable{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /turf/simulated/shuttle/wall/voidcraft/hard_corner/blue,
@@ -16161,8 +16041,6 @@
 /area/survivalpod/superpose/HydroCave)
 "lop" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/effect/floor_decal/industrial/warning{
@@ -16277,8 +16155,6 @@
 /obj/structure/barricade,
 /obj/effect/floor_decal/steeldecal/steel_decals_central5,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/steel_dirty,
 /area/survivalpod/superpose/MethLab)
 "ltd" = (
@@ -16381,7 +16257,6 @@
 	pixel_y = 20
 	},
 /obj/structure/cable/green{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /turf/simulated/floor,
@@ -16778,20 +16653,15 @@
 /obj/structure/curtain/bed,
 /obj/item/bedsheet/hosdouble,
 /obj/machinery/computer/security/telescreen/entertainment{
-	icon_state = "frame";
 	pixel_y = 32
 	},
 /turf/simulated/floor/wood,
 /area/survivalpod/superpose/ScienceShip)
 "lLH" = (
 /obj/structure/cable/cyan{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /obj/structure/cable/cyan{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/fire,
@@ -16824,7 +16694,6 @@
 	pixel_x = 5;
 	pixel_y = 10
 	},
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/wood,
 /area/survivalpod/superpose/LoneHome)
@@ -16973,7 +16842,7 @@
 	dir = 9
 	},
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "estrella_pump"
 	},
 /turf/simulated/shuttle/plating,
@@ -17612,19 +17481,12 @@
 /area/survivalpod/superpose/CrashedInfestedShip)
 "mmX" = (
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/cable{
-	d1 = 2;
-	d2 = 4;
-	dir = 4;
 	icon_state = "2-4"
 	},
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /turf/simulated/shuttle/wall/voidcraft/hard_corner/blue,
@@ -17774,8 +17636,6 @@
 /area/template_noop)
 "mss" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/unary/vent_pump/on{
@@ -17842,7 +17702,6 @@
 	pixel_x = 2;
 	pixel_y = 2
 	},
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor,
 /area/survivalpod/superpose/LoneHome)
@@ -18262,8 +18121,6 @@
 	name = "Privacy blast door"
 	},
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/shuttle/floor/voidcraft/dark,
@@ -18356,7 +18213,6 @@
 	pixel_y = 20
 	},
 /obj/structure/cable/green{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /turf/simulated/shuttle/plating/skipjack,
@@ -18661,7 +18517,7 @@
 "nah" = (
 /obj/machinery/embedded_controller/radio/simple_docking_controller{
 	dir = 4;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "trade_shuttle";
 	pixel_x = -25;
 	req_one_access = list(101);
@@ -18818,8 +18674,6 @@
 /area/survivalpod/superpose/HydroCave)
 "nhv" = (
 /obj/structure/cable{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /obj/structure/disposalpipe/segment{
@@ -19202,8 +19056,6 @@
 /area/survivalpod/superpose/TradingShip)
 "nxC" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /turf/simulated/floor/tiled/techfloor,
@@ -19717,8 +19569,6 @@
 /area/survivalpod/superpose/HydroCave)
 "nPH" = (
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/structure/disposalpipe/segment{
@@ -19852,7 +19702,6 @@
 	pixel_y = 20
 	},
 /obj/structure/cable/green{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /turf/simulated/shuttle/floor/voidcraft,
@@ -19923,7 +19772,6 @@
 	pixel_x = -28
 	},
 /obj/structure/cable{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /turf/simulated/floor/lino,
@@ -21028,12 +20876,6 @@
 	},
 /turf/simulated/floor/tiled/freezer,
 /area/template_noop)
-"oEK" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/wood/broken,
-/area/survivalpod/superpose/LoneHome)
 "oEP" = (
 /obj/structure/flora/sif/subterranean{
 	icon_state = "glowplant2"
@@ -21170,9 +21012,6 @@
 /area/survivalpod/superpose/ScienceShip)
 "oKt" = (
 /obj/structure/cable{
-	d1 = 2;
-	d2 = 4;
-	dir = 4;
 	icon_state = "2-4"
 	},
 /turf/simulated/shuttle/wall/voidcraft/blue,
@@ -21349,7 +21188,7 @@
 "oPi" = (
 /obj/machinery/door/airlock/multi_tile/metal/mait{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "estrella_outer";
 	locked = 1;
@@ -21487,13 +21326,9 @@
 /area/survivalpod/superpose/GrandLibrary)
 "oTF" = (
 /obj/structure/cable/cyan{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/cable/cyan{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/random/maintenance/engineering,
@@ -21534,8 +21369,6 @@
 /turf/simulated/wall/r_wall,
 /area/survivalpod/superpose/HydroCave)
 "oUU" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/carpet/bcarpet,
 /area/survivalpod/superpose/LoneHome)
@@ -24026,7 +23859,7 @@
 "pDj" = (
 /obj/machinery/door/airlock/multi_tile/metal/mait{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "estrella_inner";
 	locked = 1;
@@ -24237,7 +24070,7 @@
 "pKP" = (
 /obj/machinery/access_button{
 	command = "cycle_exterior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "estrella";
 	name = "exterior access button";
 	pixel_y = 26
@@ -24396,8 +24229,6 @@
 /area/survivalpod/superpose/TradingShip)
 "pQW" = (
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/door/airlock/voidcraft/survival_pod{
@@ -24473,12 +24304,6 @@
 	},
 /turf/simulated/floor/gorefloor,
 /area/survivalpod/superpose/DemonPool)
-"pTt" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled/steel_dirty,
-/area/survivalpod/superpose/MethLab)
 "pTC" = (
 /obj/item/camera,
 /turf/simulated/floor/tiled/techmaint,
@@ -24702,7 +24527,7 @@
 /area/survivalpod/superpose/LoneHome)
 "qaP" = (
 /turf/simulated/floor/flesh/colour{
-	color = red
+	color = "red"
 	},
 /area/survivalpod/superpose/HellCave)
 "qaS" = (
@@ -24769,8 +24594,6 @@
 /area/survivalpod/superpose/MethLab)
 "qdm" = (
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/vending/dinnerware{
@@ -24982,8 +24805,6 @@
 /area/template_noop)
 "qkX" = (
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/shuttle/wall/voidcraft/blue,
@@ -24996,8 +24817,6 @@
 	dir = 4
 	},
 /obj/structure/cable/cyan{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor,
@@ -25298,8 +25117,6 @@
 /area/template_noop)
 "qvQ" = (
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /turf/simulated/floor/tiled/techfloor,
@@ -25657,7 +25474,6 @@
 	},
 /area/survivalpod/superpose/Farm)
 "qHQ" = (
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /obj/random/maintenance,
 /turf/simulated/floor/tiled/steel_dirty,
@@ -26060,13 +25876,9 @@
 /area/template_noop)
 "rbS" = (
 /obj/structure/cable/cyan{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/cable/cyan{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /turf/simulated/floor,
@@ -26273,8 +26085,6 @@
 /area/survivalpod/superpose/ScienceShip)
 "rkb" = (
 /obj/structure/cable{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /turf/simulated/shuttle/wall/voidcraft/blue,
@@ -26467,7 +26277,6 @@
 	pixel_x = -28
 	},
 /obj/structure/cable{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /turf/simulated/shuttle/floor/voidcraft,
@@ -27045,12 +26854,6 @@
 	},
 /turf/simulated/shuttle/floor/purple,
 /area/survivalpod/superpose/ScienceShip)
-"rUc" = (
-/obj/effect/floor_decal/rust,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled/old_tile/green,
-/area/survivalpod/superpose/MethLab)
 "rUp" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/effect/floor_decal/industrial/warning{
@@ -27169,11 +26972,6 @@
 /obj/effect/floor_decal/industrial/outline/yellow,
 /turf/simulated/shuttle/floor/voidcraft,
 /area/survivalpod)
-"saN" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor,
-/area/survivalpod/superpose/LoneHome)
 "saQ" = (
 /obj/item/paper_bin{
 	pixel_x = -3;
@@ -27620,13 +27418,9 @@
 /area/survivalpod/superpose/MethLab)
 "spx" = (
 /obj/structure/cable/cyan{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /obj/structure/cable/cyan{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/random/maintenance/engineering,
@@ -27804,11 +27598,11 @@
 /area/survivalpod/superpose/HydroCave)
 "sxJ" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "estrella_pump"
 	},
 /obj/machinery/embedded_controller/radio/airlock/docking_port{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "estrella";
 	pixel_y = 26;
 	tag_airpump = "estrella_pump";
@@ -28662,8 +28456,6 @@
 "tgE" = (
 /obj/structure/kitchenspike,
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/freezer/cold,
@@ -29055,7 +28847,6 @@
 	pixel_y = 20
 	},
 /obj/structure/cable{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /obj/effect/floor_decal/borderfloorwhite{
@@ -29351,8 +29142,6 @@
 /area/survivalpod/superpose/CrashedInfestedShip)
 "tEh" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /turf/simulated/shuttle/floor/voidcraft,
@@ -29692,7 +29481,6 @@
 	dir = 4
 	},
 /obj/structure/cable{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /turf/simulated/floor/tiled/white,
@@ -30372,7 +30160,6 @@
 	dir = 8
 	},
 /obj/structure/cable{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /turf/simulated/floor/tiled/techfloor,
@@ -30549,11 +30336,6 @@
 /obj/item/clothing/head/pin/flower/blue,
 /obj/item/clothing/head/pin/flower/orange,
 /obj/item/clothing/head/pin/flower/pink,
-/obj/item/clothing/head/justice,
-/obj/item/clothing/head/justice/blue,
-/obj/item/clothing/head/justice/green,
-/obj/item/clothing/head/justice/pink,
-/obj/item/clothing/head/justice/yellow,
 /obj/item/clothing/head/philosopher_wig,
 /obj/item/clothing/head/plaguedoctorhat,
 /obj/item/clothing/head/xenos,
@@ -31101,7 +30883,7 @@
 	},
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "estrella_pump"
 	},
 /turf/simulated/shuttle/plating,
@@ -31438,13 +31220,9 @@
 /area/template_noop)
 "vkJ" = (
 /obj/structure/cable/cyan{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /obj/structure/cable/cyan{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/random/maintenance/engineering,
@@ -31649,8 +31427,6 @@
 /obj/item/tape/random,
 /obj/item/taperecorder,
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/item/paper_bin{
@@ -31875,11 +31651,6 @@
 /obj/effect/floor_decal/industrial/outline/yellow,
 /turf/simulated/floor/plating,
 /area/template_noop)
-"vCe" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled/white,
-/area/survivalpod/superpose/LoneHome)
 "vCM" = (
 /obj/item/storage/firstaid/regular,
 /turf/simulated/floor/tiled/techmaint,
@@ -31946,8 +31717,6 @@
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/yellow,
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /turf/simulated/floor/tiled/techfloor,
@@ -31965,8 +31734,6 @@
 /area/survivalpod/superpose/CrashedInfestedShip)
 "vFy" = (
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/structure/disposalpipe/segment{
@@ -32127,16 +31894,10 @@
 "vOq" = (
 /obj/machinery/power/port_gen/pacman,
 /obj/structure/cable/green{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /turf/simulated/floor,
 /area/survivalpod/superpose/WoodenCamp)
-"vOs" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/wood,
-/area/survivalpod/superpose/LoneHome)
 "vOz" = (
 /obj/item/sticky_pad/random,
 /turf/simulated/floor/tiled/techmaint,
@@ -32643,7 +32404,7 @@
 /area/survivalpod/superpose/GrandLibrary)
 "whZ" = (
 /turf/simulated/floor/flesh/colour{
-	color = red
+	color = "red"
 	},
 /area/template_noop)
 "wiQ" = (
@@ -32691,7 +32452,6 @@
 /obj/random/junk,
 /obj/random/junk,
 /obj/random/junk,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor,
 /area/survivalpod/superpose/LoneHome)
@@ -33554,14 +33314,6 @@
 	},
 /turf/simulated/floor/tiled/techfloor,
 /area/survivalpod/superpose/CrashedInfestedShip)
-"wMJ" = (
-/obj/structure/cable{
-	d1 = 2;
-	d2 = 4;
-	icon_state = "2-4"
-	},
-/turf/simulated/shuttle/wall/voidcraft/blue,
-/area/survivalpod)
 "wMK" = (
 /obj/structure/shuttle/engine/propulsion{
 	dir = 1
@@ -33600,8 +33352,6 @@
 /area/survivalpod/superpose/CultShip)
 "wPT" = (
 /obj/structure/cable/cyan{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /obj/fire,
@@ -33768,8 +33518,6 @@
 /area/template_noop)
 "wUM" = (
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/structure/disposalpipe/segment{
@@ -34011,8 +33759,6 @@
 /area/template_noop)
 "xbQ" = (
 /obj/structure/cable/cyan{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /obj/random/maintenance/engineering,
@@ -34190,7 +33936,6 @@
 	pixel_y = 20
 	},
 /obj/machinery/computer/security/telescreen/entertainment{
-	icon_state = "frame";
 	pixel_x = -32
 	},
 /obj/item/handcuffs/legcuffs/fuzzy,
@@ -34401,9 +34146,7 @@
 /area/survivalpod/superpose/Farm)
 "xms" = (
 /obj/machinery/portable_atmospherics/hydroponics/soil,
-/obj/item/seeds/onionseed{
-	icon_state = "seed"
-	},
+/obj/item/seeds/onionseed,
 /obj/item/seeds/tomatoseed{
 	icon_state = "seed";
 	pixel_x = 4;
@@ -34476,7 +34219,6 @@
 /turf/simulated/floor/tiled,
 /area/survivalpod/superpose/HydroCave)
 "xpa" = (
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /obj/random/maintenance/engineering,
 /turf/simulated/floor/tiled/old_tile/green,
@@ -34624,7 +34366,6 @@
 	pixel_y = 20
 	},
 /obj/structure/cable{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /turf/simulated/floor/plating,
@@ -34714,12 +34455,6 @@
 	icon_state = "floor_white"
 	},
 /area/survivalpod/superpose/CrashedQurantineShip)
-"xyN" = (
-/obj/random/trash,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/carpet/sblucarpet,
-/area/survivalpod/superpose/LoneHome)
 "xzd" = (
 /obj/random/maintenance/engineering,
 /turf/simulated/floor,
@@ -34941,7 +34676,6 @@
 	pixel_x = -28
 	},
 /obj/structure/cable{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /turf/simulated/shuttle/floor/voidcraft/dark,
@@ -35316,8 +35050,6 @@
 /area/survivalpod/superpose/TradingShip)
 "xVN" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/shuttle/plating/skipjack,
@@ -35510,11 +35242,6 @@
 	},
 /turf/simulated/shuttle/floor/voidcraft/dark,
 /area/template_noop)
-"yeD" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled/old_tile/green,
-/area/survivalpod/superpose/MethLab)
 "yeQ" = (
 /turf/simulated/shuttle/wall/alien/blue/hard_corner,
 /area/survivalpod/superpose/CrashedInfestedShip)
@@ -39938,7 +39665,7 @@ wWX
 uHE
 wWX
 uHE
-bbP
+rug
 pIr
 pIr
 pIr
@@ -54279,7 +54006,7 @@ jTF
 mtA
 ktQ
 fsy
-wMJ
+oKt
 qkX
 gjM
 eMp
@@ -59113,7 +58840,7 @@ lNO
 lNO
 gnX
 uvB
-vOs
+tGy
 wHy
 dRG
 dRG
@@ -59378,7 +59105,7 @@ chf
 aww
 gHu
 gOA
-xyN
+oeZ
 dRG
 chf
 xrs
@@ -59420,7 +59147,7 @@ lVq
 iQG
 nCC
 uwm
-rUc
+oeH
 xpa
 fPt
 kAO
@@ -59630,7 +59357,7 @@ sJN
 chf
 vtt
 oLI
-hPW
+pcn
 tGy
 sJN
 tGy
@@ -59678,9 +59405,9 @@ qVw
 clR
 kbH
 kbH
-yeD
-rUc
-yeD
+hzJ
+oeH
+hzJ
 hzJ
 xda
 kbH
@@ -60403,12 +60130,12 @@ gnX
 tGy
 tGy
 lMg
-oEK
-cOZ
+uvB
+uvB
 gyP
-vOs
-vOs
-vOs
+tGy
+tGy
+tGy
 uvB
 gnX
 xNH
@@ -60912,7 +60639,7 @@ qRd
 qRd
 aww
 fnO
-vCe
+dIL
 ecK
 chf
 obV
@@ -60921,11 +60648,11 @@ iDe
 pLU
 aww
 lOr
-cOZ
+uvB
 pYs
 tRH
 lAl
-saN
+tRH
 aww
 xNH
 bJU
@@ -60958,8 +60685,8 @@ alT
 xrZ
 uHc
 cOE
-jtF
-pTt
+pQB
+fdj
 mjk
 clR
 bEL
@@ -61169,7 +60896,7 @@ qRd
 qRd
 sJN
 daR
-vCe
+dIL
 fHI
 tGy
 wxO
@@ -65055,7 +64782,7 @@ xhB
 kXY
 rGY
 pGz
-cPL
+dYU
 tnb
 kXY
 rXy
@@ -66592,7 +66319,7 @@ ePU
 jgz
 dYU
 hip
-gax
+drP
 vxG
 mUV
 wAw
@@ -66849,7 +66576,7 @@ dYU
 bQL
 kXY
 hip
-gax
+drP
 ksh
 dcm
 ksh
@@ -67620,7 +67347,7 @@ gtC
 xhB
 kyE
 dcm
-gax
+drP
 ksh
 ksh
 rmP
@@ -71994,7 +71721,7 @@ wrH
 wrH
 tSm
 cMl
-kBL
+jau
 clr
 por
 ktQ

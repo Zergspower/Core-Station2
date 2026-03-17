@@ -1,7 +1,8 @@
-import { useBackend } from '../../backend';
-import { Button, LabeledList, Section } from '../../components';
+import { useBackend } from 'tgui/backend';
+import { Button, LabeledList, Section, Stack } from 'tgui-core/components';
+
 import { DockingStatus, DockStatus } from './EmbeddedControllerHelpers';
-import { DockingConsoleSimpleData } from './types';
+import type { DockingConsoleSimpleData } from './types';
 
 /**
  * Simple docking consoles do not allow you to cycle the airlock. They can
@@ -18,22 +19,26 @@ export const DockingConsoleSimple = (props) => {
     <Section
       title="Status"
       buttons={
-        <>
-          <Button
-            icon="exclamation-triangle"
-            disabled={!override_enabled}
-            onClick={() => act('force_door')}
-          >
-            Force exterior door
-          </Button>
-          <Button
-            icon="exclamation-triangle"
-            color={override_enabled ? 'red' : ''}
-            onClick={() => act('toggle_override')}
-          >
-            Override
-          </Button>
-        </>
+        <Stack>
+          <Stack.Item>
+            <Button
+              icon="exclamation-triangle"
+              disabled={!override_enabled}
+              onClick={() => act('force_door')}
+            >
+              Force exterior door
+            </Button>
+          </Stack.Item>
+          <Stack.Item>
+            <Button
+              icon="exclamation-triangle"
+              color={override_enabled ? 'red' : ''}
+              onClick={() => act('toggle_override')}
+            >
+              Override
+            </Button>
+          </Stack.Item>
+        </Stack>
       }
     >
       <LabeledList>

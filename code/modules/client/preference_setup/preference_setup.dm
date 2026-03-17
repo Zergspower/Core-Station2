@@ -12,11 +12,6 @@
 	sort_order = 3
 	category_item_type = /datum/category_item/player_setup_item/occupation
 
-/datum/category_group/player_setup_category/appearance_preferences
-	name = "Antagonism"
-	sort_order = 4
-	category_item_type = /datum/category_item/player_setup_item/antagonism
-
 /datum/category_group/player_setup_category/loadout_preferences
 	name = "Loadout"
 	sort_order = 5
@@ -26,11 +21,13 @@
 	name = "Traits"
 	sort_order = 6
 	category_item_type = /datum/category_item/player_setup_item/traits
-*/ //VOREStation Removal End
+
+//redundant due to having most of its content stripped out, merged into special roles
 /datum/category_group/player_setup_category/global_preferences
 	name = "Global"
 	sort_order = 6 //VOREStation Edit due to above commented out
 	category_item_type = /datum/category_item/player_setup_item/player_global
+*/ //VOREStation Removal End
 
 /****************************
 * Category Collection Setup *
@@ -84,10 +81,6 @@
 	dat += "<a href='byond://?src=\ref[src];game_prefs=1'>Game Options</a>"
 	return dat
 
-/datum/category_collection/player_setup_collection/proc/content(var/mob/user)
-	if(selected_category)
-		return selected_category.content(user)
-
 /datum/category_collection/player_setup_collection/Topic(var/href,var/list/href_list)
 	if(..())
 		return 1
@@ -102,7 +95,7 @@
 		. = 1
 
 	else if(href_list["game_prefs"])
-		user.client.prefs.tgui_interact(user)
+		user.client.game_options()
 
 	if(.)
 		user.client.prefs.ShowChoices(user)
@@ -149,21 +142,6 @@
 /datum/category_group/player_setup_category/proc/copy_to_mob(var/mob/living/carbon/human/C)
 	for(var/datum/category_item/player_setup_item/PI in items)
 		PI.copy_to_mob(C)
-
-/datum/category_group/player_setup_category/proc/content(var/mob/user)
-	. = "<table style='width:100%'><tr style='vertical-align:top'><td style='width:50%'>"
-	var/current = 0
-	var/halfway = items.len / 2
-	for(var/datum/category_item/player_setup_item/PI in items)
-		if(halfway && current++ >= halfway)
-			halfway = 0
-			. += "</td><td></td><td style='width:50%'>"
-		. += "[PI.content(user)]<br>"
-	. += "</td></tr></table>"
-
-/datum/category_group/player_setup_category/occupation_preferences/content(var/mob/user)
-	for(var/datum/category_item/player_setup_item/PI in items)
-		. += "[PI.content(user)]<br>"
 
 /**********************
 * Category Item Setup *
@@ -214,9 +192,6 @@
 /datum/category_item/player_setup_item/proc/copy_to_mob(var/mob/living/carbon/human/C)
 	return
 
-/datum/category_item/player_setup_item/proc/content()
-	return
-
 /datum/category_item/player_setup_item/proc/sanitize_character()
 	return
 
@@ -230,7 +205,7 @@
 	if(!pref_mob || !pref_mob.client)
 		return 1
 
-	. = OnTopic(href, href_list, usr)
+	. = OnTopic(href, href_list, pref_mob)
 
 	if(!pref_mob || !pref_mob.client)		// Just in case we disappeared during OnTopic
 		return 1

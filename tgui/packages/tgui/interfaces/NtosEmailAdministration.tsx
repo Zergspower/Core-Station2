@@ -1,8 +1,8 @@
-import { BooleanLike } from 'common/react';
+import { useBackend } from 'tgui/backend';
+import { NtosWindow } from 'tgui/layouts';
+import { Box, Button, LabeledList, Section, Table } from 'tgui-core/components';
+import type { BooleanLike } from 'tgui-core/react';
 
-import { useBackend } from '../backend';
-import { Box, Button, LabeledList, Section, Table } from '../components';
-import { NtosWindow } from '../layouts';
 import { NtosEmailClientViewMessage } from './NtosEmailClient';
 
 type Data = {
@@ -106,7 +106,7 @@ const ViewAccount = (props) => {
   const { current_account, cur_suspended, messages = [] } = data;
   return (
     <Section
-      title={'Viewing ' + current_account + ' in admin mode'}
+      title={`Viewing ${current_account} in admin mode`}
       buttons={
         <Button icon="undo" onClick={() => act('back')}>
           Back
@@ -118,7 +118,7 @@ const ViewAccount = (props) => {
           <Button
             color={cur_suspended ? 'bad' : ''}
             icon="ban"
-            tooltip={(cur_suspended ? 'Uns' : 'S') + 'uspend Account?'}
+            tooltip={`${cur_suspended ? 'Uns' : 'S'}uspend Account?`}
             onClick={() => act('ban')}
           >
             {cur_suspended ? 'Suspended' : 'Normal'}

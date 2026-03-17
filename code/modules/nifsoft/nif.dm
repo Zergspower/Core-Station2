@@ -61,20 +61,15 @@ You can also set the stat of a NIF to NIF_TEMPFAIL without any issues to disable
 	var/global/click_sound = 'sound/items/nif_click.ogg'
 	var/global/bad_sound = 'sound/items/nif_tone_bad.ogg'
 	var/global/good_sound = 'sound/items/nif_tone_good.ogg'
-	var/global/list/look_messages = list(
-			"flicks their eyes around",
-			"looks at something unseen",
-			"reads some invisible text",
-			"seems to be daydreaming",
-			"focuses elsewhere for a moment")
+
 
 	var/list/save_data
 
 	var/list/planes_visible = list()
 
 //Constructor comes with a free AR HUD
-/obj/item/nif/New(var/newloc,var/wear,var/list/load_data)
-	..(newloc)
+/obj/item/nif/Initialize(mapload,var/wear,var/list/load_data)
+	. = ..()
 
 	//First one to spawn in the game, make a big icon
 	if(!big_icon)
@@ -90,13 +85,11 @@ You can also set the stat of a NIF to NIF_TEMPFAIL without any issues to disable
 	examine_msg = saved_examine_msg
 
 	//If given a human on spawn (probably from persistence)
-	if(ishuman(newloc))
-		var/mob/living/carbon/human/H = newloc
-		if(!quick_implant(H))
+	if(ishuman(loc))
+		var/mob/living/carbon/human/H = loc
+		if(!quick_implant(H)) //This calls register_human() later down the line.
 			WARNING("NIF spawned in [H] failed to implant")
-			spawn(0)
-				qdel(src)
-			return FALSE
+			return INITIALIZE_HINT_QDEL
 
 	//If given wear (like when spawned) then done
 	if(wear)
@@ -106,8 +99,15 @@ You can also set the stat of a NIF to NIF_TEMPFAIL without any issues to disable
 	//Draw me yo.
 	update_icon()
 
+/obj/item/nif/proc/register_human()
+	RegisterSignal(human, COMSIG_MOB_DEATH, GLOBAL_PROC_REF(persist_nif_data))
+
+/obj/item/nif/proc/unregister_human()
+	UnregisterSignal(human, COMSIG_MOB_DEATH)
+
 //Destructor cleans up references
 /obj/item/nif/Destroy()
+	unregister_human()
 	human = null
 	QDEL_LIST_NULL(nifsofts)
 	QDEL_NULL(comm)
@@ -121,7 +121,7 @@ You can also set the stat of a NIF to NIF_TEMPFAIL without any issues to disable
 		should_be_in = brain.parent_organ
 
 	if(istype(H) && !H.nif && H.species && (loc == H.get_organ(should_be_in)))
-		if(!bioadap && (H.species.flags & NO_SCAN)) //NO_SCAN is the default 'too complicated' flag
+		if(!bioadap && (H.species.flags & NO_DNA)) //NO_DNA is the default 'too complicated' flag
 			return FALSE
 
 		human = H
@@ -133,6 +133,7 @@ You can also set the stat of a NIF to NIF_TEMPFAIL without any issues to disable
 			for(var/path in starting_software)
 				new path(src)
 			starting_software = null
+		register_human()
 		return TRUE
 
 	return FALSE
@@ -152,16 +153,18 @@ You can also set the stat of a NIF to NIF_TEMPFAIL without any issues to disable
 			return FALSE
 		forceMove(parent)
 		parent.implants += src
-		spawn(0) //Let the character finish spawning yo.
-			if(!H) //Or letting them get deleted
-				return
-			if(H.mind)
-				owner = H.mind.name
-				owner_key = H.ckey
-			implant(H)
+		addtimer(CALLBACK(src, PROC_REF(quick_install), H), 1)
 		return TRUE
 
 	return FALSE
+
+/obj/item/nif/proc/quick_install(var/mob/living/carbon/human/H)
+	if(QDELETED(H)) //Or letting them get deleted
+		return
+	if(H.mind)
+		owner = H.mind.name
+		owner_key = H.ckey
+	implant(H)
 
 //Being removed from some mob
 /obj/item/nif/proc/unimplant(var/mob/living/carbon/human/H)
@@ -175,6 +178,7 @@ You can also set the stat of a NIF to NIF_TEMPFAIL without any issues to disable
 		remove_verb(H, /mob/living/carbon/human/proc/set_nif_examine)
 		H.nif = null
 	qdel_null(menu)
+	unregister_human()
 	human = null
 	install_done = null
 	update_icon()
@@ -305,7 +309,7 @@ You can also set the stat of a NIF to NIF_TEMPFAIL without any issues to disable
 	var/percent_done = (world.time - (install_done - (5 MINUTES))) / (5 MINUTES) //CHOMPedit: 35 minutes down to 15 minutes.
 
 	if(human.client)
-		human.client.screen.Add(global_hud.whitense) //This is the camera static
+		human.client.screen.Add(GLOB.global_hud.whitense) //This is the camera static
 
 	switch(percent_done) //This is 0.0 to 1.0 kinda percent.
 		//Connecting to optical nerves
@@ -393,7 +397,7 @@ You can also set the stat of a NIF to NIF_TEMPFAIL without any issues to disable
 	last_notification = message // TGUI Hook
 
 	to_chat(human,span_filter_nif(span_bold("\[[icon2html(src.big_icon, human.client)]NIF\]") + " displays, " + (alert ? span_danger(message) : span_notice(message))))
-	if(prob(1)) human.visible_message(span_notice("\The [human] [pick(look_messages)]."))
+	if(prob(1)) human.visible_message(span_notice("\The [human] [pick(GLOB.nif_look_messages)]."))
 	if(alert)
 		human << bad_sound
 	else
@@ -493,7 +497,7 @@ You can also set the stat of a NIF to NIF_TEMPFAIL without any issues to disable
 	if(stat != NIF_WORKING) return FALSE
 
 	if(human)
-		if(prob(5)) human.visible_message(span_notice("\The [human] [pick(look_messages)]."))
+		if(prob(5)) human.visible_message(span_notice("\The [human] [pick(GLOB.nif_look_messages)]."))
 		var/applies_to = soft.applies_to
 		var/synth = human.isSynthetic()
 		if(synth && !(applies_to & NIF_SYNTHETIC))
@@ -520,7 +524,7 @@ You can also set the stat of a NIF to NIF_TEMPFAIL without any issues to disable
 //Deactivate a nifsoft
 /obj/item/nif/proc/deactivate(var/datum/nifsoft/soft)
 	if(human)
-		if(prob(5)) human.visible_message(span_notice("\The [human] [pick(look_messages)]."))
+		if(prob(5)) human.visible_message(span_notice("\The [human] [pick(GLOB.nif_look_messages)]."))
 		human << click_sound
 
 	if(soft.tick_flags == NIF_ACTIVETICK)
@@ -717,3 +721,6 @@ You can also set the stat of a NIF to NIF_TEMPFAIL without any issues to disable
 	else
 		nif.examine_msg = new_flavor
 		nif.save_data["examine_msg"] = new_flavor
+	//We add a timer that saves our changes 20 seconds from now. If we make another change, that timer is extended.
+	//However, we currently don't need mid-round updating. Updates are done on death, round end, and exiting the round.
+	//addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(persist_nif_data), src), 20 SECONDS, TIMER_UNIQUE|TIMER_OVERRIDE|TIMER_DELETE_ME)

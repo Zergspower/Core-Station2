@@ -33,7 +33,7 @@
 	//component vars
 	circuit = /obj/item/circuitboard/protean_reconstitutor
 
-/obj/machinery/protean_reconstitutor/Initialize()
+/obj/machinery/protean_reconstitutor/Initialize(mapload)
 	component_parts = list()
 	component_parts += new /obj/item/stock_parts/matter_bin(src)
 	component_parts += new /obj/item/stock_parts/manipulator(src)
@@ -242,7 +242,9 @@
 					return
 				if(P.dna)
 					P.dna.ResetUIFrom(P)
+					P.sync_dna_traits(FALSE) // Traitgenes Sync traits to genetics if needed
 					P.sync_organ_dna()
+				P.initialize_vessel()
 
 				if(P.mind)
 					P.mind.loaded_from_ckey = picked_ckey
@@ -268,6 +270,8 @@
 					var/datum/language/def_lang = GLOB.all_languages[posibrain_client.prefs.preferred_language]
 					if(def_lang)
 						P.default_language = def_lang
+
+				SEND_SIGNAL(P, COMSIG_HUMAN_DNA_FINALIZED)
 
 				protean_brain.brainmob.mind.transfer_to(P)
 				protean_brain.loc = BR

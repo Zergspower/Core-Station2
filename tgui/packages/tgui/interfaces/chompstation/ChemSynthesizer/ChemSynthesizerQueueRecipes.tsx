@@ -1,6 +1,7 @@
-import { useBackend } from '../../../backend';
-import { Box, Button, Flex, LabeledList, Section } from '../../../components';
-import { Data } from './types';
+import { useBackend } from 'tgui/backend';
+import { Box, Button, LabeledList, Section, Stack } from 'tgui-core/components';
+
+import type { Data } from './types';
 
 export const ChemSynthesizerQueueRecipes = (props) => {
   const { act, data } = useBackend<Data>();
@@ -13,39 +14,45 @@ export const ChemSynthesizerQueueRecipes = (props) => {
   } = data;
 
   return (
-    <Flex height="100%" width="100%" direction="column">
-      <Flex.Item maxHeight="50%" grow={1} basis={0}>
+    <Stack height="100%" width="100%" direction="column">
+      <Stack.Item maxHeight="50%" grow basis={0}>
         <Section
           height="100%"
           title="Queue"
           overflowY="scroll"
           buttons={
-            <>
-              <Button
-                disabled={!!busy}
-                color={use_catalyst ? 'green' : 'bad'}
-                icon="wrench"
-                tooltip="Enable/Disable the catalyst BEFORE starting the queue."
-                onClick={() => act('toggle_catalyst')}
-              >
-                {use_catalyst ? 'Catalyst Active' : 'Catalyst Disabled'}
-              </Button>
-              <Button.Confirm
-                disabled={!queue.length}
-                color="bad"
-                icon="minus-circle"
-                tooltip="Clear Queue"
-                onClick={() => act('clear_queue')}
-              />
-              {!busy && (
+            <Stack>
+              <Stack.Item>
                 <Button
+                  disabled={!!busy}
+                  color={use_catalyst ? 'green' : 'bad'}
+                  icon="wrench"
+                  tooltip="Enable/Disable the catalyst BEFORE starting the queue."
+                  onClick={() => act('toggle_catalyst')}
+                >
+                  {use_catalyst ? 'Catalyst Active' : 'Catalyst Disabled'}
+                </Button>
+              </Stack.Item>
+              <Stack.Item>
+                <Button.Confirm
                   disabled={!queue.length}
-                  icon="play"
-                  tooltip="Start Queue"
-                  onClick={() => act('start_queue')}
+                  color="bad"
+                  icon="minus-circle"
+                  tooltip="Clear Queue"
+                  onClick={() => act('clear_queue')}
                 />
+              </Stack.Item>
+              {!busy && (
+                <Stack.Item>
+                  <Button
+                    disabled={!queue.length}
+                    icon="play"
+                    tooltip="Start Queue"
+                    onClick={() => act('start_queue')}
+                  />
+                </Stack.Item>
               )}
-            </>
+            </Stack>
           }
         >
           <LabeledList>
@@ -81,8 +88,8 @@ export const ChemSynthesizerQueueRecipes = (props) => {
               })) || <Box m={1}>Queue Empty.</Box>}
           </LabeledList>
         </Section>
-      </Flex.Item>
-      <Flex.Item maxHeight="50%" grow={1} basis={0}>
+      </Stack.Item>
+      <Stack.Item maxHeight="50%" grow basis={0}>
         <Section
           height="100%"
           title="Recipes"
@@ -134,7 +141,7 @@ export const ChemSynthesizerQueueRecipes = (props) => {
               })) || <Box m={1}>No recipes found.</Box>}
           </LabeledList>
         </Section>
-      </Flex.Item>
-    </Flex>
+      </Stack.Item>
+    </Stack>
   );
 };
